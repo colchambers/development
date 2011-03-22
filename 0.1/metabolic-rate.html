@@ -1,0 +1,267 @@
+<html>
+	<head>
+
+		<link rel="stylesheet" type="text/css" href="style/style.css" />
+		<link rel="stylesheet" type="text/css" href="../yui/build/fonts/fonts-min.css" />
+		<link rel="stylesheet" type="text/css" href="../yui/build/button/assets/skins/sam/button.css" />
+		<script type="text/javascript" src="../yui/build/yahoo-dom-event/yahoo-dom-event.js"></script>
+		<script type="text/javascript" src="../yui/build/element/element-beta-min.js"></script>
+
+		<script type="text/javascript" src="../yui/build/button/button-min.js"></script>
+		
+		<!-- Prototype Specific Scripts -->
+		<script type="text/javascript" src="scripts/organic/metabolism.js"></script>
+		<script type="text/javascript" src="scripts/organic/MetabolicRate.js"></script>
+		<script type="text/javascript" src="scripts/lib.js"></script>
+		<script type="text/javascript" src="scripts/display/display.js"></script>
+
+
+		<!--begin custom header content for this example-->
+		<style type="text/css">
+
+		    #button-example-form fieldset,
+		    #button-example-form fieldset div {
+
+		        border: 2px groove #ccc;
+		        margin: .5em;
+		        padding: .5em;
+
+		    }
+
+		    .yui-button#pushbutton3 button {
+
+		        padding-left: 2em;
+		        background: url(../yui/examples/button/assets/add.gif) 10% 50% no-repeat;
+
+		    }
+		    
+		    input.numeric.medium {
+		    	width:50px;
+		    }
+		    
+		    input.numeric.long {
+					width:100px;
+		    }
+
+		</style>
+		
+		<script type="text/javascript" src="../yui/build/yuiloader/yuiloader.js"></script>
+		<script type="text/javascript">
+		var loader = new YAHOO.util.YUILoader();
+		/*loader.insert({
+		    require: ['fonts','dragdrop','logger'],
+		    base: '../yui/build/',
+		
+		    onSuccess: function(loader) {
+		            YAHOO.util.Event.addListener(YAHOO.util.Dom.get("loglink"), "click", function(e) {
+		                YAHOO.util.Event.stopEvent(e);
+		                YAHOO.log("This is a simple log message.");
+		            });
+		
+		            // Put a LogReader on your page
+		            this.myLogReader = new YAHOO.widget.LogReader();
+		    }
+		});*/
+		
+		
+		/*
+		 * Create a metabolism object
+		 */ 
+		var metabolism = new Metabolism();
+		//YAHOO.log("metabolism.initialise() =  " + metabolism.initialise(), "info", "example1");
+		
+		function displayCalorieDifference(difference){
+			element = document.getElementById("calorie-difference");
+			element.value = difference;
+
+			kilos = customRound(difference/9000, 2);
+			element = document.getElementById("calorie-difference-kgs");
+			element.value = kilos;
+
+			stone = customRound(kilos/6.35, 2);
+			element = document.getElementById("calorie-difference-stone");
+			element.value = stone;
+		}
+
+		 // "click" event handler for each Button instance
+
+		function onButtonClick(p_oEvent) {
+
+			var weight = getElementValue("weight");
+			var percentFat = getElementValue("percent-fat");
+
+			var caloriesIn = getElementValue("calories-in");
+
+
+			var lbm = metabolism.calculateLeanBodyMass(weight, percentFat);
+			var bmr = metabolism.calculateMetabolicRate(lbm);
+			var tef = metabolism.calculateThermicEffectOfFood(caloriesIn);
+			
+			var days = getElementValue("days");
+			
+			var weightStone = customRound(converter(weight, 1), 2);
+
+
+			// Exercise
+			var exerciseDuration = getElementValue("exercise-duration");
+			var intensity = getElementValue("exercise-intensity");
+			var speed = getSpeedFromIntensity(intensity);
+
+			// Speed is in mph we need kph
+			speed = calculateKilometresFromMiles(speed);
+
+			// How many calories are burnt per minute?
+			var exerciseCalories = metabolism.calculateExerciseEnergyExpenditure(weight, speed);
+
+			// How many for the exercise duration?
+			exerciseCalories = exerciseCalories*exerciseDuration;
+
+			// so how many calories are burnt in total?
+			caloriesOut = (bmr+tef+exerciseCalories);
+
+			var difference = metabolism.calculateCalorieDifference(caloriesIn, caloriesOut);
+			//displayCalorieDifference(difference);
+			kilos = difference/9000;
+			stones = converter(kilos, 1);
+
+
+			// Update the display
+			updateDisplay([
+							new DisplayNumericItem("weight-stone", weightStone),
+							new DisplayNumericItem("lbm", lbm),
+							new DisplayNumericItem("bmr", bmr),
+							new DisplayNumericItem("tef", tef),
+							new DisplayNumericItem("exercise-calories", exerciseCalories),
+							new DisplayNumericItem("calories-out", caloriesOut),
+							new DisplayNumericItem("calorie-difference", difference),
+							new DisplayNumericItem("calorie-difference-kgs", kilos),
+							new DisplayNumericItem("calorie-difference-stone", stones)
+						]);
+			// Now work out the values for 	
+						// Multiply calories in by the number of days
+			caloriesIn = caloriesIn*days;
+			caloriesOut = caloriesOut*days;
+			difference = difference*days;
+			kilos = kilos*days;
+			stones = stones*days;
+			
+			// Update the display
+						updateDisplay([
+										new DisplayNumericItem("days-calories-in", caloriesIn),
+										new DisplayNumericItem("days-calories-out", caloriesOut),
+										new DisplayNumericItem("days-calorie-difference", difference),
+										new DisplayNumericItem("days-calorie-difference-kgs", kilos),
+										new DisplayNumericItem("days-calorie-difference-stone", stones)
+						]);
+		}
+
+// "contentready" event handler for the "pushbuttonsfrommarkup" <fieldset>
+
+		YAHOO.util.Event.onContentReady("pushbuttons", function () {
+
+				// Create Buttons using existing <input> elements as a data source
+
+				var oPushButton3 = new YAHOO.widget.Button("pushbutton", { onclick: { fn: onButtonClick } });
+
+});
+
+
+		</script>
+
+	</head>
+	<body class=" yui-skin-sam">
+
+		<h1>Metabolic Rate</h1>
+
+		<div class="exampleIntro">
+			<p>This example demonstrates how to calculate metabolic rate.</p>
+		</div>
+
+		<form id="button-example-form" name="button-example-form" method="post" action="#">
+
+		    <fieldset id="pushbuttons">
+		        <legend>Push Buttons</legend>
+
+		            <div>
+		                <input type="button" id="pushbutton" name="button" value="Calculate">
+		            </div>
+		            
+		        <fieldset id="calories">
+		            <legend>Calories</legend>
+
+
+		            <div>
+									Calories In <input class="numeric medium" type="text" id="calories-in" name="calories-in" value="2500" />    
+									Calories Out <input class="numeric medium" type="text" id="calories-out" name="calories-out" value="0" />
+		            </div>
+	
+		            
+		            <div>
+										Calorie Difference <input class="numeric medium" type="text" id="calorie-difference" name="calorie-difference" value="0" />
+										(Kgs) <input class="numeric medium" type="text" id="calorie-difference-kgs" name="calorie-difference-kgs" value="0" />
+										(Stone) <input class="numeric medium" type="text" id="calorie-difference-stone" name="calorie-difference-stone" value="0" />
+		            </div>
+
+		        </fieldset>
+		        <fieldset id="caloriesOverTime">
+							<legend>Calories Over Time</legend>
+							<div>
+									Days <input class="numeric medium" type="text" id="days" name="days" value="365" />
+							</div> 
+							<div>
+								Calories In <input class="numeric long" type="text" id="days-calories-in" name="days-calories-in" value="0" />    
+								Calories Out <input class="numeric long" type="text" id="days-calories-out" name="days-calories-out" value="0" />
+							</div>
+
+
+							<div>
+									Calorie Difference <input class="numeric long" type="text" id="days-calorie-difference" name="days-calorie-difference" value="0" />
+									(Kgs) <input class="numeric medium" type="text" id="days-calorie-difference-kgs" name="days-calorie-difference-kgs" value="0" />
+									(Stone) <input class="numeric medium" type="text" id="days-calorie-difference-stone" name="days-calorie-difference-stone" value="0" />
+							</div>
+           
+						
+		        </fieldset>
+
+		        <fieldset id="metabolicRate">
+
+		            <legend>Metabolic Rate</legend>
+		            <div>
+						Weight (kg)<input class="numeric medium" type="text" id="weight" name="weight" value="70" />
+						Weight (stone)<input class="numeric medium" type="text" id="weight-stone" name="weight-stone" value="" />
+		            </div>
+		            <div>
+						Body Fat Percentage <input class="numeric medium" type="text" id="percent-fat" name="percent-fat" value="25" />
+						Lean Body Mass <input class="numeric medium" type="text" id="lbm" name="lbm" value="0" />
+		            </div>
+		            <div>
+									Basal Metabolic Rate <input class="numeric medium" type="text" id="bmr" name="bmr" value="0" />
+									Thermic Effect of Food<input class="numeric medium" type="text" id="tef" name="tef" value="0" />
+		            </div>
+		            <div>
+									Exercise Duration (mins) <input class="numeric medium" type="text" id="exercise-duration" name="exercise-duration" value="30" />
+									Exercise intensity (1-3) <input class="numeric medium" type="text" id="exercise-intensity" name="exercise-intensity" value="2" />
+									Calories from Exercise <input class="numeric medium" type="text" id="exercise-calories" name="exercise-calories" value="0" />
+		            </div>		            
+		        </fieldset>
+
+		    </fieldset>
+
+		</form>
+
+		<h2>References</h2>
+		<p>
+			<ul>
+				<li><a href="http://en.wikipedia.org/wiki/Basal_metabolic_rate" target="_blank">McArdle and Katch Metabolic Equation</a></li>
+				<li><a href="http://www.caloriesperhour.com/tutorial_thermic.php" target="_blank">Thermic Effect of food</li>
+				<li><a href="http://www.brianmac.co.uk/energyexp.htm" target="_blank">Energy Expenditure of Exercise</li>
+			</ul>
+		</p>
+		<!--END SOURCE CODE FOR EXAMPLE =============================== -->
+
+		<!--Logger code ================================================-->
+<p><a href="#" id="loglink">Click here</a> to log a simple message.</p>
+
+
+	</body>
+</html>
