@@ -53,3 +53,14 @@ function converter(value, type){
 			
 	}
 }
+
+/*
+ * Define a variable and translate references for querystring and internal variables 
+ */
+function DefinedVariable(name, defaultVariableName, queryStringName){
+	
+	this.name = name;
+	this.defaultVariableName = defaultVariableName;
+	this.queryStringName = queryStringName;
+	this.value = null;
+}

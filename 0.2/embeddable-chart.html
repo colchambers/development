@@ -1,1 +1,405 @@
-<html>  <head>      <style type="text/css">      table th input, .table-column-label * {      font-weight: bold;    }        .help-link {      text-decoration: underline;    }  </style>  <script type="text/javascript" src="http://www.google.com/jsapi"></script>    <script type="text/javascript" src="http://code.jquery.com/jquery-1.5.min.js"></script>   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>   <script type="text/javascript" src="http://github.com/malsup/form/raw/master/jquery.form.js?v2.43"></script>            <script type="text/javascript">           // wait for the DOM to be loaded         $(document).ready(function() {             // bind 'myForm' and provide a simple callback function            $('#form-1').ajaxForm(function() {        //alert('Handler for .submit() called.');        updateDataSourceFromForm();        return false;      });        });         var chartTypes = [];        function VisualisationType (type, title, method){        this.type = type;    this.title = title;    this.method = method    }    chartTypes[0] = new VisualisationType('annotatedtimeline', 'Annotated Time Line', 'AnnotatedTimeLine')    chartTypes[1] = new VisualisationType('areachart', 'Area chart', 'AreaChart')    chartTypes[2] = new VisualisationType('columnchart', 'Column chart', 'ColumnChart')    chartTypes[3] = new VisualisationType('barchart', 'Bar chart', 'BarChart');    chartTypes[4] = new VisualisationType('gauge', 'Gauge', 'Gauge')    chartTypes[5] = new VisualisationType('geomap', 'Geo map', 'GeoMap')    chartTypes[6] = new VisualisationType('imagechart', 'Image chart', 'ImageChart')    chartTypes[7] = new VisualisationType('imageareachart', 'Image Area chart', 'ImageAreaChart');    chartTypes[8] = new VisualisationType('imagebarchart', 'Image Bar chart', 'ImageBarChart');    chartTypes[9] = new VisualisationType('imagelinechart', 'Image Line chart', 'ImageLineChart');    chartTypes[10] = new VisualisationType('imagepiechart', 'Image Pie chart', 'ImagePieChart');    chartTypes[11] = new VisualisationType('linechart', 'Line chart', 'LineChart');    chartTypes[12] = new VisualisationType('piechart', 'Pie chart', 'PieChart');	/*	 * Define a variable and translate references for querystring and internal variables  	 */	function DefinedVariable(name, defaultVariableName, queryStringName){				this.name = name;		this.defaultVariableName = defaultVariableName;		this.queryStringName = queryStringName;		this.value = null;	}		var definedVariables = [];		// define and document relationships between variables. 	definedVariables['dataUrl'] = new DefinedVariable('dataUrl', 'defaultDataUrl', 'du');	definedVariables['dataStatement'] = new DefinedVariable('dataStatement', 'defaultDataStatement', 'ds');	definedVariables['chartTitle'] = new DefinedVariable('chartTitle', 'defaultChartTitle', 'ct');	definedVariables['chartHeight'] = new DefinedVariable('chartHeight', 'defaultChartHeight', 'ch');	definedVariables['chartWidth'] = new DefinedVariable('chartWidth', 'defaultChartWidth', 'cw');	definedVariables['visualisationType'] = new DefinedVariable('visualisationType', 'visualisationType', 'vt');            for(var x=0;x<chartTypes.length;x++){		google.load("visualization", "1", {packages:[chartTypes[x].type]});    }      google.setOnLoadCallback(initialiseForm);    google.setOnLoadCallback(sendAndDraw);        var data = null;    var chart = null;    var chartOptions = null;    var visualisationType = 2;    var chartElementId = 'chart_div';    var dataSources = [];    var currentDataSourceId = 0;    var defaultChartWidth = 400;    var defaultChartHeight = 240;	var defaultChartTitle = 'Default Title';    var defaultChartIs3D = true;    var numberOfRowsInForm = 10;    var queryUrls = [];    var defaultDataStatement = 'SELECT B,C,D';    var defaultDataUrl = 'http://spreadsheets.google.com/pub?key=0ApE8I7f0eze7dFEwRFpFOUxlMWt5VzZRbUN1eS10c2c&gid=3';    var queryString = '';	var queryStringValues = [];	    /*     * Create a default chartOptions object. Draw a chart using chartOptions and data objects     * @return string     */      function initialiseChart() {    drawVisualization(visualisationType);      }        function createChart(elementId, typeId){    return eval('new google.visualization.'+chartTypes[parseInt(typeId)].method+'(document.getElementById(elementId))');    }        function drawVisualization(typeId) {      // Create and draw the visualization.      chart = createChart(chartElementId, typeId);         dataTable = null;    if(data.response){      dataTable = data.response.getDataTable();    }        if(!dataTable){      return false;    }      chart.draw(dataTable, chartOptions);      }        /*     * Return a form field value given a jquery path     * @param string jquery path to form field     * @return string     */    function getFormValue(fieldName){    try{      return $(fieldName).fieldValue()[0];      }    catch(e){          return null;    }        }       function sendAndDraw() {      // Send the query with a callback function.      data.query.send(handleQueryResponse);    }    function handleQueryResponse(response) {      if (response.isError()) {        alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());        return;      }      data.response = response;    drawVisualization(visualisationType);  }      function setQuery() {      // Query language examples configured with the UI    data.query = new google.visualization.Query(data.url);    data.query.setQuery(data.statement);      sendAndDraw();    }        /*     * create a set of default chart options.      * @return object     */    function createDefaultChartOptions(){     return {width: defaultChartWidth, height: defaultChartHeight, is3D: defaultChartIs3D};    }        /*     * Create default chart and data values     * @return void     */    function initialiseData(){    		// UK fat intake 1970-2000		chartOptions = createDefaultChartOptions();		chartOptions.title = defaultChartTitle;		dataSource = null;	   		data = new google.visualization.DataTable(dataSource);		data.url = defaultDataUrl; 		data.statement = defaultDataStatement;		data.query = new google.visualization.Query(data.url);		data.query.setQuery(data.statement);		data.chartOptions = chartOptions;			data.source = 'Mean total fat intake in the UK per person per day, together with the percentage ';		data.source += 'of total energy in the fiet obtained form the different types of fatty acis, 1970 - 2000';		data.source += '(SK183) Understanding human nutrition. P72';		data.title = 'UK fat intake 1970-2000';				dataSources[0] = data;				// set default data source		data = dataSources[currentDataSourceId];            }        /*     * Create default chart and data values     * @return void     */    function initialiseForm(){    	parseQueryString();	initialiseDefaultsFromQueryString();    initialiseData();    initialiseChart();    // add an element to the form div    var formHtml = '';    formHtml += '<form id="form-1">';    formHtml += '<fieldset  id="tutorial" name="tutorial"><legend>Tutorial</legend>';    formHtml += '<p>This charting tool is designed to simplify the process of turning numbers and data into various types of chart. To begin there are 3 steps to follow:</p>';    formHtml += '<ol>';    formHtml += '  <li>Enter data: Enter the required data including column titles and row values.</li>';    formHtml += '  <li>configure the chart: Customise the chart to your needs. Values include height, width and title.</li>';    formHtml += '  <li>Choose visualisation: Choose which chart type to use.</li>';    formHtml += '</ol>';        formHtml += '</fieldset>';      formHtml += '<fieldset id="data-options" name="data-options">';    formHtml += '  <legend>Data</legend>';    formHtml += '   <p>Adjust the data values by changing the field values and hitting enter to see the chart rows and columns adjust accordingly. </p>';    formHtml += '<div>';        formHtml += '  <div>';    formHtml += '    <label for="data-url">Source url</label>';    formHtml += '    <textarea id="data-url" name="data-url" cols="60">'+data.url+'</textarea>';    formHtml += '  </div>';      formHtml += '  <div>';    formHtml += '    <label for="data-statement">Statement</label>';    formHtml += '    <textarea id="data-statement" name="data-statement" cols="60">'+data.statement+'</textarea>';    formHtml += '  </div>';       formHtml += '  <div>';    formHtml += '    <label for="embed-source">Embed</label>';    formHtml += '    <textarea id="embed-source" name="embed-source" cols="60" rows="8"></textarea>';    formHtml += '  </div>';        formHtml += '  </div>';          formHtml += '  </fieldset>';        formHtml += '<fieldset  id="chart-options" name="chart-options"><legend>Chart Options</legend>To use the charting object';    formHtml += '<p>Adjust the chart settings by changing the field values and hitting enter to see the chart adjust. </p>';    formHtml += '  <div>';    formHtml += '    <label for="chart-title">Title</label>';    formHtml += '    <input type="text" id="chart-title" name="chart-title">';    formHtml += '  </div>';    formHtml += '  <div>';    formHtml += '    <label for="chart-source">Source</label>';    formHtml += '    <textarea id="chart-source" name="chart-source" cols="60"></textarea>';    formHtml += '  </div>';    formHtml += '  <div>';    formHtml += '    <label for="chart-height">Height</label>';    formHtml += '    <input type="text" id="chart-height" name="chart-height">';    formHtml += '  </div>';    formHtml += '  <div>';    formHtml += '    <label for="chart-width">Width</label>';    formHtml += '    <input type="text" id="chart-width" name="chart-width">';    formHtml += '  </div>';      formHtml += '</fieldset>';        formHtml += '<fieldset  id="visualisation-options" name="visualisation-options"><legend>Visualisation Options</legend>To use the visualisation object';    formHtml += '<p>Enter the details to configure your chart Adjust the chart settings by changing the field values and hitting enter to see the chart adjust. </p>';        formHtml += '  <div>';    formHtml += '    <label for="chart-title">Type of chart</label>';    formHtml += '    <select id="chart-type" name="chart-type">';    formHtml += '      <option value="0">Annotated time line</option>';    formHtml += '      <option value="1">Area chart</option>';    formHtml += '      <option value="2" selected="selected">Column chart</option>';    formHtml += '      <option value="3">Bar chart</option>';    formHtml += '      <option value="4">Gauge</option>';    formHtml += '      <option value="5">Geo Map</option>';    formHtml += '      <option value="6">Image chart</option>';    formHtml += '      <option value="7">Image Area chart</option>';    formHtml += '      <option value="8">Image Bar chart</option>';    formHtml += '      <option value="9">Image Line chart</option>';    formHtml += '      <option value="10">Image Pie chart</option>';    formHtml += '      <option value="11">Line chart</option>';    formHtml += '      <option value="12">Pie chart</option>';    formHtml += '    </select>';        formHtml += createHelpButtonAndElementAsString('chart-title',                            'Chart help text'                            );        formHtml += '  </div>';        formHtml += '</fieldset>';        formHtml += '  <input type="submit" id="submit-1" />';    formHtml += '</form>';    $("#form_div").append(formHtml);        // append functionality to form objects    // bind 'myForm' and provide a simple callback function            $('#form-1').ajaxForm(function() {        //alert('Handler for .submit() called.');        updateDataSourceFromForm();        return false;      });        $("#chart-type").change(formChangeHandler);    $("#data-source").change(formChangeHandler);        // add button handlers    toggleElementWithButton('#button-toggle-visualisation-options', '#visualisation-options');    toggleElementWithButton('#button-toggle-chart-options', '#chart-options');    toggleElementWithButton('#button-toggle-data-options', '#data-options');    toggleElementWithButton('#button-toggle-tutorial', '#tutorial');        // help buttons    toggleElementWithButton('#help-link-chart-title', '#help-chart-title');    toggleElementWithButton('#help-link-data-source', '#help-data-source');    toggleElementWithButton('#help-link-column-labels', '#help-column-labels');                    updateForm();    }        function createHelpButtonAndElementAsString(id, text){    html = '    <a id="help-link-'+id+'" name="help-link-'+id+'" class="help-link" >Show help</a>';    html += '    <div id="help-'+id+'" name="help-'+id+'">'+text;    html += '    </div>';        return html;    }        function toggleElementWithButton(buttonId, elementId){    $(buttonId).click(      function (){        $(elementId).toggle();                // change text to show/hide        var buttonText = $(buttonId).text();;        if(buttonText.indexOf('Show')!=-1){          buttonText = buttonText.replace('Show', 'Hide');        }        else {          buttonText = buttonText.replace('Hide', 'Show');        }        $(buttonId).text(buttonText);      }          );    $(elementId).hide();    }        function formChangeHandler(){        updateDataSourceFromForm();        return false;    }        /*     * Update the form using the chart and data values     * @return void     */    function updateForm(){		chartOptions = data.chartOptions;		$("#chart-title").val(chartOptions.title);		$("#chart-height").val(chartOptions.height);		$("#chart-width").val(chartOptions.width);		$("#chart-source").val(data.source);        // update data fields		// update embed field 		getAndSetEmbedSource();    }        function setDataSource(dataSourceId){    data = dataSources[dataSourceId];    }           /*     * Update the chart and data values using the form      * @return void     */    function updateDataSourceFromForm(){    dataSourceId = parseInt(getFormValue("#data-source"));    chartOptions = data.chartOptions;    // read chart fields    chartOptions.title = getFormValue("#chart-title");     chartOptions.width = getFormValue("#chart-width");     chartOptions.height = getFormValue("#chart-height");           // read data fields    data.url = getFormValue("#data-url");    data.statement = getFormValue("#data-statement");          visualisationType = getFormValue("#chart-type");        // update embed field 	getAndSetEmbedSource();          setQuery(data.statement);      }          function getAndSetEmbedSource(){        var href = $(location).attr('href')		if(href.indexOf('?')>0){			href = href.substring(0, href.indexOf('?'));		}		        var url = href+'?du='+escape(data.url)+'&ds='+escape(data.statement);			url += '&ct='+escape(chartOptions.title)+'&cw='+escape(chartOptions.width)+'&ch='+escape(chartOptions.height);			url += '&vt='+escape(visualisationType);					// TODO check the url length is below http limit				var embedSource = '<iframe height="'+(parseInt(chartOptions.height)+100)+'" src="'+url+'" ';		embedSource += '  width="100%"></iframe>';		$("#embed-source").val(embedSource);    }		function parseQueryString(){		var href = $(location).attr('href');		queryString = href.substring(href.indexOf('?')+1, href.length).toString();		//alert('queryString  = '+queryString );		var items = queryString.split("&");		var item = null;		for(var i=0; i<items.length; i++){			item = items[i].split('=');			//alert(item[0]+' = '+unescape(item[1]));;			queryStringValues[item[0]]=unescape(item[1]);		}	}		/*	 * Set default variable values from the passed query string values	 */	function initialiseDefaultsFromQueryString(){		var variableNames = ['dataUrl', 'dataStatement', 'chartTitle', 'chartHeight', 'chartWidth', 'visualisationType'];				var variable = null;		for(var i=0; i<variableNames.length; i++){			// Get variable reference			variable = definedVariables[variableNames[i]];			// if variable is in query string set its default value			if(queryStringValues[variable.queryStringName]){				variable.value = queryStringValues[variable.queryStringName];				eval(variable.defaultVariableName+'=variable.value;');			}		}		}        </script>  </head>  <body>  <div id="chart_div"></div>  <div>    <button type="button" id="button-toggle-tutorial" name="button-toggle-tutorial">Show tutorial</button>    <button type="button" id="button-toggle-chart-options" name="button-toggle-chart-options">Show chart options</button>    <button type="button" id="button-toggle-data-options" name="button-toggle-data-options">Show data options</button>    <button type="button" id="button-toggle-visualisation-options" name="button-toggle-visualisation-options">Show visualisation options</button>      </div>  <div id="form_div"></div>  </body></html>
+<html>
+  <head>
+    
+  <style type="text/css">
+  
+
+    table th input, .table-column-label * {
+      font-weight: bold;
+    }
+    
+    .help-link {
+      text-decoration: underline;
+    }
+  </style>
+  <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+  
+  <script type="text/javascript" src="http://code.jquery.com/jquery-1.5.min.js"></script> 
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script> 
+  <script type="text/javascript" src="http://github.com/malsup/form/raw/master/jquery.form.js?v2.43"></script> 
+  
+  <script type="text/javascript" src="scripts/display/display.js"></script>
+  <script type="text/javascript" src="scripts/lib.js"></script>
+  <script type="text/javascript" src="js/chart.js"></script>
+  <script type="text/javascript" src="js/form.js"></script>
+  <script type="text/javascript" src="js/io.js"></script>
+ 
+    <script type="text/javascript"> 
+  
+
+        // wait for the DOM to be loaded 
+        $(document).ready(function() { 
+            // bind 'myForm' and provide a simple callback function 
+           $('#form-1').ajaxForm(function() {
+        //alert('Handler for .submit() called.');
+        updateDataSourceFromForm();
+        return false;
+      });
+        }); 
+    
+    var chartTypes = [];
+    
+    function VisualisationType (type, title, method){
+    
+    this.type = type;
+    this.title = title;
+    this.method = method
+    }
+    chartTypes[0] = new VisualisationType('columnchart', 'Column chart', 'ColumnChart')
+
+    
+	
+	var definedVariables = [];
+	
+	// define and document relationships between variables. 
+	definedVariables['dataUrl'] = new DefinedVariable('dataUrl', 'defaultDataUrl', 'du');
+	definedVariables['dataStatement'] = new DefinedVariable('dataStatement', 'defaultDataStatement', 'ds');
+	definedVariables['chartTitle'] = new DefinedVariable('chartTitle', 'defaultChartTitle', 'ct');
+	definedVariables['chartHeight'] = new DefinedVariable('chartHeight', 'defaultChartHeight', 'ch');
+	definedVariables['chartWidth'] = new DefinedVariable('chartWidth', 'defaultChartWidth', 'cw');
+	definedVariables['visualisationType'] = new DefinedVariable('visualisationType', 'visualisationType', 'vt');
+    
+    
+    for(var x=0;x<chartTypes.length;x++){
+		google.load("visualization", "1", {packages:[chartTypes[x].type]});
+    }
+
+
+      google.setOnLoadCallback(initialiseForm);
+    google.setOnLoadCallback(sendAndDraw);
+    
+    var data = null;
+    var chart = null;
+    var chartOptions = null;
+    var visualisationType = 0;
+    var chartElementId = 'chart_div';
+    var dataSources = [];
+    var currentDataSourceId = 0;
+    var defaultChartWidth = 400;
+    var defaultChartHeight = 240;
+	var defaultChartTitle = 'Default Title';
+    var defaultChartIs3D = true;
+    var numberOfRowsInForm = 10;
+    var queryUrls = [];
+    var defaultDataStatement = 'SELECT B,C,D';
+    var defaultDataUrl = 'http://spreadsheets.google.com/pub?key=0ApE8I7f0eze7dFEwRFpFOUxlMWt5VzZRbUN1eS10c2c&gid=3';
+    var queryString = '';
+	var queryStringValues = [];
+	
+    
+   
+    
+    /*
+     * create a set of default chart options. 
+     * @return object
+     */
+    function createDefaultChartOptions(){
+     return {width: defaultChartWidth, height: defaultChartHeight, is3D: defaultChartIs3D};
+    }
+    
+    /*
+     * Create default chart and data values
+     * @return void
+     */
+    function initialiseData(){
+    
+		// UK fat intake 1970-2000
+		chartOptions = createDefaultChartOptions();
+		chartOptions.title = defaultChartTitle;
+		dataSource = null;
+	   
+		data = new google.visualization.DataTable(dataSource);
+		data.url = defaultDataUrl; 
+		data.statement = defaultDataStatement;
+		data.query = new google.visualization.Query(data.url);
+		data.query.setQuery(data.statement);
+		data.chartOptions = chartOptions;
+			data.source = 'Mean total fat intake in the UK per person per day, together with the percentage ';
+		data.source += 'of total energy in the fiet obtained form the different types of fatty acis, 1970 - 2000';
+		data.source += '(SK183) Understanding human nutrition. P72';
+		data.title = 'UK fat intake 1970-2000';
+		
+		dataSources[0] = data;
+		
+		// set default data source
+		data = dataSources[currentDataSourceId];
+    
+    
+    }
+    
+    /*
+     * Create default chart and data values
+     * @return void
+     */
+    function initialiseForm(){
+    
+	parseQueryString();
+	initialiseDefaultsFromQueryString();
+    initialiseData();
+    initialiseChart();
+    // add an element to the form div
+    var formHtml = '';
+    formHtml += '<form id="form-1">';
+
+    formHtml += '<fieldset  id="tutorial" name="tutorial"><legend>Tutorial</legend>';
+    formHtml += '<p>This charting tool is designed to simplify the process of turning numbers and data into various types of chart. To begin there are 3 steps to follow:</p>';
+    formHtml += '<ol>';
+    formHtml += '  <li>Enter data: Enter the required data including column titles and row values.</li>';
+    formHtml += '  <li>configure the chart: Customise the chart to your needs. Values include height, width and title.</li>';
+    formHtml += '  <li>Choose visualisation: Choose which chart type to use.</li>';
+    formHtml += '</ol>';
+    
+    formHtml += '</fieldset>';
+
+  
+    formHtml += '<fieldset id="data-options" name="data-options">';
+    formHtml += '  <legend>Data</legend>';
+    formHtml += '   <p>Adjust the data values by changing the field values and hitting enter to see the chart rows and columns adjust accordingly. </p>';
+    formHtml += '<div>';
+    
+    formHtml += '  <div>';
+    formHtml += '    <label for="data-url">Source url</label>';
+    formHtml += '    <textarea id="data-url" name="data-url" cols="60">'+data.url+'</textarea>';
+    formHtml += '  </div>';  
+
+    formHtml += '  <div>';
+    formHtml += '    <label for="data-statement">Statement</label>';
+    formHtml += '    <textarea id="data-statement" name="data-statement" cols="60">'+data.statement+'</textarea>';
+    formHtml += '  </div>';   
+    formHtml += '  <div>';
+    formHtml += '    <label for="embed-source">Embed</label>';
+    formHtml += '    <textarea id="embed-source" name="embed-source" cols="60" rows="8"></textarea>';
+    formHtml += '  </div>';
+    
+    formHtml += '  </div>';  
+    
+    formHtml += '  </fieldset>';
+
+        formHtml += '<fieldset  id="chart-options" name="chart-options"><legend>Chart Options</legend>To use the charting object';
+    formHtml += '<p>Adjust the chart settings by changing the field values and hitting enter to see the chart adjust. </p>';
+
+    formHtml += '  <div>';
+    formHtml += '    <label for="chart-title">Title</label>';
+    formHtml += '    <input type="text" id="chart-title" name="chart-title">';
+    formHtml += '  </div>';
+    formHtml += '  <div>';
+    formHtml += '    <label for="chart-source">Source</label>';
+    formHtml += '    <textarea id="chart-source" name="chart-source" cols="60"></textarea>';
+    formHtml += '  </div>';
+    formHtml += '  <div>';
+    formHtml += '    <label for="chart-height">Height</label>';
+    formHtml += '    <input type="text" id="chart-height" name="chart-height">';
+    formHtml += '  </div>';
+    formHtml += '  <div>';
+    formHtml += '    <label for="chart-width">Width</label>';
+    formHtml += '    <input type="text" id="chart-width" name="chart-width">';
+    formHtml += '  </div>';
+      formHtml += '</fieldset>';
+    
+    formHtml += '<fieldset  id="visualisation-options" name="visualisation-options"><legend>Visualisation Options</legend>To use the visualisation object';
+    formHtml += '<p>Enter the details to configure your chart Adjust the chart settings by changing the field values and hitting enter to see the chart adjust. </p>';    
+    formHtml += '  <div>';
+    formHtml += '    <label for="chart-title">Type of chart</label>';
+    formHtml += '    <select id="chart-type" name="chart-type">';
+    formHtml += '      <option value="0">Annotated time line</option>';
+    formHtml += '      <option value="1">Area chart</option>';
+    formHtml += '      <option value="2" selected="selected">Column chart</option>';
+    formHtml += '      <option value="3">Bar chart</option>';
+    formHtml += '      <option value="4">Gauge</option>';
+    formHtml += '      <option value="5">Geo Map</option>';
+    formHtml += '      <option value="6">Image chart</option>';
+    formHtml += '      <option value="7">Image Area chart</option>';
+    formHtml += '      <option value="8">Image Bar chart</option>';
+    formHtml += '      <option value="9">Image Line chart</option>';
+    formHtml += '      <option value="10">Image Pie chart</option>';
+    formHtml += '      <option value="11">Line chart</option>';
+    formHtml += '      <option value="12">Pie chart</option>';
+    formHtml += '    </select>';
+    
+    formHtml += createHelpButtonAndElementAsString('chart-title',
+                            'Chart help text'
+                            );
+    
+    formHtml += '  </div>';
+    
+    formHtml += '</fieldset>';
+    
+    formHtml += '  <input type="submit" id="submit-1" />';
+    formHtml += '</form>';
+    $("#form_div").append(formHtml);
+    
+    // append functionality to form objects
+    // bind 'myForm' and provide a simple callback function 
+           $('#form-1').ajaxForm(function() {
+        //alert('Handler for .submit() called.');
+        updateDataSourceFromForm();
+        return false;
+      });
+    
+    $("#chart-type").change(formChangeHandler);
+    $("#data-source").change(formChangeHandler);
+    
+    // add button handlers
+    toggleElementWithButton('#button-toggle-visualisation-options', '#visualisation-options');
+    toggleElementWithButton('#button-toggle-chart-options', '#chart-options');
+    toggleElementWithButton('#button-toggle-data-options', '#data-options');
+    toggleElementWithButton('#button-toggle-tutorial', '#tutorial');
+    
+    // help buttons
+    toggleElementWithButton('#help-link-chart-title', '#help-chart-title');
+    toggleElementWithButton('#help-link-data-source', '#help-data-source');
+    toggleElementWithButton('#help-link-column-labels', '#help-column-labels');
+    
+    
+    
+    
+    updateForm();
+    }
+    
+    function createHelpButtonAndElementAsString(id, text){
+    html = '    <a id="help-link-'+id+'" name="help-link-'+id+'" class="help-link" >Show help</a>';
+    html += '    <div id="help-'+id+'" name="help-'+id+'">'+text;
+    html += '    </div>';
+    
+    return html;
+    }
+    
+    function toggleElementWithButton(buttonId, elementId){
+    $(buttonId).click(
+      function (){
+        $(elementId).toggle();
+        
+        // change text to show/hide
+        var buttonText = $(buttonId).text();;
+        if(buttonText.indexOf('Show')!=-1){
+          buttonText = buttonText.replace('Show', 'Hide');
+        }
+        else {
+          buttonText = buttonText.replace('Hide', 'Show');
+        }
+        $(buttonId).text(buttonText);
+      }
+      
+    );
+    $(elementId).hide();
+    }
+    
+    function formChangeHandler(){
+        updateDataSourceFromForm();
+        return false;
+    }
+    
+    /*
+     * Update the form using the chart and data values
+     * @return void
+     */
+    function updateForm(){
+		chartOptions = data.chartOptions;
+		$("#chart-title").val(chartOptions.title);
+		$("#chart-height").val(chartOptions.height);
+		$("#chart-width").val(chartOptions.width);
+		$("#chart-source").val(data.source);
+    
+    // update data fields
+		// update embed field 
+		getAndSetEmbedSource();
+
+    }
+    
+    function setDataSource(dataSourceId){
+    data = dataSources[dataSourceId];
+    }
+   
+    
+    /*
+     * Update the chart and data values using the form 
+     * @return void
+     */
+    function updateDataSourceFromForm(){
+    dataSourceId = parseInt(getFormValue("#data-source"));
+
+    chartOptions = data.chartOptions;
+    // read chart fields
+    chartOptions.title = getFormValue("#chart-title"); 
+    chartOptions.width = getFormValue("#chart-width"); 
+    chartOptions.height = getFormValue("#chart-height"); 
+      
+    // read data fields
+    data.url = getFormValue("#data-url");
+    data.statement = getFormValue("#data-statement");
+      
+    visualisationType = getFormValue("#chart-type");
+    
+    // update embed field 
+	getAndSetEmbedSource();
+      
+    setQuery(data.statement);
+  
+    }
+      
+    function getAndSetEmbedSource(){
+        var href = $(location).attr('href')
+		if(href.indexOf('?')>0){
+			href = href.substring(0, href.indexOf('?'));
+		}
+		
+        var url = href+'?du='+escape(data.url)+'&ds='+escape(data.statement);
+			url += '&ct='+escape(chartOptions.title)+'&cw='+escape(chartOptions.width)+'&ch='+escape(chartOptions.height);
+			url += '&vt='+escape(visualisationType);
+			
+		// TODO check the url length is below http limit
+		
+		var embedSource = '<iframe height="'+(parseInt(chartOptions.height)+100)+'" src="'+url+'" ';
+		embedSource += '  width="100%"></iframe>';
+		$("#embed-source").val(embedSource);
+    }
+	
+	function parseQueryString(){
+		var href = $(location).attr('href');
+		queryString = href.substring(href.indexOf('?')+1, href.length).toString();
+		//alert('queryString  = '+queryString );
+		var items = queryString.split("&");
+		var item = null;
+		for(var i=0; i<items.length; i++){
+			item = items[i].split('=');
+			//alert(item[0]+' = '+unescape(item[1]));;
+			queryStringValues[item[0]]=unescape(item[1]);
+		}
+	}
+	
+	/*
+	 * Set default variable values from the passed query string values
+	 */
+	function initialiseDefaultsFromQueryString(){
+
+		var variableNames = ['dataUrl', 'dataStatement', 'chartTitle', 'chartHeight', 'chartWidth', 'visualisationType'];
+		
+		var variable = null;
+		for(var i=0; i<variableNames.length; i++){
+			// Get variable reference
+			variable = definedVariables[variableNames[i]];
+			// if variable is in query string set its default value
+			if(queryStringValues[variable.queryStringName]){
+				variable.value = queryStringValues[variable.queryStringName];
+				eval(variable.defaultVariableName+'=variable.value;');
+			}
+		}
+	
+	}
+    
+    </script>
+  </head>
+
+  <body>
+  <div id="chart_div"></div>
+  <div>
+    <button type="button" id="button-toggle-tutorial" name="button-toggle-tutorial">Show tutorial</button>
+    <button type="button" id="button-toggle-chart-options" name="button-toggle-chart-options">Show chart options</button>
+    <button type="button" id="button-toggle-data-options" name="button-toggle-data-options">Show data options</button>
+    <button type="button" id="button-toggle-visualisation-options" name="button-toggle-visualisation-options">Show visualisation options</button>
+    
+
+  </div>
+  <div id="form_div"></div>
+  </body>
+</html>
