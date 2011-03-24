@@ -129,90 +129,6 @@
     // add an element to the form div
     var formHtml = '';
     formHtml += '<form id="form-1">';
-
-    formHtml += '<fieldset  id="tutorial" name="tutorial"><legend>Tutorial</legend>';
-    formHtml += '<p>This charting tool is designed to simplify the process of turning numbers and data into various types of chart. To begin there are 3 steps to follow:</p>';
-    formHtml += '<ol>';
-    formHtml += '  <li>Enter data: Enter the required data including column titles and row values.</li>';
-    formHtml += '  <li>configure the chart: Customise the chart to your needs. Values include height, width and title.</li>';
-    formHtml += '  <li>Choose visualisation: Choose which chart type to use.</li>';
-    formHtml += '</ol>';
-    
-    formHtml += '</fieldset>';
-
-  
-    formHtml += '<fieldset id="data-options" name="data-options">';
-    formHtml += '  <legend>Data</legend>';
-    formHtml += '   <p>Adjust the data values by changing the field values and hitting enter to see the chart rows and columns adjust accordingly. </p>';
-    formHtml += '<div>';
-    
-    formHtml += '  <div>';
-    formHtml += '    <label for="data-url">Source url</label>';
-    formHtml += '    <textarea id="data-url" name="data-url" cols="60">'+data.url+'</textarea>';
-    formHtml += '  </div>';  
-
-    formHtml += '  <div>';
-    formHtml += '    <label for="data-statement">Statement</label>';
-    formHtml += '    <textarea id="data-statement" name="data-statement" cols="60">'+data.statement+'</textarea>';
-    formHtml += '  </div>';   
-    formHtml += '  <div>';
-    formHtml += '    <label for="embed-source">Embed</label>';
-    formHtml += '    <textarea id="embed-source" name="embed-source" cols="60" rows="8"></textarea>';
-    formHtml += '  </div>';
-    
-    formHtml += '  </div>';  
-    
-    formHtml += '  </fieldset>';
-
-        formHtml += '<fieldset  id="chart-options" name="chart-options"><legend>Chart Options</legend>To use the charting object';
-    formHtml += '<p>Adjust the chart settings by changing the field values and hitting enter to see the chart adjust. </p>';
-
-    formHtml += '  <div>';
-    formHtml += '    <label for="chart-title">Title</label>';
-    formHtml += '    <input type="text" id="chart-title" name="chart-title">';
-    formHtml += '  </div>';
-    formHtml += '  <div>';
-    formHtml += '    <label for="chart-source">Source</label>';
-    formHtml += '    <textarea id="chart-source" name="chart-source" cols="60"></textarea>';
-    formHtml += '  </div>';
-    formHtml += '  <div>';
-    formHtml += '    <label for="chart-height">Height</label>';
-    formHtml += '    <input type="text" id="chart-height" name="chart-height">';
-    formHtml += '  </div>';
-    formHtml += '  <div>';
-    formHtml += '    <label for="chart-width">Width</label>';
-    formHtml += '    <input type="text" id="chart-width" name="chart-width">';
-    formHtml += '  </div>';
-      formHtml += '</fieldset>';
-    
-    formHtml += '<fieldset  id="visualisation-options" name="visualisation-options"><legend>Visualisation Options</legend>To use the visualisation object';
-    formHtml += '<p>Enter the details to configure your chart Adjust the chart settings by changing the field values and hitting enter to see the chart adjust. </p>';    
-    formHtml += '  <div>';
-    formHtml += '    <label for="chart-title">Type of chart</label>';
-    formHtml += '    <select id="chart-type" name="chart-type">';
-    formHtml += '      <option value="0">Annotated time line</option>';
-    formHtml += '      <option value="1">Area chart</option>';
-    formHtml += '      <option value="2" selected="selected">Column chart</option>';
-    formHtml += '      <option value="3">Bar chart</option>';
-    formHtml += '      <option value="4">Gauge</option>';
-    formHtml += '      <option value="5">Geo Map</option>';
-    formHtml += '      <option value="6">Image chart</option>';
-    formHtml += '      <option value="7">Image Area chart</option>';
-    formHtml += '      <option value="8">Image Bar chart</option>';
-    formHtml += '      <option value="9">Image Line chart</option>';
-    formHtml += '      <option value="10">Image Pie chart</option>';
-    formHtml += '      <option value="11">Line chart</option>';
-    formHtml += '      <option value="12">Pie chart</option>';
-    formHtml += '    </select>';
-    
-    formHtml += createHelpButtonAndElementAsString('chart-title',
-                            'Chart help text'
-                            );
-    
-    formHtml += '  </div>';
-    
-    formHtml += '</fieldset>';
-    
     formHtml += '  <input type="submit" id="submit-1" />';
     formHtml += '</form>';
     $("#form_div").append(formHtml);
@@ -227,20 +143,6 @@
     
     $("#chart-type").change(formChangeHandler);
     $("#data-source").change(formChangeHandler);
-    
-    // add button handlers
-    toggleElementWithButton('#button-toggle-visualisation-options', '#visualisation-options');
-    toggleElementWithButton('#button-toggle-chart-options', '#chart-options');
-    toggleElementWithButton('#button-toggle-data-options', '#data-options');
-    toggleElementWithButton('#button-toggle-tutorial', '#tutorial');
-    
-    // help buttons
-    toggleElementWithButton('#help-link-chart-title', '#help-chart-title');
-    toggleElementWithButton('#help-link-data-source', '#help-data-source');
-    toggleElementWithButton('#help-link-column-labels', '#help-column-labels');
-    
-    
-    
     
     updateForm();
     }
@@ -260,11 +162,6 @@
 		$("#chart-height").val(chartOptions.height);
 		$("#chart-width").val(chartOptions.width);
 		$("#chart-source").val(data.source);
-    
-    // update data fields
-		// update embed field 
-		getAndSetEmbedSource();
-
     }
     
     function setDataSource(dataSourceId){
@@ -291,43 +188,10 @@
       
     visualisationType = getFormValue("#chart-type");
     
-    // update embed field 
-	getAndSetEmbedSource();
-      
     setQuery(data.statement);
   
     }
-      
-    function getAndSetEmbedSource(){
-        var href = $(location).attr('href')
-		if(href.indexOf('?')>0){
-			href = href.substring(0, href.indexOf('?'));
-		}
-		
-        var url = href+'?du='+escape(data.url)+'&ds='+escape(data.statement);
-			url += '&ct='+escape(chartOptions.title)+'&cw='+escape(chartOptions.width)+'&ch='+escape(chartOptions.height);
-			url += '&vt='+escape(visualisationType);
-			
-		// TODO check the url length is below http limit
-		
-		var embedSource = '<iframe height="'+(parseInt(chartOptions.height)+100)+'" src="'+url+'" ';
-		embedSource += '  width="100%"></iframe>';
-		$("#embed-source").val(embedSource);
-    }
-	
-	function parseQueryString(){
-		var href = $(location).attr('href');
-		queryString = href.substring(href.indexOf('?')+1, href.length).toString();
-		//alert('queryString  = '+queryString );
-		var items = queryString.split("&");
-		var item = null;
-		for(var i=0; i<items.length; i++){
-			item = items[i].split('=');
-			//alert(item[0]+' = '+unescape(item[1]));;
-			queryStringValues[item[0]]=unescape(item[1]);
-		}
-	}
-	
+
 	/*
 	 * Set default variable values from the passed query string values
 	 */
@@ -353,14 +217,6 @@
 
   <body>
   <div id="chart_div"></div>
-  <div>
-    <button type="button" id="button-toggle-tutorial" name="button-toggle-tutorial">Show tutorial</button>
-    <button type="button" id="button-toggle-chart-options" name="button-toggle-chart-options">Show chart options</button>
-    <button type="button" id="button-toggle-data-options" name="button-toggle-data-options">Show data options</button>
-    <button type="button" id="button-toggle-visualisation-options" name="button-toggle-visualisation-options">Show visualisation options</button>
-    
-
-  </div>
   <div id="form_div"></div>
   </body>
 </html>
