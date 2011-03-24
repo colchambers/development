@@ -1,5 +1,5 @@
 /*
- * refactored from embeddable chart. Defines basic form handling functions. Need refactoring to a class. 
+ * refactored from embeddable chart. Defines basic form handling functions. Needs refactoring to a class. 
  */
 
 /*
@@ -16,4 +16,24 @@ function getFormValue(fieldName){
       return null;
     }
 
+}
+
+function toggleElementWithButton(buttonId, elementId){
+    $(buttonId).click(
+      function (){
+        $(elementId).toggle();
+        
+        // change text to show/hide
+        var buttonText = $(buttonId).text();;
+        if(buttonText.indexOf('Show')!=-1){
+          buttonText = buttonText.replace('Show', 'Hide');
+        }
+        else {
+          buttonText = buttonText.replace('Hide', 'Show');
+        }
+        $(buttonId).text(buttonText);
+      }
+      
+    );
+    $(elementId).hide();
 }

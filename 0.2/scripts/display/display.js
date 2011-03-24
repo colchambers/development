@@ -19,3 +19,15 @@
 			this.value = customRound(value, 2);
 		}
 		DisplayNumericItem.prototype = DisplayItem;
+        
+/*
+ * From embeddable-chart.html
+ */ 
+ 
+function createHelpButtonAndElementAsString(id, text){
+    html = '    <a id="help-link-'+id+'" name="help-link-'+id+'" class="help-link" >Show help</a>';
+    html += '    <div id="help-'+id+'" name="help-'+id+'">'+text;
+    html += '    </div>';
+    
+    return html;
+}

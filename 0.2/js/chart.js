@@ -29,3 +29,11 @@ function drawVisualization(typeId) {
     }
     chart.draw(dataTable, chartOptions);
 }
+
+/*
+ * create a set of default chart options. 
+ * @return object
+ */
+function createDefaultChartOptions(){
+ return {width: defaultChartWidth, height: defaultChartHeight, is3D: defaultChartIs3D};
+}

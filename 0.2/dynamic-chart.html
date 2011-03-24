@@ -18,7 +18,11 @@
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script> 
   <script type="text/javascript" src="http://github.com/malsup/form/raw/master/jquery.form.js?v2.43"></script> 
   
-    
+  <script type="text/javascript" src="scripts/display/display.js"></script>
+  <script type="text/javascript" src="scripts/lib.js"></script>
+  <script type="text/javascript" src="js/chart.js"></script>
+  <script type="text/javascript" src="js/form.js"></script>
+  <script type="text/javascript" src="js/io.js"></script>
  
     <script type="text/javascript"> 
   
@@ -41,29 +45,9 @@
     this.title = title;
     this.method = method
     }
-    chartTypes[0] = new VisualisationType('annotatedtimeline', 'Annotated Time Line', 'AnnotatedTimeLine')
-    chartTypes[1] = new VisualisationType('areachart', 'Area chart', 'AreaChart')
-    chartTypes[2] = new VisualisationType('columnchart', 'Column chart', 'ColumnChart')
-    chartTypes[3] = new VisualisationType('barchart', 'Bar chart', 'BarChart');
-    chartTypes[4] = new VisualisationType('gauge', 'Gauge', 'Gauge')
-    chartTypes[5] = new VisualisationType('geomap', 'Geo map', 'GeoMap')
-    chartTypes[6] = new VisualisationType('imagechart', 'Image chart', 'ImageChart')
-    chartTypes[7] = new VisualisationType('imageareachart', 'Image Area chart', 'ImageAreaChart');
-    chartTypes[8] = new VisualisationType('imagebarchart', 'Image Bar chart', 'ImageBarChart');
-    chartTypes[9] = new VisualisationType('imagelinechart', 'Image Line chart', 'ImageLineChart');
-    chartTypes[10] = new VisualisationType('imagepiechart', 'Image Pie chart', 'ImagePieChart');
-    chartTypes[11] = new VisualisationType('linechart', 'Line chart', 'LineChart');
-    chartTypes[12] = new VisualisationType('piechart', 'Pie chart', 'PieChart');
-    /*
-	 * Define a variable and translate references for querystring and internal variables 
- 	 */
-	function DefinedVariable(name, defaultVariableName, queryStringName){
-		
-		this.name = name;
-		this.defaultVariableName = defaultVariableName;
-		this.queryStringName = queryStringName;
-		this.value = null;
-	}
+    chartTypes[0] = new VisualisationType('columnchart', 'Column chart', 'ColumnChart')
+
+    
 	
 	var definedVariables = [];
 	
@@ -87,7 +71,7 @@
     var data = null;
     var chart = null;
     var chartOptions = null;
-    var visualisationType = 2;
+    var visualisationType = 0;
     var chartElementId = 'chart_div';
     var dataSources = [];
     var currentDataSourceId = 0;
@@ -102,80 +86,6 @@
     var queryString = '';
 	var queryStringValues = [];
 	
-    /*
-     * Create a default chartOptions object. Draw a chart using chartOptions and data objects
-     * @return string
-     */
-      function initialiseChart() {
-    drawVisualization(visualisationType);
-      }
-    
-    function createChart(elementId, typeId){
-    return eval('new google.visualization.'+chartTypes[parseInt(typeId)].method+'(document.getElementById(elementId))');
-    }
-    
-    function drawVisualization(typeId) {
-
-      // Create and draw the visualization.
-      chart = createChart(chartElementId, typeId); 
-    
-    dataTable = null;
-    if(data.response){
-      dataTable = data.response.getDataTable();
-    }
-    
-    if(!dataTable){
-      return false;
-    }
-      chart.draw(dataTable, chartOptions);
-      }
-
-    
-    /*
-     * Return a form field value given a jquery path
-     * @param string jquery path to form field
-     * @return string
-     */
-    function getFormValue(fieldName){
-    try{
-      return $(fieldName).fieldValue()[0];
-      }
-    catch(e){
-    
-      return null;
-    }
-    
-    }
-    
-   function sendAndDraw() {
-      // Send the query with a callback function.
-      data.query.send(handleQueryResponse);
-    }
-  
-  function handleQueryResponse(response) {
-      if (response.isError()) {
-        alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
-        return;
-      }
-      data.response = response;
-    drawVisualization(visualisationType);
-  }
-    
-  function setQuery() {
-      // Query language examples configured with the UI
-    data.query = new google.visualization.Query(data.url);
-    data.query.setQuery(data.statement);
-      sendAndDraw();
-    }
-    
-    /*
-     * create a set of default chart options. 
-     * @return object
-     */
-    function createDefaultChartOptions(){
-     return {width: defaultChartWidth, height: defaultChartHeight, is3D: defaultChartIs3D};
-    }
-    
     /*
      * Create default chart and data values
      * @return void
@@ -333,34 +243,6 @@
     
     
     updateForm();
-    }
-    
-    function createHelpButtonAndElementAsString(id, text){
-    html = '    <a id="help-link-'+id+'" name="help-link-'+id+'" class="help-link" >Show help</a>';
-    html += '    <div id="help-'+id+'" name="help-'+id+'">'+text;
-    html += '    </div>';
-    
-    return html;
-    }
-    
-    function toggleElementWithButton(buttonId, elementId){
-    $(buttonId).click(
-      function (){
-        $(elementId).toggle();
-        
-        // change text to show/hide
-        var buttonText = $(buttonId).text();;
-        if(buttonText.indexOf('Show')!=-1){
-          buttonText = buttonText.replace('Show', 'Hide');
-        }
-        else {
-          buttonText = buttonText.replace('Hide', 'Show');
-        }
-        $(buttonId).text(buttonText);
-      }
-      
-    );
-    $(elementId).hide();
     }
     
     function formChangeHandler(){
