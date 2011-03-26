@@ -17,19 +17,15 @@ function createChart(elementId, typeId){
 function drawVisualization(typeId) {
 
     // Create and draw the visualization.
-    chart = createChart(chartElementId, typeId); 
-
-    dataTable = null;
-    if(data.response){
-      dataTable = data.response.getDataTable();
-    }
-    
-    if(!dataTable){
-      return false;
-    }
-    chart.draw(dataTable, chartOptions);
+    chart = createChart(chartElementId, typeId); //new google.visualization.PieChart(document.getElementById('chart_div'))
+  
+    chart.draw(data, chartOptions);
 }
 
+function updateVisualization(typeId) {
+    chart.draw(data, chartOptions);
+}
+      
 /*
  * create a set of default chart options. 
  * @return object
