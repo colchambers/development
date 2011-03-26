@@ -12,6 +12,14 @@
       text-decoration: underline;
     }
   </style>
+  
+  </head>
+
+  <body>
+  <div id="chart_div"></div>
+  <div id="form_div"></div>
+  
+  
   <script type="text/javascript" src="http://www.google.com/jsapi"></script>
   
   <script type="text/javascript" src="http://code.jquery.com/jquery-1.5.min.js"></script> 
@@ -48,7 +56,7 @@
     chartTypes[0] = new VisualisationType('columnchart', 'Column chart', 'ColumnChart')
 
     
-	
+    
 	var definedVariables = [];
 	
 	// define and document relationships between variables. 
@@ -107,6 +115,26 @@
 		data.source += 'of total energy in the fiet obtained form the different types of fatty acis, 1970 - 2000';
 		data.source += '(SK183) Understanding human nutrition. P72';
 		data.title = 'UK fat intake 1970-2000';
+        
+        data.addColumn('string', 'Year');
+        data.addColumn('number', 'Sales');
+        data.addColumn('number', 'Expenses');
+        data.addRows(4);
+        data.setValue(0, 0, '2004');
+        data.setValue(0, 1, 1000);
+        data.setValue(0, 2, 400);
+    	
+        data.setValue(1, 0, '2005');
+        data.setValue(1, 1, 1170);
+        data.setValue(1, 2, 460);
+		
+        data.setValue(2, 0, '2006');
+        data.setValue(2, 1, 660);
+        data.setValue(2, 2, 1120);
+		
+        data.setValue(3, 0, '2007');
+        data.setValue(3, 1, 1030);
+        data.setValue(3, 2, 540);
 		
 		dataSources[0] = data;
 		
@@ -126,6 +154,9 @@
 	initialiseDefaultsFromQueryString();
     initialiseData();
     initialiseChart();
+    data.setValue(3, 1, 10030);
+    data.setValue(3, 2, 5040);
+    updateVisualization(typeId)
     // add an element to the form div
     var formHtml = '';
     formHtml += '<form id="form-1">';
@@ -213,10 +244,5 @@
 	}
     
     </script>
-  </head>
-
-  <body>
-  <div id="chart_div"></div>
-  <div id="form_div"></div>
   </body>
 </html>
