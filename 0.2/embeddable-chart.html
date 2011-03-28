@@ -395,24 +395,24 @@
      * @return void
      */
     function updateDataSourceFromForm(){
-    dataSourceId = parseInt(getFormValue("#data-source"));
-
-    chartOptions = data.chartOptions;
-    // read chart fields
-    chartOptions.title = getFormValue("#chart-title"); 
-    chartOptions.width = getFormValue("#chart-width"); 
-    chartOptions.height = getFormValue("#chart-height"); 
-      
-    // read data fields
-    data.url = getFormValue("#data-url");
-    data.statement = getFormValue("#data-statement");
-      
-    visualisationType = getFormValue("#chart-type");
+        dataSourceId = parseInt(getFormValue("#data-source"));
     
-    // update embed field 
-	getAndSetEmbedSource();
-      
-    setQuery(data.statement);
+        chartOptions = data.chartOptions;
+        // read chart fields
+        chartOptions.title = getFormValue("#chart-title"); 
+        chartOptions.width = getFormValue("#chart-width"); 
+        chartOptions.height = getFormValue("#chart-height"); 
+          
+        // read data fields
+        data.url = getFormValue("#data-url");
+        data.statement = getFormValue("#data-statement");
+          
+        visualisationType = getFormValue("#chart-type");
+        
+        // update embed field 
+    	getAndSetEmbedSource();
+          
+        setQuery(data.statement);
   
     }
       
