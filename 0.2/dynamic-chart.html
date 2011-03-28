@@ -158,38 +158,14 @@
         formHtml += '  <input type="submit" id="submit-1" />';
         formHtml += '</form>';
         $("#form_div").append(formHtml);
-        alert('initialiseForm');
-        // append functionality to form objects
-        // bind 'myForm' and provide a simple callback function 
-               $('#form-1').ajaxForm(function() {
-            alert('Handler for .submit() called.');
-            updateDataSourceFromForm();
-            return false;
-          });
+        // add onClick handler        
+        $("#form-1").click(formChangeHandler);
         
-        //$("#chart-type").change(formChangeHandler);
-        //$("#data-source").change(formChangeHandler);
-        
-        updateForm();
-        alert('after update form.');
     }
     
     function formChangeHandler(){
-        alert('Handler for .submit() formchangehandler called.');
         updateDataSourceFromForm();
         return false;
-    }
-    
-    /*
-     * Update the form using the chart and data values
-     * @return void
-     */
-    function updateForm(){
-        //chartOptions = data.chartOptions;
-		//$("#chart-title").val(chartOptions.title);
-		//$("#chart-height").val(chartOptions.height);
-		//$("#chart-width").val(chartOptions.width);
-		//$("#chart-source").val(data.source);
     }
     
     /*
@@ -197,7 +173,6 @@
      * @return void
      */
     function updateDataSourceFromForm(){
-        alert('12');
         data.setValue(3, 1, 10030);
         data.setValue(3, 2, 5040);
         updateVisualization(2);
