@@ -23,6 +23,13 @@
   <script type="text/javascript" src="http://www.google.com/jsapi"></script>
   
   <script type="text/javascript" src="http://code.jquery.com/jquery-1.5.min.js"></script> 
+  <script type="text/javascript" src="http://jqueryui.com/jquery-1.5.1.js"></script> 
+  <script type="text/javascript" src="http://jqueryui.com/jquery-1.5.1.js"></script> 
+  <script src="http://jqueryui.com/ui/jquery.ui.widget.js"></script> 
+    <script src="http://jqueryui.com/ui/jquery.ui.mouse.js"></script> 
+	<script src="http://jqueryui.com/ui/jquery.ui.slider.js"></script> 
+    <link rel="stylesheet" href="http://jqueryui.com/themes/base/jquery.ui.all.css"> 
+  
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script> 
   <script type="text/javascript" src="http://github.com/malsup/form/raw/master/jquery.form.js?v2.43"></script> 
   
@@ -34,17 +41,6 @@
  
     <script type="text/javascript"> 
   
-        //alert('setup form');
-        // wait for the DOM to be loaded 
-        $(document).ready(function() { 
-            // bind 'myForm' and provide a simple callback function 
-           $('#form-1').ajaxForm(function() {
-        alert('Handler for .submit() called.');
-        updateDataSourceFromForm();
-        return false;
-      });
-        }); 
-    
     var chartTypes = [];
     
     function VisualisationType (type, title, method){
@@ -155,12 +151,24 @@
         // add an element to the form div
         var formHtml = '';
         formHtml += '<form id="form-1">';
+        formHtml += '  <input type="range" id="range-1" min="0" max="4" value="2" step="1" />';
+        formHtml += '  <div id="slider-range"></div>';
+        
         formHtml += '  <input type="submit" id="submit-1" />';
+        
         formHtml += '</form>';
         $("#form_div").append(formHtml);
         // add onClick handler        
-        $("#form-1").click(formChangeHandler);
-        
+        //$("#form-1").click(formChangeHandler);
+        //$("#range-1").change(formChangeHandler);
+         $( "#slider-range" ).slider({
+			max: 5,
+			value: 2,
+			stop: function( event, ui ) {
+				updateDataSourceFromForm();
+                //$( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
+			}
+		});
     }
     
     function formChangeHandler(){
@@ -173,11 +181,31 @@
      * @return void
      */
     function updateDataSourceFromForm(){
-        data.setValue(3, 1, 10030);
-        data.setValue(3, 2, 5040);
+        
+        var range_1 = $( "#slider-range" ).slider("value");
+        //range_1 = parseInt(getRangeValue("#slider-range")); 
+        //alert('slider-range = ' + range_1 );
+        
+        switch(range_1){
+            case 0:
+                data.setValue(3, 1, 10030);
+                data.setValue(3, 2, 5040);
+                break;
+            case 1:
+                data.setValue(3, 1, 2030);
+                data.setValue(3, 2, 140);
+                break;
+            case 2:
+                data.setValue(3, 1, 230);
+                data.setValue(3, 2, 14);
+                break;
+        }
+        
         updateVisualization(2);
           
     }
+    
+   
 
     </script>
   </body>
