@@ -23,6 +23,13 @@
   <script type="text/javascript" src="http://www.google.com/jsapi"></script>
   
   <script type="text/javascript" src="http://code.jquery.com/jquery-1.5.min.js"></script> 
+  <script type="text/javascript" src="http://jqueryui.com/jquery-1.5.1.js"></script> 
+  <script type="text/javascript" src="http://jqueryui.com/jquery-1.5.1.js"></script> 
+  <script src="http://jqueryui.com/ui/jquery.ui.widget.js"></script> 
+    <script src="http://jqueryui.com/ui/jquery.ui.mouse.js"></script> 
+	<script src="http://jqueryui.com/ui/jquery.ui.slider.js"></script> 
+    <link rel="stylesheet" href="http://jqueryui.com/themes/base/jquery.ui.all.css"> 
+  
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script> 
   <script type="text/javascript" src="http://github.com/malsup/form/raw/master/jquery.form.js?v2.43"></script> 
   
@@ -34,17 +41,6 @@
  
     <script type="text/javascript"> 
   
-
-        // wait for the DOM to be loaded 
-        $(document).ready(function() { 
-            // bind 'myForm' and provide a simple callback function 
-           $('#form-1').ajaxForm(function() {
-        //alert('Handler for .submit() called.');
-        updateDataSourceFromForm();
-        return false;
-      });
-        }); 
-    
     var chartTypes = [];
     
     function VisualisationType (type, title, method){
@@ -73,8 +69,8 @@
     }
 
 
-      google.setOnLoadCallback(initialiseForm);
-    google.setOnLoadCallback(sendAndDraw);
+    google.setOnLoadCallback(initialiseForm);
+    //google.setOnLoadCallback(sendAndDraw);
     
     var data = null;
     var chart = null;
@@ -89,8 +85,6 @@
     var defaultChartIs3D = true;
     var numberOfRowsInForm = 10;
     var queryUrls = [];
-    var defaultDataStatement = 'SELECT B,C,D';
-    var defaultDataUrl = 'http://spreadsheets.google.com/pub?key=0ApE8I7f0eze7dFEwRFpFOUxlMWt5VzZRbUN1eS10c2c&gid=3';
     var queryString = '';
 	var queryStringValues = [];
 	
@@ -106,10 +100,10 @@
 		dataSource = null;
 	   
 		data = new google.visualization.DataTable(dataSource);
-		data.url = defaultDataUrl; 
-		data.statement = defaultDataStatement;
-		data.query = new google.visualization.Query(data.url);
-		data.query.setQuery(data.statement);
+		//data.url = defaultDataUrl; 
+		//data.statement = defaultDataStatement;
+		//data.query = new google.visualization.Query(data.url);
+		//data.query.setQuery(data.statement);
 		data.chartOptions = chartOptions;
 			data.source = 'Mean total fat intake in the UK per person per day, together with the percentage ';
 		data.source += 'of total energy in the fiet obtained form the different types of fatty acis, 1970 - 2000';
@@ -150,32 +144,31 @@
      */
     function initialiseForm(){
     
-	parseQueryString();
-	initialiseDefaultsFromQueryString();
-    initialiseData();
-    initialiseChart();
-    data.setValue(3, 1, 10030);
-    data.setValue(3, 2, 5040);
-    updateVisualization(typeId)
-    // add an element to the form div
-    var formHtml = '';
-    formHtml += '<form id="form-1">';
-    formHtml += '  <input type="submit" id="submit-1" />';
-    formHtml += '</form>';
-    $("#form_div").append(formHtml);
-    
-    // append functionality to form objects
-    // bind 'myForm' and provide a simple callback function 
-           $('#form-1').ajaxForm(function() {
-        //alert('Handler for .submit() called.');
-        updateDataSourceFromForm();
-        return false;
-      });
-    
-    $("#chart-type").change(formChangeHandler);
-    $("#data-source").change(formChangeHandler);
-    
-    updateForm();
+        initialiseData();
+        initialiseChart();
+       
+        //updateVisualization(typeId);
+        // add an element to the form div
+        var formHtml = '';
+        formHtml += '<form id="form-1">';
+        formHtml += '  <input type="range" id="range-1" min="0" max="4" value="2" step="1" />';
+        formHtml += '  <div id="slider-range"></div>';
+        
+        formHtml += '  <input type="submit" id="submit-1" />';
+        
+        formHtml += '</form>';
+        $("#form_div").append(formHtml);
+        // add onClick handler        
+        //$("#form-1").click(formChangeHandler);
+        //$("#range-1").change(formChangeHandler);
+         $( "#slider-range" ).slider({
+			max: 5,
+			value: 2,
+			stop: function( event, ui ) {
+				updateDataSourceFromForm();
+                //$( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
+			}
+		});
     }
     
     function formChangeHandler(){
@@ -184,65 +177,36 @@
     }
     
     /*
-     * Update the form using the chart and data values
-     * @return void
-     */
-    function updateForm(){
-		chartOptions = data.chartOptions;
-		$("#chart-title").val(chartOptions.title);
-		$("#chart-height").val(chartOptions.height);
-		$("#chart-width").val(chartOptions.width);
-		$("#chart-source").val(data.source);
-    }
-    
-    function setDataSource(dataSourceId){
-    data = dataSources[dataSourceId];
-    }
-   
-    
-    /*
      * Update the chart and data values using the form 
      * @return void
      */
     function updateDataSourceFromForm(){
-    dataSourceId = parseInt(getFormValue("#data-source"));
-
-    chartOptions = data.chartOptions;
-    // read chart fields
-    chartOptions.title = getFormValue("#chart-title"); 
-    chartOptions.width = getFormValue("#chart-width"); 
-    chartOptions.height = getFormValue("#chart-height"); 
-      
-    // read data fields
-    data.url = getFormValue("#data-url");
-    data.statement = getFormValue("#data-statement");
-      
-    visualisationType = getFormValue("#chart-type");
-    
-    setQuery(data.statement);
-  
+        
+        var range_1 = $( "#slider-range" ).slider("value");
+        //range_1 = parseInt(getRangeValue("#slider-range")); 
+        //alert('slider-range = ' + range_1 );
+        
+        switch(range_1){
+            case 0:
+                data.setValue(3, 1, 10030);
+                data.setValue(3, 2, 5040);
+                break;
+            case 1:
+                data.setValue(3, 1, 2030);
+                data.setValue(3, 2, 140);
+                break;
+            case 2:
+                data.setValue(3, 1, 230);
+                data.setValue(3, 2, 14);
+                break;
+        }
+        
+        updateVisualization(2);
+          
     }
-
-	/*
-	 * Set default variable values from the passed query string values
-	 */
-	function initialiseDefaultsFromQueryString(){
-
-		var variableNames = ['dataUrl', 'dataStatement', 'chartTitle', 'chartHeight', 'chartWidth', 'visualisationType'];
-		
-		var variable = null;
-		for(var i=0; i<variableNames.length; i++){
-			// Get variable reference
-			variable = definedVariables[variableNames[i]];
-			// if variable is in query string set its default value
-			if(queryStringValues[variable.queryStringName]){
-				variable.value = queryStringValues[variable.queryStringName];
-				eval(variable.defaultVariableName+'=variable.value;');
-			}
-		}
-	
-	}
     
+   
+
     </script>
   </body>
 </html>

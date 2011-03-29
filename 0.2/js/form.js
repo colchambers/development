@@ -18,6 +18,16 @@ function getFormValue(fieldName){
 
 }
 
+function getRangeValue(fieldName){
+    try{
+      return $(fieldName).val();
+      }
+    catch(e){
+    
+      return null;
+    }
+}
+
 function toggleElementWithButton(buttonId, elementId){
     $(buttonId).click(
       function (){

@@ -17,6 +17,7 @@ drawVisualization(visualisationType);
 }
 
 function setQuery() {
+    alert('setQuery');
   // Query language examples configured with the UI
 data.query = new google.visualization.Query(data.url);
 data.query.setQuery(data.statement);
