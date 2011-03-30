@@ -43,19 +43,13 @@
   
     var chartTypes = [];
     
-    function VisualisationType (type, title, method){
-    
-    this.type = type;
-    this.title = title;
-    this.method = method
-    }
     chartTypes[0] = new VisualisationType('columnchart', 'Column chart', 'ColumnChart')
 
     google.load("visualization", "1", {packages:[chartTypes[0].type]});
     google.setOnLoadCallback(initialiseForm);
     
     var data = null;
-    var chart = null;
+    var chart = new Visualisation_Chart();
     var chartOptions = null;
     var visualisationType = 0;
     var chartElementId = 'chart_div';
@@ -73,7 +67,7 @@
     function initialiseData(){
     
 		// UK fat intake 1970-2000
-		chartOptions = createDefaultChartOptions();
+		chartOptions = chart.createDefaultOptions();
 		chartOptions.title = defaultChartTitle;
 		dataSource = null;
 	   
@@ -105,7 +99,6 @@
 		// set default data source
 		data = dataSources[currentDataSourceId];
     
-    
     }
     
     /*
@@ -115,7 +108,7 @@
     function initialiseForm(){
     
         initialiseData();
-        initialiseChart();
+        chart.initialise();
        
         // add an element to the form div
         var formHtml = '';
@@ -135,11 +128,6 @@
 				updateDataSourceFromForm();
 			}
 		});
-    }
-    
-    function formChangeHandler(){
-        updateDataSourceFromForm();
-        return false;
     }
     
     /*
@@ -165,12 +153,10 @@
                 break;
         }
         
-        updateVisualization(2);
+        chart.draw();
           
     }
     
-   
-
     </script>
   </body>
 </html>
