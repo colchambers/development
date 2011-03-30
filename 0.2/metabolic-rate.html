@@ -73,128 +73,7 @@
 
 		</style>
 		
-		<script type="text/javascript" src="../yui/build/yuiloader/yuiloader.js"></script>
-		<script type="text/javascript">
-		var loader = new YAHOO.util.YUILoader();
-		/*loader.insert({
-		    require: ['fonts','dragdrop','logger'],
-		    base: '../yui/build/',
 		
-		    onSuccess: function(loader) {
-		            YAHOO.util.Event.addListener(YAHOO.util.Dom.get("loglink"), "click", function(e) {
-		                YAHOO.util.Event.stopEvent(e);
-		                YAHOO.log("This is a simple log message.");
-		            });
-		
-		            // Put a LogReader on your page
-		            this.myLogReader = new YAHOO.widget.LogReader();
-		    }
-		});*/
-		
-		
-		/*
-		 * Create a metabolism object
-		 */ 
-		var metabolism = new Metabolism();
-		//YAHOO.log("metabolism.initialise() =  " + metabolism.initialise(), "info", "example1");
-		
-		function displayCalorieDifference(difference){
-			element = document.getElementById("calorie-difference");
-			element.value = difference;
-
-			kilos = customRound(difference/9000, 2);
-			element = document.getElementById("calorie-difference-kgs");
-			element.value = kilos;
-
-			stone = customRound(kilos/6.35, 2);
-			element = document.getElementById("calorie-difference-stone");
-			element.value = stone;
-		}
-
-		 // "click" event handler for each Button instance
-
-		function onButtonClick(p_oEvent) {
-
-			var weight = getElementValue("weight");
-			var percentFat = getElementValue("percent-fat");
-
-			var caloriesIn = getElementValue("calories-in");
-
-
-			var lbm = metabolism.calculateLeanBodyMass(weight, percentFat);
-			var bmr = metabolism.calculateMetabolicRate(lbm);
-			var tef = metabolism.calculateThermicEffectOfFood(caloriesIn);
-			
-			var days = getElementValue("days");
-			
-			var weightStone = customRound(converter(weight, 1), 2);
-
-
-			// Exercise
-			var exerciseDuration = getElementValue("exercise-duration");
-			var intensity = getElementValue("exercise-intensity");
-			var speed = getSpeedFromIntensity(intensity);
-
-			// Speed is in mph we need kph
-			speed = calculateKilometresFromMiles(speed);
-
-			// How many calories are burnt per minute?
-			var exerciseCalories = metabolism.calculateExerciseEnergyExpenditure(weight, speed);
-
-			// How many for the exercise duration?
-			exerciseCalories = exerciseCalories*exerciseDuration;
-
-			// so how many calories are burnt in total?
-			caloriesOut = (bmr+tef+exerciseCalories);
-
-			var difference = metabolism.calculateCalorieDifference(caloriesIn, caloriesOut);
-			//displayCalorieDifference(difference);
-			kilos = difference/9000;
-			stones = converter(kilos, 1);
-
-
-			// Update the display
-			updateDisplay([
-							new DisplayNumericItem("weight-stone", weightStone),
-							new DisplayNumericItem("lbm", lbm),
-							new DisplayNumericItem("bmr", bmr),
-							new DisplayNumericItem("tef", tef),
-							new DisplayNumericItem("exercise-calories", exerciseCalories),
-							new DisplayNumericItem("calories-out", caloriesOut),
-							new DisplayNumericItem("calorie-difference", difference),
-							new DisplayNumericItem("calorie-difference-kgs", kilos),
-							new DisplayNumericItem("calorie-difference-stone", stones)
-						]);
-			// Now work out the values for 	
-						// Multiply calories in by the number of days
-			caloriesIn = caloriesIn*days;
-			caloriesOut = caloriesOut*days;
-			difference = difference*days;
-			kilos = kilos*days;
-			stones = stones*days;
-			
-			// Update the display
-						updateDisplay([
-										new DisplayNumericItem("days-calories-in", caloriesIn),
-										new DisplayNumericItem("days-calories-out", caloriesOut),
-										new DisplayNumericItem("days-calorie-difference", difference),
-										new DisplayNumericItem("days-calorie-difference-kgs", kilos),
-										new DisplayNumericItem("days-calorie-difference-stone", stones)
-						]);
-		}
-
-// "contentready" event handler for the "pushbuttonsfrommarkup" <fieldset>
-
-		YAHOO.util.Event.onContentReady("pushbuttons", function () {
-
-				// Create Buttons using existing <input> elements as a data source
-
-				var oPushButton3 = new YAHOO.widget.Button("pushbutton", { onclick: { fn: onButtonClick } });
-
-});
-
-
-		</script>
 
 </head>
 
@@ -211,6 +90,8 @@
 		<div class="exampleIntro">
 			<p>This example demonstrates how to calculate metabolic rate.</p>
 		</div>
+        
+        <div id="chart_div"></div>
 
 		<form id="button-example-form" name="button-example-form" method="post" action="#">
 
@@ -300,24 +181,225 @@
 
 
   <!-- JavaScript at the bottom for fast page loading -->
-  <script>
-  
-function draw_b() {
-  var b_canvas = document.getElementById("canvas_b");
-  var b_context = b_canvas.getContext("2d");
-  b_context.fillRect(50, 25, 150, 100);
-}
-  </script>
-
   <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if necessary -->
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.js"></script>
   <script>window.jQuery || document.write('<script src="js/libs/jquery-1.5.1.min.js">\x3C/script>')</script>
 
+  <!-- scripts for chart -->
+  <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+  <script type="text/javascript" src="scripts/display/display.js"></script>
+  <script type="text/javascript" src="scripts/lib.js"></script>
+  <script type="text/javascript" src="js/chart.js"></script>
+  <script type="text/javascript" src="js/form.js"></script>
+  <script type="text/javascript" src="js/io.js"></script>
+ <!-- End scripts for chart -->
 
   <!-- scripts concatenated and minified via ant build script-->
   <script src="js/plugins.js"></script>
   <script src="js/script.js"></script>
   <!-- end scripts-->
+  
+  <!-- start of chart -->
+   <script type="text/javascript"> 
+  
+    var chartTypes = [];
+    
+    chartTypes[0] = new VisualisationType('columnchart', 'Column chart', 'ColumnChart')
+
+    google.load("visualization", "1", {packages:[chartTypes[0].type]});
+    google.setOnLoadCallback(initialiseForm);
+    
+    var data = null;
+    var chart = new Visualisation_Chart();
+    var chartOptions = null;
+    var visualisationType = 0;
+    var chartElementId = 'chart_div';
+    var dataSources = [];
+    var currentDataSourceId = 0;
+    var defaultChartWidth = 800;
+    var defaultChartHeight = 240;
+    var defaultChartTitle = 'Calorie difference over time from given metabolic rate.';
+    var defaultChartIs3D = true;
+	
+    /*
+     * Create default chart and data values
+     * @return void
+     */
+    function initialiseData(){
+        
+        // calorie difference over time
+		chartOptions = chart.createDefaultOptions();
+		chartOptions.title = defaultChartTitle;
+		dataSource = null;
+	   
+		data = new google.visualization.DataTable(dataSource);
+		data.chartOptions = chartOptions;
+        
+        data.addColumn('string', 'month');
+        data.addColumn('number', 'Cumulative calorie difference');
+        data.addRows(12);
+        for(var x=0;x<12;x++){
+            data.setValue(x, 0, ''+(x+1));
+            data.setValue(x, 1, 0);
+        }
+    	
+		dataSources[0] = data;
+		
+    }
+    
+    /*
+     * Create default chart and data values
+     * @return void
+     */
+    function initialiseForm(){
+    
+        initialiseData();
+        chart.initialise();
+    }
+    
+    </script>
+    <!-- end of chart -->
+    
+    <!-- start of metabolic code -->
+    <script type="text/javascript" src="../yui/build/yuiloader/yuiloader.js"></script>
+    	<script type="text/javascript">
+		var loader = new YAHOO.util.YUILoader();
+		/*loader.insert({
+		    require: ['fonts','dragdrop','logger'],
+		    base: '../yui/build/',
+		
+		    onSuccess: function(loader) {
+		            YAHOO.util.Event.addListener(YAHOO.util.Dom.get("loglink"), "click", function(e) {
+		                YAHOO.util.Event.stopEvent(e);
+		                YAHOO.log("This is a simple log message.");
+		            });
+		
+		            // Put a LogReader on your page
+		            this.myLogReader = new YAHOO.widget.LogReader();
+		    }
+		});*/
+		
+		
+		/*
+		 * Create a metabolism object
+		 */ 
+		var metabolism = new Metabolism();
+		//YAHOO.log("metabolism.initialise() =  " + metabolism.initialise(), "info", "example1");
+		
+		function displayCalorieDifference(difference){
+			element = document.getElementById("calorie-difference");
+			element.value = difference;
+
+			kilos = customRound(difference/9000, 2);
+			element = document.getElementById("calorie-difference-kgs");
+			element.value = kilos;
+
+			stone = customRound(kilos/6.35, 2);
+			element = document.getElementById("calorie-difference-stone");
+			element.value = stone;
+		}
+
+		 // "click" event handler for each Button instance
+
+		function onButtonClick(p_oEvent) {
+
+			var weight = getElementValue("weight");
+			var percentFat = getElementValue("percent-fat");
+
+			var caloriesIn = getElementValue("calories-in");
+
+
+			var lbm = metabolism.calculateLeanBodyMass(weight, percentFat);
+			var bmr = metabolism.calculateMetabolicRate(lbm);
+			var tef = metabolism.calculateThermicEffectOfFood(caloriesIn);
+			
+			var days = getElementValue("days");
+			
+			var weightStone = customRound(converter(weight, 1), 2);
+
+
+			// Exercise
+			var exerciseDuration = getElementValue("exercise-duration");
+			var intensity = getElementValue("exercise-intensity");
+			var speed = getSpeedFromIntensity(intensity);
+
+			// Speed is in mph we need kph
+			speed = calculateKilometresFromMiles(speed);
+
+			// How many calories are burnt per minute?
+			var exerciseCalories = metabolism.calculateExerciseEnergyExpenditure(weight, speed);
+
+			// How many for the exercise duration?
+			exerciseCalories = exerciseCalories*exerciseDuration;
+
+			// so how many calories are burnt in total?
+			caloriesOut = (bmr+tef+exerciseCalories);
+
+			var difference = metabolism.calculateCalorieDifference(caloriesIn, caloriesOut);
+			//displayCalorieDifference(difference);
+			kilos = difference/9000;
+			stones = converter(kilos, 1);
+
+            // save difference for chart.
+            var dailyDifference = difference;
+
+			// Update the display
+			updateDisplay([
+							new DisplayNumericItem("weight-stone", weightStone),
+							new DisplayNumericItem("lbm", lbm),
+							new DisplayNumericItem("bmr", bmr),
+							new DisplayNumericItem("tef", tef),
+							new DisplayNumericItem("exercise-calories", exerciseCalories),
+							new DisplayNumericItem("calories-out", caloriesOut),
+							new DisplayNumericItem("calorie-difference", difference),
+							new DisplayNumericItem("calorie-difference-kgs", kilos),
+							new DisplayNumericItem("calorie-difference-stone", stones)
+						]);
+			// Now work out the values for 	
+						// Multiply calories in by the number of days
+			caloriesIn = caloriesIn*days;
+			caloriesOut = caloriesOut*days;
+			difference = difference*days;
+			kilos = kilos*days;
+			stones = stones*days;
+			
+			// Update the display
+			updateDisplay([
+							new DisplayNumericItem("days-calories-in", caloriesIn),
+							new DisplayNumericItem("days-calories-out", caloriesOut),
+							new DisplayNumericItem("days-calorie-difference", difference),
+							new DisplayNumericItem("days-calorie-difference-kgs", kilos),
+							new DisplayNumericItem("days-calorie-difference-stone", stones)
+			]);
+                        
+        
+            var daysInMonth = 30;
+            var months = 12;
+            var cumulativeDifference = 0;
+            var monthDifference = dailyDifference*daysInMonth;
+            for(var x=0;x<months;x++){
+                cumulativeDifference+=monthDifference;
+                data.setValue(x, 0, ''+(x+1));
+                data.setValue(x, 1, cumulativeDifference);
+            }
+            
+            chart.draw();
+              
+    	}
+
+// "contentready" event handler for the "pushbuttonsfrommarkup" <fieldset>
+
+		YAHOO.util.Event.onContentReady("pushbuttons", function () {
+
+				// Create Buttons using existing <input> elements as a data source
+
+				var oPushButton3 = new YAHOO.widget.Button("pushbutton", { onclick: { fn: onButtonClick } });
+
+});
+
+
+		</script>
+        <!-- end of metabolic code -->
 
 
   <!--[if lt IE 7 ]>
