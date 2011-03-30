@@ -236,11 +236,13 @@
 		data.chartOptions = chartOptions;
         
         data.addColumn('string', 'month');
-        data.addColumn('number', 'Cumulative calorie difference');
+        data.addColumn('number', 'Cumulative calorie difference (Kcals)');
+        data.addColumn('number', 'Cumulative weight difference (Kgs)');
         data.addRows(12);
         for(var x=0;x<12;x++){
             data.setValue(x, 0, ''+(x+1));
             data.setValue(x, 1, 0);
+            data.setValue(x, 2, 0);
         }
     	
 		dataSources[0] = data;
@@ -253,6 +255,7 @@
      */
     function initialiseForm(){
     
+        $("#button-example-form").change(onButtonClick);
         initialiseData();
         chart.initialise();
     }
@@ -342,6 +345,7 @@
 
             // save difference for chart.
             var dailyDifference = difference;
+            var dailyKilos = kilos;
 
 			// Update the display
 			updateDisplay([
@@ -376,11 +380,16 @@
             var daysInMonth = 30;
             var months = 12;
             var cumulativeDifference = 0;
+            var cumulativeKilos = 0;
             var monthDifference = dailyDifference*daysInMonth;
+            var monthlyKilos = dailyKilos*daysInMonth;
+            alert('dailyKilos = '+dailyKilos);
             for(var x=0;x<months;x++){
                 cumulativeDifference+=monthDifference;
+                cumulativeKilos+=monthlyKilos;
                 data.setValue(x, 0, ''+(x+1));
                 data.setValue(x, 1, cumulativeDifference);
+                data.setValue(x, 2, cumulativeKilos);
             }
             
             chart.draw();
