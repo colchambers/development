@@ -31,5 +31,5 @@ function updateVisualization(typeId) {
  * @return object
  */
 function createDefaultChartOptions(){
- return {width: defaultChartWidth, height: defaultChartHeight, is3D: defaultChartIs3D};
+    return {width: defaultChartWidth, height: defaultChartHeight, is3D: defaultChartIs3D};
 }
