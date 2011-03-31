@@ -92,6 +92,7 @@
 		</div>
         
         <div id="chart_div"></div>
+        <div id="chart_2_div"></div>
 
 		<form id="button-example-form" name="button-example-form" method="post" action="#">
 
@@ -210,15 +211,19 @@
     google.setOnLoadCallback(initialiseForm);
     
     var data = null;
-    var chart = new Visualisation_Chart();
-    var chartOptions = null;
     var visualisationType = 0;
+    var chart = new Visualisation_Chart('chart_div', visualisationType);
+    var chart_2 = new Visualisation_Chart('chart_2_div', visualisationType);
+    var chartOptions = null;
+    
     var chartElementId = 'chart_div';
+    var chart2ElementId = 'chart_2_div';
     var dataSources = [];
     var currentDataSourceId = 0;
     var defaultChartWidth = 800;
     var defaultChartHeight = 240;
     var defaultChartTitle = 'Calorie difference over time from given metabolic rate.';
+    var defaultChartTitle_2 = 'Weight difference over time from given metabolic rate.';
     var defaultChartIs3D = true;
 	
     /*
@@ -237,15 +242,35 @@
         
         data.addColumn('string', 'month');
         data.addColumn('number', 'Cumulative calorie difference (Kcals)');
+        data.addRows(12);
+        for(var x=0;x<12;x++){
+            data.setValue(x, 0, ''+(x+1));
+            data.setValue(x, 1, 0);
+        }
+        
+        chart.setData(data);
+        chart.setOptions(chartOptions);
+    	
+		dataSources[0] = data;
+        
+        // weight difference over time
+        chartOptions = chart.createDefaultOptions();
+    	chartOptions.title = defaultChartTitle_2;
+        
+        data = new google.visualization.DataTable(dataSource);
+    	data.chartOptions = chartOptions;
+        
+        data.addColumn('string', 'month');
         data.addColumn('number', 'Cumulative weight difference (Kgs)');
         data.addRows(12);
         for(var x=0;x<12;x++){
             data.setValue(x, 0, ''+(x+1));
             data.setValue(x, 1, 0);
-            data.setValue(x, 2, 0);
         }
-    	
-		dataSources[0] = data;
+        
+        chart_2.setData(data);
+        chart_2.setOptions(chartOptions);
+        
 		
     }
     
@@ -258,6 +283,7 @@
         $("#button-example-form").change(onButtonClick);
         initialiseData();
         chart.initialise();
+        chart_2.initialise();
     }
     
     </script>
@@ -383,16 +409,21 @@
             var cumulativeKilos = 0;
             var monthDifference = dailyDifference*daysInMonth;
             var monthlyKilos = dailyKilos*daysInMonth;
-            alert('dailyKilos = '+dailyKilos);
+            var data = chart.getData();
+            var data_2 = chart_2.getData();
             for(var x=0;x<months;x++){
                 cumulativeDifference+=monthDifference;
                 cumulativeKilos+=monthlyKilos;
                 data.setValue(x, 0, ''+(x+1));
                 data.setValue(x, 1, cumulativeDifference);
-                data.setValue(x, 2, cumulativeKilos);
+                
+                data_2.setValue(x, 0, ''+(x+1));
+                data_2.setValue(x, 1, cumulativeKilos);
             }
-            
+            chart.setData(data);
             chart.draw();
+            chart_2.setData(data_2);
+            chart_2.draw();
               
     	}
 

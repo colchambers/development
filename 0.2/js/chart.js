@@ -1,9 +1,13 @@
 /*
  * refactored from embeddable chart. Defines basic chart functions. Needs refactoring to a class. 
  */
-function Visualisation_Chart(){
+function Visualisation_Chart(elementId, typeId){
     
-    var chart = null;
+    this.chart = null;
+    this.elementId = elementId;
+    this.data = null;
+    this.options = null;
+    this.typeId = typeId;
     
     /*
      * Create a default chartOptions object. Draw a chart using chartOptions and data objects
@@ -11,22 +15,22 @@ function Visualisation_Chart(){
      */
     this.initialise = initialise;
     function initialise() {
-        this.draw(visualisationType);
+        this.draw();
     }
     
     this.createChart = createChart;
     function createChart(elementId, typeId){
-        return eval('new google.visualization.'+chartTypes[parseInt(typeId)].method+'(document.getElementById(elementId))');
+        return eval('new google.visualization.'+chartTypes[parseInt(this.typeId)].method+'(document.getElementById(elementId))');
     }
     
     this.draw = draw;
-    function draw(typeId) {
+    function draw() {
     
-        if(!chart){
+        if(!this.chart){
             // Create and draw the visualization.
-            chart = this.createChart(chartElementId, typeId); //new google.visualization.PieChart(document.getElementById('chart_div'))
+            this.chart = this.createChart(this.elementId, this.typeId); //new google.visualization.PieChart(document.getElementById('chart_div'))
         }
-        chart.draw(data, chartOptions);
+        this.chart.draw(this.data, this.options);
     }
     
     /*
@@ -37,6 +41,45 @@ function Visualisation_Chart(){
     function createDefaultOptions(){
         return {width: defaultChartWidth, height: defaultChartHeight, is3D: defaultChartIs3D};
     }
+    
+    
+    /*
+     * Set data object
+     * @return object
+     */
+     this.getData = getData;
+     function getData(){
+         return this.data;
+     }
+     
+    /*
+     * Set data object
+     * @param object data
+     * @return void
+     */
+     this.setData = setData;
+     function setData(data){
+         this.data = data;
+     }
+     
+     /*
+     * Set data object
+     * @return object
+     */
+     this.getOptions = getOptions;
+     function getOptions(){
+         return this.options;
+     }
+     
+    /*
+     * Set data object
+     * @param object data
+     * @return void
+     */
+     this.setOptions = setOptions;
+     function setOptions(options){
+         this.options = options;
+     }
 }
 
 function VisualisationType (type, title, method){
