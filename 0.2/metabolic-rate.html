@@ -71,6 +71,9 @@
 					width:100px;
 		    }
 
+            #dashboard {
+                float: left;
+            }
 		</style>
 		
 		
@@ -90,9 +93,10 @@
 		<div class="exampleIntro">
 			<p>This example demonstrates how to calculate metabolic rate.</p>
 		</div>
-        
-        <div id="chart_div"></div>
-        <div id="chart_2_div"></div>
+        <div id="dashboard">
+            <div id="chart_div"></div>
+            <div id="chart_2_div"></div>
+        </div>
 
 		<form id="button-example-form" name="button-example-form" method="post" action="#">
 
@@ -220,7 +224,7 @@
     var chart2ElementId = 'chart_2_div';
     var dataSources = [];
     var currentDataSourceId = 0;
-    var defaultChartWidth = 800;
+    var defaultChartWidth = 400;
     var defaultChartHeight = 240;
     var defaultChartTitle = 'Calorie difference over time from given metabolic rate.';
     var defaultChartTitle_2 = 'Weight difference over time from given metabolic rate.';
