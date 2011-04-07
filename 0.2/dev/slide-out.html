@@ -7,6 +7,20 @@
   <script type="text/javascript" src="../js/display.js"></script>
   
   <style type="text/css">
+  
+  ul{ margin:0 10px; padding: 0; position:absolute; top:0; z-index:9; }
+ul li{ padding: 0px; margin:0 1px 0 0; list-style:none; display:inline; float:left; }
+ul li a{ display: inline-block; width: 150px; padding:0 0 5px 0; white-space:nowrap; text-align:center; text-decoration:none; color:#E4E4E4; text-transform:lowercase }
+ul li a:hover { color:white; }
+ul li a span { display:inline-block; height:0px; overflow:hidden; }
+ul li a strong { font-size:14px; text-transform:uppercase; padding-top:5px; display:block;}
+ul li a.blue { background-color: #005; }
+ul li a.red { background-color: #500 }
+ul li a.orange { background-color: #322 }
+ul li a.green { background-color: #050 }
+ul li a.black { background-color: #000 }
+
+
   div { margin: 0px; width: 100px; height: 80px; background: green; border: 1px solid black; position: relative; }
 </style>
 
@@ -20,6 +34,40 @@
     //  appendSlideElement()
     //);
     
+    $(function(){
+    /**
+	*	Jquery Horizontal Slide Navigation
+	*	webmaster@chazzuka.com
+	*	http://www.chazzuka.com
+	*	Nov 13th 2008 @ Denpasar, Bali Paradise Island
+	**/
+	//@ active scroll
+    var _active = null;
+	//@ max expand in pixel
+    var _hmax = 80;
+	//@ min height in pixel
+    var _hmin = 0;
+	//@ loop through matches selector
+    $("ul#nav li a").each(function(){
+		//@ in/out handler
+		$(this).hover(
+			//@ hover
+			function(){
+				//@ child span expand
+				$(this).find('span').animate({height: _hmax+"px"}, {queue:false, duration:300, easing:'easeOutBack'});
+				//@ set active to current hovered
+				_active = $(this);
+			},
+			//@ out
+			function() {
+				//@ slide back
+				$(_active).find('span').animate({height: _hmin+"px"}, {queue:false, duration:300,easing:'easeInBack'});
+			}
+		);
+	});
+});
+
+    
     appendSlideElement("div");
     
     $("#toggle").click(function () {
@@ -29,6 +77,14 @@
   </script>
 </head>
 <body style="font-size:62.5%;">
+  <ul id="nav">
+       <li><a href="#" class="blue"><span></span><strong>Bali Web Design</strong>Bali Web Design Services</a></li>
+    <li><a href="#" class="black"><span></span><strong>Web Services</strong>Design Development &amp; SEO</a></li>
+    <li><a href="#" class="red"><span></span><strong>Web Developer</strong>Freelance Web Developer</a></li>
+    <li><a href="#" class="green"><span></span><strong>Web Portfolio</strong>Web Developer Portfolio</a></li>
+    <li><a href="#" class="orange"><span></span><strong>Web 2.0</strong>Web 2.0 Resources Blog</a></li>
+</ul>
+  
   <div></div>
   
   <input id="toggle" type="submit" value="toggle"></input>
