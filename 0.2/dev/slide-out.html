@@ -21,7 +21,7 @@ ul li a.green { background-color: #050 }
 ul li a.black { background-color: #000 }
 
 
-  div { margin: 0px; width: 100px; height: 80px; background: green; border: 1px solid black; position: relative; }
+  #slide-panel { margin: 0px; width: 100px; height: 80px; background: green; border: 1px solid black; position: relative; }
 </style>
 
   <script>
@@ -68,25 +68,25 @@ ul li a.black { background-color: #000 }
 });
 
     
-    appendSlideElement("div");
+    appendSlideElement("#slide-panel");
     
     $("#toggle").click(function () {
-      slideElement($("div"));
+      slideElement($("#slide-panel"));
     });
   });
   </script>
 </head>
 <body style="font-size:62.5%;">
-  <ul id="nav">
+  <!--<ul id="nav">
        <li><a href="#" class="blue"><span></span><strong>Bali Web Design</strong>Bali Web Design Services</a></li>
     <li><a href="#" class="black"><span></span><strong>Web Services</strong>Design Development &amp; SEO</a></li>
     <li><a href="#" class="red"><span></span><strong>Web Developer</strong>Freelance Web Developer</a></li>
     <li><a href="#" class="green"><span></span><strong>Web Portfolio</strong>Web Developer Portfolio</a></li>
     <li><a href="#" class="orange"><span></span><strong>Web 2.0</strong>Web 2.0 Resources Blog</a></li>
-</ul>
+</ul>-->
   
-  <div></div>
+  <div id="slide-panel-root"><input id="toggle" type="submit" value="toggle"></input><div id="slide-panel"></div></div>
   
-  <input id="toggle" type="submit" value="toggle"></input>
+  
 </body>
 </html>
