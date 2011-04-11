@@ -76,39 +76,69 @@
     <div id="toppanel">
         <div id="panel">
     		<div class="content clearfix">
+    		    <form id="button-example-form" name="button-example-form" method="post" action="#">
+
+		
+            <div class="left">
+    			 <fieldset id="pushbuttons">
+    	        <legend>Push Buttons</legend>
+		            <div>
+		                <input type="button" id="pushbutton" name="button" value="Calculate">
+		            </div>
+		        <fieldset id="calories">
+		            <legend>Calories</legend>
+		            <div>
+						Calories In <input class="numeric medium" type="text" id="calories-in" name="calories-in" value="2500" />    
+						Calories Out <input class="numeric medium" type="text" id="calories-out" name="calories-out" value="0" />
+		            </div>
+		            <div>
+						Calorie Difference <input class="numeric medium" type="text" id="calorie-difference" name="calorie-difference" value="0" />
+						(Kgs) <input class="numeric medium" type="text" id="calorie-difference-kgs" name="calorie-difference-kgs" value="0" />
+						(Stone) <input class="numeric medium" type="text" id="calorie-difference-stone" name="calorie-difference-stone" value="0" />
+		            </div>
+		        </fieldset>
+                </div>
     			<div class="left">
-    				<h1>Welcome to Web-Kreation</h1>
-    				<h2>Sliding login panel Demo with jQuery</h2>		
-    				<p class="grey">You can put anything you want in this sliding panel: videos, audio, images, forms... The only limit is your imagination!</p>
-    				<h2>Download</h2>
-    				<p class="grey">To download this script go back to <a href="http://web-kreation.com/index.php/tutorials/nice-clean-sliding-login-panel-built-with-jquery" title="Download">article &raquo;</a></p>
-    			</div>
-    			<div class="left">
-    				<!-- Login Form -->
-    				<form class="clearfix" action="#" method="post">
-    					<h1>Member Login</h1>
-    					<label class="grey" for="log">Username:</label>
-    					<input class="field" type="text" name="log" id="log" value="" size="23" />
-    					<label class="grey" for="pwd">Password:</label>
-    					<input class="field" type="password" name="pwd" id="pwd" size="23" />
-    	            	<label><input name="rememberme" id="rememberme" type="checkbox" checked="checked" value="forever" /> &nbsp;Remember me</label>
-            			<div class="clear"></div>
-    					<input type="submit" name="submit" value="Login" class="bt_login" />
-    					<a class="lost-pwd" href="#">Lost your password?</a>
-    				</form>
+    				<fieldset id="caloriesOverTime">
+						<legend>Calories Over Time</legend>
+						<div>
+								Days <input class="numeric medium" type="text" id="days" name="days" value="365" />
+						</div> 
+						<div>
+							Calories In <input class="numeric long" type="text" id="days-calories-in" name="days-calories-in" value="0" />    
+							Calories Out <input class="numeric long" type="text" id="days-calories-out" name="days-calories-out" value="0" />
+						</div>
+						<div>
+							Calorie Difference <input class="numeric long" type="text" id="days-calorie-difference" name="days-calorie-difference" value="0" />
+							(Kgs) <input class="numeric medium" type="text" id="days-calorie-difference-kgs" name="days-calorie-difference-kgs" value="0" />
+							(Stone) <input class="numeric medium" type="text" id="days-calorie-difference-stone" name="days-calorie-difference-stone" value="0" />
+						</div>
+		            </fieldset>
     			</div>
     			<div class="left right">			
-    				<!-- Register Form -->
-    				<form action="#" method="post">
-    					<h1>Not a member yet? Sign Up!</h1>				
-    					<label class="grey" for="signup">Username:</label>
-    					<input class="field" type="text" name="signup" id="signup" value="" size="23" />
-    					<label class="grey" for="email">Email:</label>
-    					<input class="field" type="text" name="email" id="email" size="23" />
-    					<label>A password will be e-mailed to you.</label>
-    					<input type="submit" name="submit" value="Register" class="bt_register" />
-    				</form>
+    			     <fieldset id="metabolicRate">
+
+    	            <legend>Metabolic Rate</legend>
+		            <div>
+						Weight (kg)<input class="numeric medium" type="text" id="weight" name="weight" value="70" />
+						Weight (stone)<input class="numeric medium" type="text" id="weight-stone" name="weight-stone" value="" />
+		            </div>
+		            <div>
+						Body Fat Percentage <input class="numeric medium" type="text" id="percent-fat" name="percent-fat" value="25" />
+						Lean Body Mass <input class="numeric medium" type="text" id="lbm" name="lbm" value="0" />
+		            </div>
+		            <div>
+						Basal Metabolic Rate <input class="numeric medium" type="text" id="bmr" name="bmr" value="0" />
+						Thermic Effect of Food<input class="numeric medium" type="text" id="tef" name="tef" value="0" />
+		            </div>
+		            <div>
+									Exercise Duration (mins) <input class="numeric medium" type="text" id="exercise-duration" name="exercise-duration" value="30" />
+									Exercise intensity (1-3) <input class="numeric medium" type="text" id="exercise-intensity" name="exercise-intensity" value="2" />
+									Calories from Exercise <input class="numeric medium" type="text" id="exercise-calories" name="exercise-calories" value="0" />
+		            </div>		            
+		        </fieldset>
     			</div>
+                </form>
     		</div>
     </div> <!-- /login -->	
     
@@ -144,77 +174,7 @@
             <div id="chart_2_div"></div>
         </div>
 
-		<form id="button-example-form" name="button-example-form" method="post" action="#">
-
-		    <fieldset id="pushbuttons">
-		        <legend>Push Buttons</legend>
-
-		            <div>
-		                <input type="button" id="pushbutton" name="button" value="Calculate">
-		            </div>
-		            
-		        <fieldset id="calories">
-		            <legend>Calories</legend>
-
-
-		            <div>
-									Calories In <input class="numeric medium" type="text" id="calories-in" name="calories-in" value="2500" />    
-									Calories Out <input class="numeric medium" type="text" id="calories-out" name="calories-out" value="0" />
-		            </div>
 	
-		            
-		            <div>
-										Calorie Difference <input class="numeric medium" type="text" id="calorie-difference" name="calorie-difference" value="0" />
-										(Kgs) <input class="numeric medium" type="text" id="calorie-difference-kgs" name="calorie-difference-kgs" value="0" />
-										(Stone) <input class="numeric medium" type="text" id="calorie-difference-stone" name="calorie-difference-stone" value="0" />
-		            </div>
-
-		        </fieldset>
-		        <fieldset id="caloriesOverTime">
-							<legend>Calories Over Time</legend>
-							<div>
-									Days <input class="numeric medium" type="text" id="days" name="days" value="365" />
-							</div> 
-							<div>
-								Calories In <input class="numeric long" type="text" id="days-calories-in" name="days-calories-in" value="0" />    
-								Calories Out <input class="numeric long" type="text" id="days-calories-out" name="days-calories-out" value="0" />
-							</div>
-
-
-							<div>
-									Calorie Difference <input class="numeric long" type="text" id="days-calorie-difference" name="days-calorie-difference" value="0" />
-									(Kgs) <input class="numeric medium" type="text" id="days-calorie-difference-kgs" name="days-calorie-difference-kgs" value="0" />
-									(Stone) <input class="numeric medium" type="text" id="days-calorie-difference-stone" name="days-calorie-difference-stone" value="0" />
-							</div>
-           
-						
-		        </fieldset>
-
-		        <fieldset id="metabolicRate">
-
-		            <legend>Metabolic Rate</legend>
-		            <div>
-						Weight (kg)<input class="numeric medium" type="text" id="weight" name="weight" value="70" />
-						Weight (stone)<input class="numeric medium" type="text" id="weight-stone" name="weight-stone" value="" />
-		            </div>
-		            <div>
-						Body Fat Percentage <input class="numeric medium" type="text" id="percent-fat" name="percent-fat" value="25" />
-						Lean Body Mass <input class="numeric medium" type="text" id="lbm" name="lbm" value="0" />
-		            </div>
-		            <div>
-									Basal Metabolic Rate <input class="numeric medium" type="text" id="bmr" name="bmr" value="0" />
-									Thermic Effect of Food<input class="numeric medium" type="text" id="tef" name="tef" value="0" />
-		            </div>
-		            <div>
-									Exercise Duration (mins) <input class="numeric medium" type="text" id="exercise-duration" name="exercise-duration" value="30" />
-									Exercise intensity (1-3) <input class="numeric medium" type="text" id="exercise-intensity" name="exercise-intensity" value="2" />
-									Calories from Exercise <input class="numeric medium" type="text" id="exercise-calories" name="exercise-calories" value="0" />
-		            </div>		            
-		        </fieldset>
-
-		    </fieldset>
-
-		</form>
 
 		<h2>References</h2>
 		<p>
