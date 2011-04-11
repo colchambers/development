@@ -15,86 +15,13 @@
 	<!--[if lte IE 6]>
 		<script type="text/javascript" src="js/pngfix/supersleight-min.js"></script>
 	<![endif]-->
-	<script src="http://jqueryui.com/jquery-1.5.1.js"></script> 
 	<script src="http://jqueryui.com/ui/jquery.ui.core.js"></script> 
 	<script src="http://jqueryui.com/ui/jquery.ui.widget.js"></script> 
 	<script src="http://jqueryui.com/ui/jquery.ui.tabs.js"></script> 
+    <script type="text/javascript" src="http://jqueryui.com/themeroller/themeswitchertool/"></script>
     
-    
-	 
-  <style type="text/css">
-  
-  #slide-panel-root {
-      position: relative;
-      z-index: 1;
-      }
-  #slide-panel { 
-      display: block;
-      margin: 0px; 
-      width: 100px; 
-      height: 80px; 
-      background: green; 
-      border: 1px solid black; 
-      position: relative; 
-  }
-  #slide-panel-header {
-      display: block;
-            padding: 10px;
-      margin: 10px;
-  }
-  #toggle-2 {
-      position: absolute;
-      display: block;
-
-      }
-      
-.black-border {
-    border: 1px #000 solid;
-}
-.block  {
-    display: block;
-}
-    
-/* example date */      
-  .example-date {
-background-color: #987;
-float: right;
-position: relative;
-padding: 45px 5px 0px;
-margin-left: 10px;
-}
-
-.example-date .example-day {
-font-size: 45px;
-line-height: 45px;
-position: absolute;
-left: 5px;
-top: 0px;
-}
-
-.example-date .example-year {
-display: block;
-position: absolute;
-right: 0px;
-top: 15px;
--webkit-transform: rotate(-90deg);
--moz-transform: rotate(-90deg);
-}
-
-.example-date .example-month {
-text-transform: uppercase;
-font-size: 25px;
-}
-</style>
-
   <script>
   $(document).ready(function() {
-    appendSlideElement("#slide-panel");
-    
-    $("#toggle").click(function () {
-      slideElement($("#slide-panel"));
-    });
-    
     // Expand Panel
     $("#open").click(function(){
 		$("div#panel").slideDown("slow");
@@ -128,62 +55,57 @@ font-size: 25px;
   <!-- Panel -->
 <div id="toppanel">
     <div id="panel">
-		
         <div id="tabs"> 
-    <ul> 
-		<li><a href="#tabs-1">Nunc tincidunt</a></li> 
-		<li><a href="#tabs-2">Proin dolor</a></li> 
-		<li><a href="#tabs-3">Aenean lacinia</a></li> 
-	</ul> 
-	<div id="tabs-1"> 
-		<p>Proin elit arcu, rutrum commodo, vehicula tempus, commodo a, risus. Curabitur nec arcu. Donec sollicitudin mi sit amet mauris. Nam elementum quam ullamcorper ante. Etiam aliquet massa et lorem. Mauris dapibus lacus auctor risus. Aenean tempor ullamcorper leo. Vivamus sed magna quis ligula eleifend adipiscing. Duis orci. Aliquam sodales tortor vitae ipsum. Aliquam nulla. Duis aliquam molestie erat. Ut et mauris vel pede varius sollicitudin. Sed ut dolor nec orci tincidunt interdum. Phasellus ipsum. Nunc tristique tempus lectus.</p> 
-	</div> 
-	<div id="tabs-2"> 
-		<p>Morbi tincidunt, dui sit amet facilisis feugiat, odio metus gravida ante, ut pharetra massa metus id nunc. Duis scelerisque molestie turpis. Sed fringilla, massa eget luctus malesuada, metus eros molestie lectus, ut tempus eros massa ut dolor. Aenean aliquet fringilla sem. Suspendisse sed ligula in ligula suscipit aliquam. Praesent in eros vestibulum mi adipiscing adipiscing. Morbi facilisis. Curabitur ornare consequat nunc. Aenean vel metus. Ut posuere viverra nulla. Aliquam erat volutpat. Pellentesque convallis. Maecenas feugiat, tellus pellentesque pretium posuere, felis lorem euismod felis, eu ornare leo nisi vel felis. Mauris consectetur tortor et purus.</p> 
-	</div> 
-	<div id="tabs-3"> 
-		<p>Mauris eleifend est et turpis. Duis id erat. Suspendisse potenti. Aliquam vulputate, pede vel vehicula accumsan, mi neque rutrum erat, eu congue orci lorem eget lorem. Vestibulum non ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce sodales. Quisque eu urna vel enim commodo pellentesque. Praesent eu risus hendrerit ligula tempus pretium. Curabitur lorem enim, pretium nec, feugiat nec, luctus a, lacus.</p> 
-		<p>Duis cursus. Maecenas ligula eros, blandit nec, pharetra at, semper at, magna. Nullam ac lacus. Nulla facilisi. Praesent viverra justo vitae neque. Praesent blandit adipiscing velit. Suspendisse potenti. Donec mattis, pede vel pharetra blandit, magna ligula faucibus eros, id euismod lacus dolor eget odio. Nam scelerisque. Donec non libero sed nulla mattis commodo. Ut sagittis. Donec nisi lectus, feugiat porttitor, tempor ac, tempor vitae, pede. Aenean vehicula velit eu tellus interdum rutrum. Maecenas commodo. Pellentesque nec elit. Fusce in lacus. Vivamus a libero vitae lectus hendrerit hendrerit.</p> 
-	</div> 
-
-
-        <div class="content clearfix">
-			<div class="left">
-				<h1>Welcome to Web-Kreation</h1>
-				<h2>Sliding login panel Demo with jQuery</h2>		
-				<p class="grey">You can put anything you want in this sliding panel: videos, audio, images, forms... The only limit is your imagination!</p>
-				<h2>Download</h2>
-				<p class="grey">To download this script go back to <a href="http://web-kreation.com/index.php/tutorials/nice-clean-sliding-login-panel-built-with-jquery" title="Download">article &raquo;</a></p>
-			</div>
-			<div class="left">
-				<!-- Login Form -->
-				<form class="clearfix" action="#" method="post">
-					<h1>Member Login</h1>
-					<label class="grey" for="log">Username:</label>
-					<input class="field" type="text" name="log" id="log" value="" size="23" />
-					<label class="grey" for="pwd">Password:</label>
-					<input class="field" type="password" name="pwd" id="pwd" size="23" />
-	            	<label><input name="rememberme" id="rememberme" type="checkbox" checked="checked" value="forever" /> &nbsp;Remember me</label>
-        			<div class="clear"></div>
-					<input type="submit" name="submit" value="Login" class="bt_login" />
-					<a class="lost-pwd" href="#">Lost your password?</a>
-				</form>
-			</div>
-			<div class="left right">			
-				<!-- Register Form -->
-				<form action="#" method="post">
-					<h1>Not a member yet? Sign Up!</h1>				
-					<label class="grey" for="signup">Username:</label>
-					<input class="field" type="text" name="signup" id="signup" value="" size="23" />
-					<label class="grey" for="email">Email:</label>
-					<input class="field" type="text" name="email" id="email" size="23" />
-					<label>A password will be e-mailed to you.</label>
-					<input type="submit" name="submit" value="Register" class="bt_register" />
-				</form>
-			</div>
-		</div>
+            <ul> 
+        		<li><a href="#tabs-1">Nunc tincidunt</a></li> 
+        		<li><a href="#tabs-2">Proin dolor</a></li> 
+        		<li><a href="#tabs-3">Aenean lacinia</a></li> 
+        	</ul> 
+        	<div id="tabs-1"> 
+                <div class="content clearfix">
+        			<div class="left">
+        				<h1>Welcome to Web-Kreation</h1>
+        				<h2>Sliding login panel Demo with jQuery</h2>		
+        				<p class="grey">You can put anything you want in this sliding panel: videos, audio, images, forms... The only limit is your imagination!</p>
+        				<h2>Download</h2>
+        				<p class="grey">To download this script go back to <a href="http://web-kreation.com/index.php/tutorials/nice-clean-sliding-login-panel-built-with-jquery" title="Download">article &raquo;</a></p>
+        			</div>
+        			<div class="left">
+        				<!-- Login Form -->
+        				<form class="clearfix" action="#" method="post">
+        					<h1>Member Login</h1>
+        					<label class="grey" for="log">Username:</label>
+        					<input class="field" type="text" name="log" id="log" value="" size="23" />
+        					<label class="grey" for="pwd">Password:</label>
+        					<input class="field" type="password" name="pwd" id="pwd" size="23" />
+        	            	<label><input name="rememberme" id="rememberme" type="checkbox" checked="checked" value="forever" /> &nbsp;Remember me</label>
+                			<div class="clear"></div>
+        					<input type="submit" name="submit" value="Login" class="bt_login" />
+        					<a class="lost-pwd" href="#">Lost your password?</a>
+        				</form>
+        			</div>
+        			<div class="left right">			
+        				<!-- Register Form -->
+        				<form action="#" method="post">
+        					<h1>Not a member yet? Sign Up!</h1>				
+        					<label class="grey" for="signup">Username:</label>
+        					<input class="field" type="text" name="signup" id="signup" value="" size="23" />
+        					<label class="grey" for="email">Email:</label>
+        					<input class="field" type="text" name="email" id="email" size="23" />
+        					<label>A password will be e-mailed to you.</label>
+        					<input type="submit" name="submit" value="Register" class="bt_register" />
+        				</form>
+        			</div>
+        		</div>
+            </div> 
+        	<div id="tabs-2"> 
+        		<p>Morbi tincidunt, dui sit amet facilisis feugiat, odio metus gravida ante, ut pharetra massa metus id nunc. Duis scelerisque molestie turpis. Sed fringilla, massa eget luctus malesuada, metus eros molestie lectus, ut tempus eros massa ut dolor. Aenean aliquet fringilla sem. Suspendisse sed ligula in ligula suscipit aliquam. Praesent in eros vestibulum mi adipiscing adipiscing. Morbi facilisis. Curabitur ornare consequat nunc. Aenean vel metus. Ut posuere viverra nulla. Aliquam erat volutpat. Pellentesque convallis. Maecenas feugiat, tellus pellentesque pretium posuere, felis lorem euismod felis, eu ornare leo nisi vel felis. Mauris consectetur tortor et purus.</p> 
+        	</div> 
+        	<div id="tabs-3"> 
+        		<div id="switcher"></div>
+        	</div>
         </div>
-</div> <!-- /login -->	
+    </div> <!-- /login -->	
 
 	<!-- The tab on top -->	
 	<div class="tab">
@@ -200,23 +122,5 @@ font-size: 25px;
 	</div> <!-- / top -->
 	
 </div> <!--panel -->
-
-  
-  
-  <div id="slide-panel-root"><div id="slide-panel-header" class="black-border"><a href="#" id="toggle-2">toggle</a></div><div id="slide-panel"></div></div>
-  
-  <div class="block">
-  <div class="example-date">
-    <span class="example-day">31</span> 
-    <span class="example-month">July</span> 
-    <span class="example-year">2009</span>
-  </div>
-  </div>
-  
-
-<script type="text/javascript"
-  src="http://jqueryui.com/themeroller/themeswitchertool/">
-</script>
-<div id="switcher"></div>
 </body>
 </html>
