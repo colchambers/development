@@ -34,6 +34,8 @@
   <link rel="stylesheet" type="text/css" href="style/yui-style.css" />
     	<link rel="stylesheet" type="text/css" href="../yui/build/fonts/fonts-min.css" />
 		<link rel="stylesheet" type="text/css" href="../yui/build/button/assets/skins/sam/button.css" />
+            <link type="text/css" rel="stylesheet" href="http://yui.yahooapis.com/3.3.0/build/cssfonts/fonts-min.css" /> 
+    <script type="text/javascript" src="http://yui.yahooapis.com/3.3.0/build/yui/yui-min.js"></script>
 
         <!--begin custom header content for this example-->
     	<style type="text/css">
@@ -66,12 +68,9 @@
                 float: left;
             }
 		</style>
-		
-		
-
 </head>
 
-<body>
+<body class="yui3-skin-sam  yui-skin-sam">
     
     <div id="toppanel">
         <div id="panel">
@@ -213,6 +212,12 @@
   <script type="text/javascript" src="js/form.js"></script>
   <script type="text/javascript" src="js/io.js"></script>
  <!-- End scripts for chart -->
+ 
+ <!-- script for debugging -->
+ <script type="text/javascript" src="js/analyse.js"></script>
+ <!-- end script for debugging -->
+ 
+ <script type="text/javascript" src="../yui/build/yuiloader/yuiloader.js"></script>
 
   <!-- scripts concatenated and minified via ant build script-->
   <script src="js/plugins.js"></script>
@@ -222,6 +227,11 @@
   <!-- start of chart -->
    <script type="text/javascript"> 
   
+  var Y = YUI();
+
+    // create a debugging console
+    initialiseConsole();
+    
     var chartTypes = [];
     
     chartTypes[0] = new VisualisationType('columnchart', 'Column chart', 'ColumnChart')
@@ -244,13 +254,15 @@
     var defaultChartTitle = 'Calorie difference over time from given metabolic rate.';
     var defaultChartTitle_2 = 'Weight difference over time from given metabolic rate.';
     var defaultChartIs3D = true;
-	
+
+
     /*
      * Create default chart and data values
      * @return void
      */
     function initialiseData(){
         
+        debug('initialise data');
         // calorie difference over time
 		chartOptions = chart.createDefaultOptions();
 		chartOptions.title = defaultChartTitle;
@@ -305,12 +317,6 @@
         chart_2.initialise();
     }
     
-    </script>
-    <!-- end of chart -->
-    
-    <!-- start of metabolic code -->
-    <script type="text/javascript" src="../yui/build/yuiloader/yuiloader.js"></script>
-    	<script type="text/javascript">
 		var loader = new YAHOO.util.YUILoader();
 		/*loader.insert({
 		    require: ['fonts','dragdrop','logger'],
@@ -355,7 +361,6 @@
 			var percentFat = getElementValue("percent-fat");
 
 			var caloriesIn = getElementValue("calories-in");
-
 
 			var lbm = metabolism.calculateLeanBodyMass(weight, percentFat);
 			var bmr = metabolism.calculateMetabolicRate(lbm);
@@ -456,7 +461,7 @@
 
 });
 
-
+       debug( "And this is #4 YUI", 'warn' );
 		</script>
         <!-- end of metabolic code -->
 

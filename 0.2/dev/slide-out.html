@@ -20,8 +20,30 @@
 	<script src="http://jqueryui.com/ui/jquery.ui.tabs.js"></script> 
     <script type="text/javascript" src="http://jqueryui.com/themeroller/themeswitchertool/"></script>
     
+    <link type="text/css" rel="stylesheet" href="http://yui.yahooapis.com/3.3.0/build/cssfonts/fonts-min.css" /> 
+<script type="text/javascript" src="http://yui.yahooapis.com/3.3.0/build/yui/yui-min.js"></script>
+    
   <script>
   $(document).ready(function() {
+    // Create a separate YUI instance to listen to all instances' logging
+YUI({ filter: 'raw' }).use("console", "dd-plugin", function (Y) {
+ 
+    // Configure the Console's logSource to Y.Global to make it universal
+    new Y.Console({
+        logSource: Y.Global,
+        style: 'block',
+        newestOnTop: false,
+        width: "250px"
+    }).plug(Y.Plugin.Drag, { handles: ['.yui3-console-hd'] }).render("#console");
+ 
+});
+    
+    YUI({ filter: 'raw' }).use("node", function (Y) {
+ 
+        Y.log( "And this is #1 YUI" );
+ 
+});
+    
     // Expand Panel
     $("#open").click(function(){
 		$("div#panel").slideDown("slow");
@@ -45,10 +67,19 @@
     // theme switcher
     $('#switcher').themeswitcher();
     
+    
+
+// Create a third YUI instance
+YUI({ filter: 'raw' }).use("node", function (Y) {
+ 
+        Y.log( "And this is #4 YUI" );
+ 
+});
+    
   });
   </script>
 </head>
-<body >
+<body class="yui3-skin-sam  yui-skin-sam">
   
   
   
@@ -122,5 +153,6 @@
 	</div> <!-- / top -->
 	
 </div> <!--panel -->
+<div id="console" style="clearfix"></div>
 </body>
 </html>
