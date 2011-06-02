@@ -230,7 +230,7 @@
   var Y = YUI();
 
     // create a debugging console
-    initialiseConsole();
+    //initialiseConsole();
     
     var chartTypes = [];
     
@@ -262,7 +262,7 @@
      */
     function initialiseData(){
         
-        debug('initialise data');
+        Out.append('initialise data');
         // calorie difference over time
 		chartOptions = chart.createDefaultOptions();
 		chartOptions.title = defaultChartTitle;
@@ -461,7 +461,7 @@
 
 });
 
-       debug( "And this is #4 YUI", 'warn' );
+       Out.append( "And this is #4 YUI", 'warn' );
 		</script>
         <!-- end of metabolic code -->
 
