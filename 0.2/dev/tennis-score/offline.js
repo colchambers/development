@@ -2,7 +2,27 @@
 jQuery(document).ready(function($) {
 
     // form data saving
-	$("#mainform").submit(lib.Save);
+    $("#mainform").submit(lib.Save);
+    
+   $("#p1scored").click(
+       function (){
+        Score.increment(1)
+       }
+   );
+   
+   $("#p2scored").click(
+       function (){
+        Score.increment(2)
+       }
+   );
+   
+   $("#reset").click(
+       function (){
+        Score.reset()
+       }
+   );
+   $("#p-2-game-score").val("15");
+   $("#p2scored").text("15");
 
 	// online/offline event handler
 	if (window.sessionStorage) {
@@ -86,3 +106,60 @@ lib.Load = function() {
 	}
 
 };
+
+// online/offline library
+var Score = Score || {};
+Score.init = function(){
+    this.p1 = {}
+    this.p1.gameScore = 0;
+    this.p1.field = "p-1-game-score";
+    this.p1.button = "p1scored";
+    this.p2 = {}
+    this.p2.gameScore = 0;
+    this.p2.field = "p-2-game-score";
+    this.p2.button = "p2scored";
+}
+Score.init();
+Score.increment = function(playerId){
+    //alert("playerId = "+playerId);
+    var player = this.p1;
+    var opponent = this.p2;
+    if(playerId==2){
+        player = this.p2;
+        opponent = this.p1;
+    }
+    
+    switch(player.gameScore){
+        case 15:
+            player.gameScore = 30;
+            break;
+        case 30:
+            player.gameScore = 40;
+            break;
+        case 40:
+            break;
+        default: // 0
+            player.gameScore = 15;
+    }
+    //alert("player.gameScore = "+player.gameScore);
+    //alert("player.field = "+player.field);
+   // alert("player.button = "+player.button);
+    
+    this.updateScore();
+}
+
+Score.updateScore = function(){
+     var players = [this.p1, this.p2]
+    var player = null;
+    for(var i in players){
+        player = players[i];
+        $("#"+player.field).val(player.gameScore+"");
+        $("#"+player.button).text(player.gameScore);
+    }
+}
+
+Score.reset = function(){
+    this.p1.gameScore = 0;
+    this.p2.gameScore = 0;
+    this.updateScore();
+}
