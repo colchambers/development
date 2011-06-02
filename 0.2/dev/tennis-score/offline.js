@@ -72,7 +72,7 @@ lib.Load = function() {
 	if (lib.Net.Online() || !window.sessionStorage) {
 	
 		// load data online
-		alert("Currently online:\ndata could be loaded from server.");
+		//alert("Currently online:\ndata could be loaded from server.");
 	
 	}
 	else {
