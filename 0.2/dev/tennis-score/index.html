@@ -2,30 +2,81 @@
 <html manifest="offline.manifest">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title>Offline test page</title>
+<title>Tennis Scoreboard</title>
 <link rel="stylesheet" type="text/css" media="all" href="styles.css" />
+
+<style>
+
+.button {
+    background-color: #FF99FF;
+    border: 1px solid #FF22FF;
+    border-radius: 15px 15px 15px 15px;
+    display: block;
+    float: left;
+    font-size: 40px;
+    height: 60px;
+    margin: 10px;
+    padding: 10px;
+    width: 60px;
+}
+
+.reset {
+    border-radius: 7px 7px 7px 7px;
+    font-size: 15px;
+    height: 30px;
+    width: 80px;
+}
+
+.scoreboard {
+    background-color: #FF99FF;
+    border: 1px solid #FF22FF;
+}
+
+.scoreboard input {
+    font-size: 20px;
+}
+
+.scoreboard .game input {
+    width: 30px
+}
+
+.scoreboard .set input{
+    width: 15px
+}
+
+.scoreboard .name input{
+    width: 120px
+}
+
+.clearer {
+    clear:both;
+}
+.round-corners{
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+} 
+</style>
 </head>
 <body>
 
 <p id="status">Online</p>
 
-<h1>Offline test page</h1>
-<p>This page detects when the browser goes offline and stores data locally.</p>
+<h1>Tennis Scoreboard</h1>
 
 <form id="mainform" action="index.html" method="post">
 
 <fieldset>
  <legend>Match score</legend>
-    <table>
+    <table class="scoreboard">
         <tr>
-            <td><input type="text" id="p-1"/></td>
-            <td><input type="text" id="p-1-set-1"/></td>
-            <td><input type="text" id="p-1-game-score" name="p-1-game-score"/></td>
+            <td class="name"><input type="text" id="p-1"/></td>
+            <td class="set"><input type="text" id="p-1-set-1"/></td>
+            <td class="game"><input type="text" id="p-1-game-score" name="p-1-game-score"/></td>
         </tr>
         <tr>
-            <td><input type="text" id="p-2"/></td>
-            <td><input type="text" id="p-2-set-1"/></td>
-            <td><input type="text" id="p-2-game-score" name="p-2-game-score"/></td>
+            <td class="name"><input type="text" id="p-2"/></td>
+            <td class="set"><input type="text" id="p-2-set-1"/></td>
+            <td class="game"><input type="text" id="p-2-game-score" name="p-2-game-score"/></td>
         </tr>
     <table>
 </fieldset>
@@ -33,12 +84,14 @@
 <fieldset>
 <legend>Game score</legend>
 
-<div>
-    <div id="p1scored">0</div>
-    <div id="p2scored">0</div>
+<div class="clearer">
+    <div class="button" id="p1scored">0</div>
+    <div class="button" id="p2scored">0</div>
 </div>
 
-<button type="submit" id="reset">Reset</button>
+<div class="clearer">
+<button type="submit" id="reset" class="button reset">Reset</button>
+<div>
 
 </fieldset>
 </form>
