@@ -22,9 +22,10 @@
         */
     },
     append: function (message, filter){
-        YUI({ filter: 'raw' }).use("node", function (Y) {
-                Y.log(message, filter);
-        });
+        if(!filter){
+            filter = '';
+        }
+        console.log(message, filter);
     
     },
      iterate: function (variable, message, full){
