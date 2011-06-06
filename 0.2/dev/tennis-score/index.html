@@ -8,8 +8,8 @@
 <style>
 
 .button {
-    background-color: #FF99FF;
-    border: 1px solid #FF22FF;
+    background-color: #03C9FF;
+    border: 1px solid #097bfc;
     border-radius: 15px 15px 15px 15px;
     display: block;
     float: left;
@@ -18,6 +18,8 @@
     margin: 10px;
     padding: 10px;
     width: 60px;
+    text-align: center;
+    vertical-align: middle;
 }
 
 .reset {
@@ -25,15 +27,18 @@
     font-size: 15px;
     height: 30px;
     width: 80px;
+    padding: 4px;
 }
 
-.scoreboard {
-    background-color: #FF99FF;
-    border: 1px solid #FF22FF;
+table.scoreboard, .scoreboard td {
+    background-color: #03C9FF;
+    border: 1px solid #097bfc;
 }
 
 .scoreboard input {
     font-size: 20px;
+    background-color: #03C9FF;
+    border: 0;
 }
 
 .scoreboard .game input {
@@ -82,17 +87,16 @@
 </fieldset>
 
 <fieldset>
-<legend>Game score</legend>
-
-<div class="clearer">
-    <div class="button" id="p1scored">0</div>
-    <div class="button" id="p2scored">0</div>
-</div>
-
-<div class="clearer">
-<button type="submit" id="reset" class="button reset">Reset</button>
-<div>
-
+    <legend>Game score</legend>
+    
+    <div class="clearer">
+        <div class="button" id="p1scored">0</div>
+        <div class="button" id="p2scored">0</div>
+    </div>
+    
+    <div class="clearer">
+        <button type="submit" id="reset" class="button reset">Reset</button>
+    <div>
 </fieldset>
 </form>
 

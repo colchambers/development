@@ -21,8 +21,6 @@ jQuery(document).ready(function($) {
         Score.reset()
        }
    );
-   $("#p-2-game-score").val("15");
-   $("#p2scored").text("15");
 
 	// online/offline event handler
 	if (window.sessionStorage) {
@@ -112,14 +110,19 @@ var Score = Score || {};
 Score.init = function(){
     this.p1 = {}
     this.p1.gameScore = 0;
+    this.p1.games = 0;
     this.p1.field = "p-1-game-score";
+    this.p1.setField = "p-1-set-1";
     this.p1.button = "p1scored";
     this.p2 = {}
     this.p2.gameScore = 0;
+    this.p2.games = 0;
     this.p2.field = "p-2-game-score";
+    this.p2.setField = "p-2-set-1";
     this.p2.button = "p2scored";
 }
 Score.init();
+
 Score.increment = function(playerId){
     //alert("playerId = "+playerId);
     var player = this.p1;
@@ -137,6 +140,21 @@ Score.increment = function(playerId){
             player.gameScore = 40;
             break;
         case 40:
+        case 'A':
+            if(opponent.gameScore==40 && player.gameScore == 40){
+                player.gameScore = 'A';
+                break;
+            }
+            
+            if(opponent.gameScore== 'A'){
+                opponent.gameScore = 40;
+                break;
+            }
+            
+            //win game
+            player.games++
+            player.gameScore = 0;
+            opponent.gameScore = 0;
             break;
         default: // 0
             player.gameScore = 15;
@@ -149,12 +167,13 @@ Score.increment = function(playerId){
 }
 
 Score.updateScore = function(){
-     var players = [this.p1, this.p2]
+     var players = [this.p1, this.p2];
     var player = null;
     for(var i in players){
         player = players[i];
-        $("#"+player.field).val(player.gameScore+"");
+        $("#"+player.field).val(player.gameScore);
         $("#"+player.button).text(player.gameScore);
+        $("#"+player.setField).val(player.games);
     }
 }
 
@@ -163,3 +182,5 @@ Score.reset = function(){
     this.p2.gameScore = 0;
     this.updateScore();
 }
+
+Score.reset();
