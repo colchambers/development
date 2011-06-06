@@ -1,25 +1,6 @@
  
  var Out = {
     initialiseConsole: function (){
-     // Create console
-       /* // Create a YUI instance and request the console module and its dependencies
-        YUI({ filter: 'raw' }).use("console", "console-filters", "dd-plugin", function (Y) {
-         
-            console = new Y.Console({
-                strings: {
-                    logSource: Y.Global,
-        			title : 'Draggable Console with filters!',
-        			pause : 'Wait',
-        			clear : 'Flush',
-        			collapse : 'Shrink',
-        			expand : 'Grow'
-        		}
-        	}).plug(Y.Plugin.ConsoleFilters)
-        	  .plug(Y.Plugin.Drag, { handles: ['.yui3-console-hd'] })
-        	  .render();
-        	 
-        });
-        */
     },
     append: function (message, filter){
         if(!filter){
@@ -32,9 +13,9 @@
          message == message?message: 'Variable = ';
              
          if(variable.length){
-             for( x=0;x<variable.length;x++ ){
-            	this.append( message + " ( " + x + " ) = " + variable[ x ] )
-    		}
+            for( x=0;x<variable.length;x++ ){
+                this.append( message + " ( " + x + " ) = " + variable[ x ] );
+            }
          }
          
          var method;
