@@ -18,8 +18,6 @@ jQuery(document).ready(function($) {
    
    $("#mainform").change(
        function (){
-        //Score.increment(2)
-        //Out.append('p-2-game-score = '+ $('#p-2-game-score').val());
         Score.changeScore();
        }
    );
@@ -38,6 +36,9 @@ jQuery(document).ready(function($) {
 	
 	// load data
 	lib.Load();
+    
+    //Score.reset(true);
+    Score.loadScore();
 
 });
 
@@ -76,42 +77,26 @@ lib.Save = function(e) {
 	    e.preventDefault();
     }
 	
-	if (lib.Net.Online() || !window.sessionStorage) {
-	
-		// save data online
-		alert("Data has been saved online.\n(But not in this demo!)");
-		
-	}
-	else {
 	
 		// save data offline
-		$("#mainform input").each(function(i) {
-			window.sessionStorage.setItem(this.id, this.value);
-		});
-		alert("Data has been saved offline.");
+	$("#mainform input").each(function(i) {
+		window.sessionStorage.setItem(this.id, this.value);
+	});
+	//console.log("Data has been saved offline.");
 
-	}
 
 };
 
 // load data online or offline
 lib.Load = function() {
 
-	if (lib.Net.Online() || !window.sessionStorage) {
-	
-		// load data online
-		//alert("Currently online:\ndata could be loaded from server.");
-	
-	}
-	else {
-	
-		// load data offline
-		$("#mainform input").each(function(i) {
-			this.value = window.sessionStorage.getItem(this.id);
-		});
-		alert("Data has been loaded from offline store.");
-
-	}
+	// load data offline
+	$("#mainform input").each(function(i) {
+		this.value = window.sessionStorage.getItem(this.id);
+        Score.setFieldValue(this.id, this.value);
+        console.log('loading '+this.id+' with '+this.value);
+	});
+	//console.log("Data has been loaded from offline store.");
 
 };
 
@@ -126,17 +111,17 @@ Score.init = function(){
     // tie form fields to values
     this.fields = [];
     this.fields["p-1-name"] = new Field('name', '');
-    this.fields["p-1-game-score"] = new Field('gameScore', 0);
-    this.fields["p-1-set-1"] = new Field('games', 0);
+    this.fields["p-1-game-score"] = new Field('gameScore', '0');
+    this.fields["p-1-set-1"] = new Field('games', '0');
     this.fields["p-2-name"] = new Field('name', '');
-    this.fields["p-2-game-score"] = new Field('gameScore', 0);
-    this.fields["p-2-set-1"] = new Field('games', 0);
+    this.fields["p-2-game-score"] = new Field('gameScore', '0');
+    this.fields["p-2-set-1"] = new Field('games', '0');
  
     this.p1 = {}
     this.p1.id = 'p-1';
     this.p1.name = '';
     this.p1.gameScore = this.fields["p-1-game-score"].value;
-    this.p1.games = 0;
+    this.p1.games = '0';
     this.p1.field = "p-1-game-score";
     this.p1.setField = "p-1-set-1";
     this.p1.button = "p1scored";
@@ -144,7 +129,7 @@ Score.init = function(){
     this.p2.id = 'p-2';
     this.p2.name = '';
     this.p2.gameScore = this.fields["p-2-game-score"].value;
-    this.p2.games = 0;
+    this.p2.games = '0';
     this.p2.field = "p-2-game-score";
     this.p2.setField = "p-2-set-1";
     this.p2.button = "p2scored";
@@ -177,7 +162,6 @@ Score.getFieldName = function(id){
 }
 
 Score.increment = function(playerId){
-    //alert("playerId = "+playerId);
     var player = this.p1;
     var opponent = this.p2;
     if(playerId==2){
@@ -186,38 +170,65 @@ Score.increment = function(playerId){
     }
     
     switch(player.gameScore){
-        case 15:
-            player.gameScore = 30;
+        case '15':
+            player.gameScore = '30';
             break;
-        case 30:
-            player.gameScore = 40;
+        case '30':
+            player.gameScore = '40';
             break;
-        case 40:
+        case '40':
         case 'A':
-            if(opponent.gameScore==40 && player.gameScore == 40){
+            if(opponent.gameScore=='40' && player.gameScore == '40'){
                 player.gameScore = 'A';
                 break;
             }
             
             if(opponent.gameScore== 'A'){
-                opponent.gameScore = 40;
+                opponent.gameScore = '40';
                 break;
             }
             
             //win game
             player.games++
-            player.gameScore = 0;
-            opponent.gameScore = 0;
+            player.gameScore = '0';
+            opponent.gameScore = '0';
             break;
         default: // 0
-            player.gameScore = 15;
+            player.gameScore = '15';
     }
     
     
     this.updateScore();
 }
 
-Score.updateScore = function(){
+Score.loadScore = function(){
+    // translate scores loaded from cache to app
+    var players = [this.p1, this.p2];
+    var player = null;
+    for(var i in players){
+        player = players[i];
+        player.gameScore = this.getFieldValue(player.id+'-game-score');
+        //$("#"+player.button).text(player.gameScore);
+        player.games = this.getFieldValue(player.id+'-set-1');
+        player.name = this.getFieldValue(player.id+'-name');
+        console.log('set-1 = '+this.fields[player.id+'-set-1']);
+        Out.iterate(player, 'player = ', true);
+    }
+    
+    this.updateScore(true);
+    /*var field = null;
+    for(var i in this.fields){
+        field = this.fields[i];
+        console.log('i = '+i+': value = '+field.value);
+        $('#'+i).val(field.value);
+    }
+    
+    $("#"+this.p1.button).text(this.getFieldValue("p-1-game-score"));
+    $("#"+this.p2.button).text(this.getFieldValue("p-2-game-score"));
+    */
+    
+}
+Score.updateScore = function(noSave){
     var players = [this.p1, this.p2];
     var player = null;
     for(var i in players){
@@ -238,7 +249,9 @@ Score.updateScore = function(){
     $("#"+this.p1.button).text(this.getFieldValue("p-1-game-score"));
     $("#"+this.p2.button).text(this.getFieldValue("p-2-game-score"));
     
-    lib.Save();
+    if(!noSave){
+        lib.Save();
+    }
 }
 
 /*
@@ -246,24 +259,22 @@ Score.updateScore = function(){
  */
 Score.changeScore = function(){
     // value, playerId, field
-    var fields = $('#mainform')
+    var fields = $('#mainform');
     
     $("#mainform input").each(function(i) {
-    		Out.append(this.id+' = '+ this.value);
-            Score.setField(this.id, this.value);
-            //window.sessionStorage.setItem(this.id, this.value);
+    		//Out.append(this.id+' = '+ this.value);
+            Score.setFieldValue(this.id, this.value);
 		});
     
     lib.Save();
-    //$("#mainform").submit(lib.Save);
+    //$("#mainform").submit();
 }
 
-Score.reset = function(){
-    this.p1.gameScore = 0;
-    this.p1.games = 0;
-    this.p2.gameScore = 0;
-    this.p2.games = 0;
-    this.updateScore();
+Score.reset = function(noSave){
+    this.p1.gameScore = '0';
+    this.p1.games = '0';
+    this.p2.gameScore = '0';
+    this.p2.games = '0';
+    this.updateScore(noSave);
 }
 
-Score.reset();
