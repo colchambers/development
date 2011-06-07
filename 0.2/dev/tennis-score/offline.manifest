@@ -1,12 +1,12 @@
 CACHE MANIFEST
-# rev 49
+# rev 50
 
 NETWORK:
 *
+        
+CACHE:  
 styles.css
 jquery-1.4.min.js
 offline.js
 index.html
-../../js/analyse.js
-        
-CACHE:                 
+../../js/analyse.js               
