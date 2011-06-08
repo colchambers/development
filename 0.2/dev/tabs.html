@@ -14,6 +14,29 @@
 	$(function() {
 		$( "#tabs" ).tabs();
 	});
+    
+    
+    
+    
+    
+    function getParam(name, string)
+    {
+        var re = new RegExp("[?&]"+name+"=([^&#]*)");
+        var matches = re.exec(string);
+        if(matches)
+        {
+            return decodeURIComponent(matches[1]);
+        }
+        else
+        {
+            throw "Window requires parameter '"+name+"'";
+        }
+    };
+    name  = 'extra';
+    string = 'http://jb23347.vledev2.open.ac.uk/ou2/blocks/hawthorn/popup.php?reacquire=http%3A%2F%2Fjb23347.vledev2.open.ac.uk%2Fou2%2Fblocks%2Fhawthorn%2Freacquire.php&channel=c2&user=d1&displayname=d%201&extra=http%3A%2F%2Fjb23347.vledev2.open.ac.uk%2Fou2%2Ftheme%2Fimage.php%3Ftheme%3Dou%26image%3Du%2Ff2&permissions=rw&keyTime=1307444890000&key=f88ca1f910093136f4841c8afc9f132daeaf7202&title=M1%3A%20Chat&servers=http%3A%2F%2F137.108.181.175%3A13370%2F';
+    param = getParam(name, string);
+    console.log('param = '+param);
+    
 	</script> 
 </head> 
 <body> 

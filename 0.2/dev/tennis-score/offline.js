@@ -19,6 +19,7 @@ jQuery(document).ready(function($) {
    $("#mainform").change(
        function (){
         Score.changeScore();
+        Score.updateDisplay();
        }
    );
    
@@ -94,7 +95,7 @@ lib.Load = function() {
 	$("#mainform input").each(function(i) {
 		this.value = window.sessionStorage.getItem(this.id);
         Score.setFieldValue(this.id, this.value);
-        console.log('loading '+this.id+' with '+this.value);
+        //console.log('loading '+this.id+' with '+this.value);
 	});
 	//console.log("Data has been loaded from offline store.");
 
@@ -199,6 +200,7 @@ Score.increment = function(playerId){
     
     
     this.updateScore();
+    this.updateDisplay();
 }
 
 Score.loadScore = function(){
@@ -208,25 +210,14 @@ Score.loadScore = function(){
     for(var i in players){
         player = players[i];
         player.gameScore = this.getFieldValue(player.id+'-game-score');
-        //$("#"+player.button).text(player.gameScore);
         player.games = this.getFieldValue(player.id+'-set-1');
         player.name = this.getFieldValue(player.id+'-name');
-        console.log('set-1 = '+this.fields[player.id+'-set-1']);
-        Out.iterate(player, 'player = ', true);
+        //console.log('set-1 = '+this.fields[player.id+'-set-1']);
+        //Out.iterate(player, 'player = ', true);
     }
     
     this.updateScore(true);
-    /*var field = null;
-    for(var i in this.fields){
-        field = this.fields[i];
-        console.log('i = '+i+': value = '+field.value);
-        $('#'+i).val(field.value);
-    }
-    
-    $("#"+this.p1.button).text(this.getFieldValue("p-1-game-score"));
-    $("#"+this.p2.button).text(this.getFieldValue("p-2-game-score"));
-    */
-    
+    this.updateDisplay();
 }
 Score.updateScore = function(noSave){
     var players = [this.p1, this.p2];
@@ -236,22 +227,26 @@ Score.updateScore = function(noSave){
         this.setFieldValue(player.id+'-game-score', player.gameScore);
         //$("#"+player.button).text(player.gameScore);
         this.setFieldValue(player.id+'-set-1', player.games);
-        console.log('set-1 = '+this.fields[player.id+'-set-1']);
+        //console.log('set-1 = '+this.fields[player.id+'-set-1']);
     }
     
+    if(!noSave){
+        lib.Save();
+    }
+}
+
+Score.updateDisplay = function(){
+
     var field = null;
     for(var i in this.fields){
         field = this.fields[i];
-        console.log('i = '+i+': value = '+field.value);
         $('#'+i).val(field.value);
     }
     
     $("#"+this.p1.button).text(this.getFieldValue("p-1-game-score"));
     $("#"+this.p2.button).text(this.getFieldValue("p-2-game-score"));
     
-    if(!noSave){
-        lib.Save();
-    }
+
 }
 
 /*
@@ -276,5 +271,6 @@ Score.reset = function(noSave){
     this.p2.gameScore = '0';
     this.p2.games = '0';
     this.updateScore(noSave);
+    this.updateDisplay();
 }
 
