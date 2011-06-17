@@ -1,3 +1,8 @@
 .project
+<<<<<<< HEAD
 .settings
 _tools/
+=======
+_tools
+.settings
+>>>>>>> origin/develop
