@@ -1,0 +1,53 @@
+
+ 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"> 
+<html> 
+<head> 
+<meta http-equiv="content-type" content="text/html; charset=utf-8"> 
+<title>Creating a Console for Debugging</title> 
+ 
+<link type="text/css" rel="stylesheet" href="http://yui.yahooapis.com/3.3.0/build/cssfonts/fonts-min.css" /> 
+<script type="text/javascript" src="http://yui.yahooapis.com/3.3.0/build/yui/yui-min.js"></script> 
+ 
+</head> 
+ 
+<body class="yui3-skin-sam  yui-skin-sam"> 
+ 
+<h1>Creating a Console for Debugging</h1> 
+ 
+<div class="exampleIntro"> 
+	<p>This example walks through the basics of setting up and logging messages to a YUI Console instance.  Three Console instances are created with slightly different configurations.  All calls to <code>Y.log(..)</code> will be broadcast to every Console.</p> 
+			
+</div> 
+ 
+<!--BEGIN SOURCE CODE FOR EXAMPLE =============================== --> 
+ 
+<script type="text/javascript"> 
+// Create a YUI instance and request the console module and its dependencies
+YUI({ filter: 'raw' }).use("console", "console-filters", "dd-plugin", function (Y) {
+ 
+	// Create and render the three Console instances
+	var customStrings;
+	 
+	customStrings = new Y.Console({
+		strings: {
+			title : 'Draggable Console with filters!',
+			pause : 'Wait',
+			clear : 'Flush',
+			collapse : 'Shrink',
+			expand : 'Grow'
+		},
+		visible: false
+	}).plug(Y.Plugin.ConsoleFilters)
+	  .plug(Y.Plugin.Drag, { handles: ['.yui3-console-hd'] })
+	  .render();
+	 
+     customStrings.show();
+	 
+	// Display a message in the Console for reference
+	Y.log("Click the buttons below to log messages");
+	 
+});
+</script> 
+
+</body> 

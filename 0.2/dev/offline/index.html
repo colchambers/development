@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html manifest="offline.manifest">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Offline test page</title>
+<link rel="stylesheet" type="text/css" media="all" href="styles.css" />
+</head>
+<body>
+
+<p id="status">Online</p>
+
+<h1>Offline test page</h1>
+<p>This page detects when the browser goes offline and stores data locally.</p>
+
+<form id="mainform" action="index.html" method="post">
+<fieldset>
+<legend>Update data</legend>
+
+<label>Data item 1: <input type="text" id="data1" name="data1" value="" /></label>
+<label>Data item 2: <input type="text" id="data2" name="data2" value="" /></label>
+<label>Data item 3: <input type="text" id="data3" name="data3" value="" /></label>
+
+<button type="submit">Save Data</button>
+
+</fieldset>
+</form>
+
+<p>Use File &gt; Work Offline in Firefox to switch online/offline modes.</p>
+<p><a href="index.html">Refresh the page</a> in offline mode to reload data from store.</p>
+
+<p>For more information, refer to the SitePoint article <a href="http://www.sitepoint.com/blogs/offline-web-application-tutorial"><em>How To Create an Offline Web Application</em></a> by <a href="http://www.sitepoint.com/articlelist/560/show-all-blogs/">Craig Buckler</a>.</p>
+
+<p>Please use the code as you wish at your own risk. It is provided as-is without warrranty of any kind.</p>
+
+<script type="text/javascript" src="jquery-1.4.min.js"></script>
+<script type="text/javascript" src="offline.js"></script>
+
+</body>
+</html>
