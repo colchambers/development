@@ -62,26 +62,30 @@ table.scoreboard, .scoreboard td {
     border-radius: 15px;
 } 
 
-// slider
+/* columns*/
 .column-1 {
-        width:30%;
-float:left;
-text-align:right;
+    width:30%;
+    float:left;
   }
 .column-2 {
     width:30%;
-float:right;
-text-align:right;
   }
 .column-3 {
         width:30%;
-float:right;
-text-align:right;
+        float: right
   }
   
 .row {
     clear:both
 }
+
+.column-1, .column-2, .column-3 {
+    position: relative;
+    float: left;
+    text-align: center;
+}
+
+
 </style>
 </head>
 <body>
@@ -92,44 +96,46 @@ text-align:right;
 
 <form id="mainform" action="index.html" method="post">
 
-<fieldset>
- <legend>Match score</legend>
-    <div>Energy/hour</div>
-    <div>
-        <div>+0.5</div>
-        <div>+0.5</div>
-        <div>-2</div>
-    </div>
-    <div id="inputs" class="row">
-        <div id="inputs-0" class="slider column-1"></div>
-        <div id="inputs-1" class="slider column-2"></div>
-        <div id="inputs-2" class="slider column-3"></div>
-    </div>
-    <div id="differences" class="row">
-        <div class="slider-label column-1">
-            <input type="text" id="differences-0" style="border:0; color:#f6931f; font-weight:bold;" />
+    <fieldset>
+        <legend>Energy/hour</legend>
+            <div class="column-1">+0.5</div>
+            <div class="column-2">+0.5</div>
+            <div class="column-3">-2</div>
+    </fieldset>
+    <fieldset>
+        <legend>Hours</legend>
+        <div id="inputs" class="row">
+            <div class="column-1"><div id="inputs-0" class="slider"></div></div>
+            <div class="column-2"><div id="inputs-1" class="slider"></div></div>
+            <div class="column-3"><div id="inputs-2" class="slider"></div></div>
         </div>
-        <div class="slider-label column-2">
-            <input type="text" id="differences-1" style="border:0; color:#f6931f; font-weight:bold;" />
+    </fieldset>
+    <fieldset>
+        <div id="differences" class="row">
+            <div class="slider-label column-1">
+                <input type="text" id="differences-0" style="border:0; color:#f6931f; font-weight:bold;" />
+            </div>
+            <div class="slider-label column-2">
+                <input type="text" id="differences-1" style="border:0; color:#f6931f; font-weight:bold;" />
+            </div>
+            <div class="slider-label column-3">
+                <input type="text" id="differences-2" style="border:0; color:#f6931f; font-weight:bold;" />
+            </div>
         </div>
-        <div class="slider-label column-3">
-            <input type="text" id="differences-2" style="border:0; color:#f6931f; font-weight:bold;" />
-        </div>
-    </div>
-</fieldset>
-
-<fieldset>
-    <legend>Game score</legend>
+    </fieldset>
     
-    <div class="clearer">
-        <div class="button" id="p1scored">0</div>
-        <div class="button" id="p2scored">0</div>
-    </div>
-    
-    <div class="clearer">
-        <button type="submit" id="reset" class="button reset">Reset</button>
-    <div>
-</fieldset>
+    <fieldset>
+        <legend>Game score</legend>
+        
+        <div class="clearer">
+            <div class="button" id="p1scored">0</div>
+            <div class="button" id="p2scored">0</div>
+        </div>
+        
+        <div class="clearer">
+            <button type="submit" id="reset" class="button reset">Reset</button>
+        <div>
+    </fieldset>
 </form>
 
 <script>
@@ -196,6 +202,7 @@ $(function() {
     $(function() {
 		var x=0;
         var numberOfSliders = 3;
+        
         for(x=0;x<numberOfSliders;x++){
             $( "#inputs-"+x ).slider({
     			orientation: "vertical",
@@ -209,6 +216,7 @@ $(function() {
     		});
     		$( "#differences-"+x ).val( $( "#inputs-"+x ).slider( "value" ) );
         }
+        
 	});
 	</script>
 
