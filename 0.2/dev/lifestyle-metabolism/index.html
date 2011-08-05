@@ -214,22 +214,41 @@ $(function() {
 </script>
 
 <script>
+
+var numberOfSliders = 3;
+var x=0;
+inputstoDifferences = [];
+for(x=0;x<numberOfSliders;x++){
+    inputstoDifferences['inputs-'+x] = 'differences-'+x;
+}
+function updateEnergyDifference(event, ui){
+    input_id = $(this).attr('id');
+    if(!inputstoDifferences[input_id]){
+        return;
+    }
+    
+    difference_id = inputstoDifferences[input_id];
+    difference = $( '#'+difference_id );
+    difference.val( ui.value );
+}
+
     $(function() {
 		var x=0;
-        var numberOfSliders = 3;
-        
+        var input;
+        var difference;
         for(x=0;x<numberOfSliders;x++){
-            $( "#inputs-"+x ).slider({
+            input = $( "#inputs-"+x );
+            input.slider({
     			orientation: "vertical",
     			range: "min",
     			min: 0,
-    			max: 100,
-    			value: 60,
-    			slide: function( event, ui ) {
-    				$( "#differences-"+x ).val( ui.value );
-    			}
+    			max: 24,
+    			value: 12,
+    			slide: updateEnergyDifference
     		});
-    		$( "#differences-"+x ).val( $( "#inputs-"+x ).slider( "value" ) );
+
+            
+    		$( "#differences-"+x ).val( input.slider( "value" ) );
         }
         
 	});
