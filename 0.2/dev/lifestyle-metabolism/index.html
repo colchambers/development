@@ -4,6 +4,7 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <title>Tennis Scoreboard</title>
 <link rel="stylesheet" type="text/css" media="all" href="styles.css" />
+<link rel="stylesheet" href="http://jqueryui.com/themes/base/jquery.ui.all.css">
 
 <style>
 
@@ -60,30 +61,61 @@ table.scoreboard, .scoreboard td {
     -moz-border-radius: 15px;
     border-radius: 15px;
 } 
+
+// slider
+.column-1 {
+        width:30%;
+float:left;
+text-align:right;
+  }
+.column-2 {
+    width:30%;
+float:right;
+text-align:right;
+  }
+.column-3 {
+        width:30%;
+float:right;
+text-align:right;
+  }
+  
+.row {
+    clear:both
+}
 </style>
 </head>
 <body>
 
 <p id="status">Online</p>
 
-<h1>Tennis Scoreboard</h1>
+<h1>Lifestyle and metabolism</h1>
 
 <form id="mainform" action="index.html" method="post">
 
 <fieldset>
  <legend>Match score</legend>
-    <table class="scoreboard">
-        <tr>
-            <td class="name"><input type="text" id="p-1-name"/></td>
-            <td class="set"><input type="text" id="p-1-set-1"/></td>
-            <td class="game"><input type="text" id="p-1-game-score" name="p-1-game-score"/></td>
-        </tr>
-        <tr>
-            <td class="name"><input type="text" id="p-2-name"/></td>
-            <td class="set"><input type="text" id="p-2-set-1"/></td>
-            <td class="game"><input type="text" id="p-2-game-score" name="p-2-game-score"/></td>
-        </tr>
-    <table>
+    <div>Energy/hour</div>
+    <div>
+        <div>+0.5</div>
+        <div>+0.5</div>
+        <div>-2</div>
+    </div>
+    <div id="inputs" class="row">
+        <div id="inputs-0" class="slider column-1"></div>
+        <div id="inputs-1" class="slider column-2"></div>
+        <div id="inputs-2" class="slider column-3"></div>
+    </div>
+    <div id="differences" class="row">
+        <div class="slider-label column-1">
+            <input type="text" id="differences-0" style="border:0; color:#f6931f; font-weight:bold;" />
+        </div>
+        <div class="slider-label column-2">
+            <input type="text" id="differences-1" style="border:0; color:#f6931f; font-weight:bold;" />
+        </div>
+        <div class="slider-label column-3">
+            <input type="text" id="differences-2" style="border:0; color:#f6931f; font-weight:bold;" />
+        </div>
+    </div>
 </fieldset>
 
 <fieldset>
@@ -145,12 +177,40 @@ window.applicationCache.addEventListener(
 //setInterval(function(){cache.update()}, 10000);
 </script>
 
-<script type="text/javascript" src="jquery-1.4.min.js"></script>
+<!--script type="text/javascript" src="jquery-1.4.min.js"></script-->
+<script src="http://jqueryui.com/jquery-1.5.1.js"></script>
+<script src="http://jqueryui.com/ui/jquery.ui.core.js"></script>
+    <script src="http://jqueryui.com/ui/jquery.ui.widget.js"></script>
+	<script src="http://jqueryui.com/ui/jquery.ui.mouse.js"></script>
+	<script src="http://jqueryui.com/ui/jquery.ui.slider.js"></script>
 
 <script type="text/javascript" src="../../js/analyse.js"></script>
 <script type="text/javascript" src="offline.js"></script>
+<script>
+$(function() {
+        //$( "#inputs-1" ).slider();
+	});
+</script>
 
-
+<script>
+    $(function() {
+		var x=0;
+        var numberOfSliders = 3;
+        for(x=0;x<numberOfSliders;x++){
+            $( "#inputs-"+x ).slider({
+    			orientation: "vertical",
+    			range: "min",
+    			min: 0,
+    			max: 100,
+    			value: 60,
+    			slide: function( event, ui ) {
+    				$( "#differences-"+x ).val( ui.value );
+    			}
+    		});
+    		$( "#differences-"+x ).val( $( "#inputs-"+x ).slider( "value" ) );
+        }
+	});
+	</script>
 
 </body>
 </html>
