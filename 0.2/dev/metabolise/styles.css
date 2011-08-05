@@ -1,0 +1,66 @@
+/* offline test styles */
+*
+{
+	padding: 0;
+	margin: 0;
+}
+
+body
+{
+	font-family: arial, helvetica, sans-serif;
+	font-size: 85%;
+	margin: 10px;
+	color: #333;
+	background-color: #fff;
+}
+
+h1
+{
+	font-size: 1.6em;
+	font-weight: normal;
+	margin-bottom: 0.5em;
+}
+
+p
+{
+	margin-bottom: 1em;
+}
+
+p#status
+{
+	float: right;
+	width: 6em;
+	font-weight: bold;
+	text-align: center;
+	text-transform: uppercase;
+	padding: 4px;
+	color: #fff;
+	background-color: #090;
+}
+
+p#status.offline
+{
+	background-color: #900;
+}
+
+fieldset
+{
+	border: 0 none;
+	margin: 1em 0;
+}
+
+legend
+{
+	font-weight: bold;
+}
+
+label
+{
+	display: block;
+	margin: 10px 0;
+}
+
+input
+{
+	width: 5em;
+}
