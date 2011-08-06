@@ -4,7 +4,7 @@ jQuery(document).ready(function($) {
     // form data saving
     $("#mainform").submit(lib.Save);
     
-   $("#p1scored").click(
+   $("#total-energy-difference").click(
        function (){
         Score.increment(1)
        }
@@ -125,7 +125,7 @@ Score.init = function(){
     this.p1.games = '0';
     this.p1.field = "p-1-game-score";
     this.p1.setField = "p-1-set-1";
-    this.p1.button = "p1scored";
+    this.p1.button = "total-energy-difference";
     this.p2 = {}
     this.p2.id = 'p-2';
     this.p2.name = '';

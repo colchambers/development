@@ -143,8 +143,8 @@ table.scoreboard, .scoreboard td {
         <legend>Game score</legend>
         
         <div class="clearer">
-            <div class="button" id="p1scored">0</div>
-            <div class="button" id="p2scored">0</div>
+            <div class="button" id="total-energy-difference">0</div>
+            <div class="button" id="total-hours">0</div>
         </div>
         
         <div class="clearer">
@@ -208,28 +208,37 @@ window.applicationCache.addEventListener(
 <script type="text/javascript" src="../../js/analyse.js"></script>
 <script type="text/javascript" src="offline.js"></script>
 <script>
-$(function() {
-        //$( "#inputs-1" ).slider();
-	});
-</script>
-
-<script>
 
 var numberOfSliders = 3;
 var x=0;
-inputstoDifferences = [];
+var inputstoDifferences = [];
 for(x=0;x<numberOfSliders;x++){
     inputstoDifferences['inputs-'+x] = 'differences-'+x;
 }
+
+var energyDifferences = [0.5, 0.5, -2];
+var activityDefaultHours = [14, 8, 2];
+
 function updateEnergyDifference(event, ui){
     input_id = $(this).attr('id');
     if(!inputstoDifferences[input_id]){
         return;
     }
     
-    difference_id = inputstoDifferences[input_id];
-    difference = $( '#'+difference_id );
-    difference.val( ui.value );
+    $( '#'+inputstoDifferences[input_id] ).val( ui.value );
+    updateTotals();
+}
+
+function updateTotals(){
+    totalEnergy = 0;
+    totalHours = 0;
+    for(x=0;x<numberOfSliders;x++){
+        totalEnergy += $( '#differences-'+x ).val() * energyDifferences[x];
+        totalHours += parseInt($( '#differences-'+x ).val());
+        
+    }
+   $( '#total-energy-difference' ).text( totalEnergy );
+   $( '#total-hours' ).text( totalHours );
 }
 
     $(function() {
@@ -243,7 +252,7 @@ function updateEnergyDifference(event, ui){
     			range: "min",
     			min: 0,
     			max: 24,
-    			value: 12,
+    			value: activityDefaultHours[x],
     			slide: updateEnergyDifference
     		});
 
@@ -252,7 +261,8 @@ function updateEnergyDifference(event, ui){
         }
         
 	});
+    updateTotals()
 	</script>
 
 </body>
-</html>
+s</html>
