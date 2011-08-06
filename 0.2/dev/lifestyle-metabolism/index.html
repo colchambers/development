@@ -109,6 +109,8 @@ window.applicationCache.addEventListener(
 
 <script type="text/javascript" src="../../js/analyse.js"></script>
 <script type="text/javascript" src="offline.js"></script>
+<script type="text/javascript" src="lifestyle.js"></script>
+<script type="text/javascript" src="main.js"></script>
 <script>
 
 var numberOfSliders = 3;
@@ -117,9 +119,6 @@ var inputstoDifferences = [];
 for(x=0;x<numberOfSliders;x++){
     inputstoDifferences['inputs-'+x] = 'differences-'+x;
 }
-
-var energyDifferences = [0.5, 0.5, -2];
-var activityDefaultHours = [14, 8, 2];
 
 function updateEnergyDifference(event, ui){
     input_id = $(this).attr('id');
@@ -135,7 +134,7 @@ function updateTotals(){
     totalEnergy = 0;
     totalHours = 0;
     for(x=0;x<numberOfSliders;x++){
-        totalEnergy += $( '#differences-'+x ).val() * energyDifferences[x];
+        totalEnergy += $( '#differences-'+x ).val() * Lifestyle.energyDifferences[x];
         totalHours += parseInt($( '#differences-'+x ).val());
         
     }
@@ -154,7 +153,7 @@ function updateTotals(){
     			range: "min",
     			min: 0,
     			max: 24,
-    			value: activityDefaultHours[x],
+    			value: Lifestyle.activityDefaultHours[x],
     			slide: updateEnergyDifference
     		});
 
