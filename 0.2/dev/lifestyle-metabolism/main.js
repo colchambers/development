@@ -27,27 +27,7 @@ jQuery(document).ready(function($) {
     
     //Lifestyle.reset(true);
     //Lifestyle.loadLifestyle();
-    
-     $(function() {
-        var x=0;
-        var input;
-        var difference;
-        for(x=0;x<numberOfSliders;x++){
-            input = $( "#inputs-"+x );
-            input.slider({
-    			orientation: "vertical",
-    			range: "min",
-    			min: 0,
-    			max: 24,
-    			value: Lifestyle.activityDefaultHours[x],
-    			slide: updateEnergyDifference
-    		});
-
-            
-    		$( "#differences-"+x ).val( input.slider( "value" ) );
-        }
-        
-	});
+    Lifestyle.initialiseActivityDisplay();
     updateTotals();
 
 });
@@ -55,6 +35,7 @@ jQuery(document).ready(function($) {
 
 function updateEnergyDifference(event, ui){
     input_id = $(this).attr('id');
+    console.log(input_id);
     if(!Lifestyle.inputstoDifferences[input_id]){
         return;
     }
@@ -66,7 +47,7 @@ function updateEnergyDifference(event, ui){
 function updateTotals(){
     totalEnergy = 0;
     totalHours = 0;
-    for(x=0;x<numberOfSliders;x++){
+    for(x=0;x<Lifestyle.activities.length;x++){
         totalEnergy += $( '#differences-'+x ).val() * Lifestyle.energyDifferences[x];
         totalHours += parseInt($( '#differences-'+x ).val());
         
