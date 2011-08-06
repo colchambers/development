@@ -64,3 +64,82 @@ input
 {
 	width: 5em;
 }
+
+
+/* interface */
+.button {
+    background-color: #03C9FF;
+    border: 1px solid #097bfc;
+    border-radius: 15px 15px 15px 15px;
+    display: block;
+    float: left;
+    font-size: 40px;
+    height: 60px;
+    margin: 10px;
+    padding: 10px;
+    width: 60px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.reset {
+    border-radius: 7px 7px 7px 7px;
+    font-size: 15px;
+    height: 30px;
+    width: 80px;
+    padding: 4px;
+}
+
+.scoreboard input {
+    font-size: 20px;
+    background-color: #03C9FF;
+    border: 0;
+}
+
+.clearer {
+    clear:both;
+}
+.round-corners{
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+} 
+
+/* columns */
+.column-1 {
+    width:30%;
+    float:left;
+  }
+.column-2 {
+    width:30%;
+  }
+.column-3 {
+        width:30%;
+        float: right
+  }
+  
+.row {
+    clear:both
+}
+
+.column-1, .column-2, .column-3 {
+    position: relative;
+    float: left;
+    
+    /*align center*/
+    text-align: center;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.slider {
+    /*align center*/
+    margin-left:auto;
+    margin-right:auto;
+}
+
+#differences input {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    width: 5%;
+}
