@@ -4,7 +4,8 @@ var Field = function(name, value){
         this.value = value;
     };
 
-var Activity = function(name, hourlyEnergyDifference, hours) { 
+var Activity = function(id, name, hourlyEnergyDifference, hours) { 
+    this.id = id;
     this.name = name;
     this.hourlyEnergyDifference = hourlyEnergyDifference;
     this.hours = hours;
@@ -28,24 +29,32 @@ var Lifestyle = {
     fields: [],
     energyDifferences: [0.5, 0.5, -2],
     activityDefaultHours: [14, 8, 2],
-    inputstoDifferences: [],
+    inputsToDifferences: [],
+    inputsToActivities: [],
+    differencesToActivities: [],
     activityNames: ['work', 'rest', 'play'],
-    activities: [
-            new Activity('work', 0.5, 14),
-            new Activity('rest', 0.5, 8),
-            new Activity('play', -2, 2)
-        ],
+    activities: [],
+    totalEnergy: 0,
+    totalHours: 0,
 
     init: function() {
-        for(x=0;x<Lifestyle.activities.length;x++){
-            this.inputstoDifferences['inputs-'+x] = 'differences-'+x;
+        
+        this.activities[1] = new Activity(1, 'work', 0.5, 14);
+        this.activities[2] = new Activity(2, 'rest', 0.5, 8);
+        this.activities[3] = new Activity(3, 'play', -2, 2);
+        
+        for(x=0;x<this.activities.length-1;x++){
+            activityId = x+1;
+            inputId = 'inputs-'+x;
+            differencesId = 'differences-'+x;
+            this.inputsToDifferences[inputId] = differencesId;
+            this.inputsToActivities[inputId] = activityId;
+            this.inputsToActivities[activityId] = inputId;
+            this.differencesToActivities[differencesId] = activityId;
+            this.differencesToActivities[activityId] = differencesId;
+            this.calculateActivityEnergyDifferenceById(activityId);
         }
         
-        for(index in activities) {
-            calculateActivityEnergyDifferenceById(index);
-            console.log(activity);
-        }
-    
     },
     
     getFieldValue: function(id){
@@ -67,21 +76,42 @@ var Lifestyle = {
         var input;
         var difference;
         var activity;
-        for(x=0;x<this.activities.length;x++){
-            activity = this.activities[x];
-            input = $( "#inputs-"+x );
+        var id;
+        for(x=1;x<this.activities.length;x++){
+            id = x;
+            activity = this.getActivityById(id);
+            input = $( "#"+this.inputsToActivities[id]);
             input.slider({
-            	orientation: "vertical",
+                orientation: "vertical",
     			range: "min",
     			min: this.ACTIVITY_HOURS_MIN,
     			max: this.ACTIVITY_HOURS_MAX,
     			value: activity.hours,
-    			slide: updateEnergyDifference
+    			slide: updateActivityEnergyDifference
     		});
 
-            
-    		$( "#differences-"+x ).val( input.slider( "value" ) );
+            this.calculateActivityEnergyDifferenceById(id);
+            this.displayActivityEnergyDifferenceById(id);
         }
+    },
+    
+    updateActivityEnergyDifferenceById: function(id, hours){
+        if(!id){
+            return;
+        }
+        
+        this.updateActivityHoursById(id, hours);
+        this.calculateActivityEnergyDifferenceById(id);
+        this.displayActivityEnergyDifferenceById(id);
+        this.updateTotals();
+    },
+    
+    displayActivityEnergyDifferenceById: function(id){
+        if(!id){
+            return;
+        }
+        
+        $( "#"+this.differencesToActivities[id] ).val( activity.energyDifference );
     },
     
     /*
@@ -89,7 +119,7 @@ var Lifestyle = {
      * @param int hours number of hours
      * @return void
      */
-    updateActivityHours: function(id, hours) {
+    updateActivityHoursById: function(id, hours) {
         activity = this.getActivityById(id);
         activity.hours = hours;
     },
@@ -99,6 +129,24 @@ var Lifestyle = {
      * @return activity
      */
     getActivityById: function(id) {
-        return activities[id];
+        return this.activities[id];
+    },
+    
+    updateTotals: function () {
+        totalEnergy = 0;
+        totalHours = 0;
+        var activity;
+        for(x=1;x<Lifestyle.activities.length;x++){
+            activity = this.getActivityById(x);
+            totalEnergy += activity.energyDifference;
+            totalHours += activity.hours;
+            
+        }
+        
+        this.totalHours = totalHours;
+        this.totalEnergy = totalEnergy;
+       $( '#total-energy-difference' ).text( totalEnergy );
+       $( '#total-hours' ).text( totalHours );
     }
+
 };

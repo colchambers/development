@@ -1,115 +1,114 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title>Lifestyle and metabolism</title>
-<link rel="stylesheet" type="text/css" media="all" href="styles.css" />
-<link rel="stylesheet" href="http://jqueryui.com/themes/base/jquery.ui.all.css">
-
-</head>
-<body>
-
-<p id="status">Online</p>
-
-<h1>Lifestyle and metabolism</h1>
-
-<form id="mainform" action="index.html" method="post">
-
-    <fieldset>
-        <legend>Energy/hour</legend>
-            <div class="column-1">+0.5</div>
-            <div class="column-2">+0.5</div>
-            <div class="column-3">-2</div>
-    </fieldset>
-    <fieldset>
-        <legend>Hours</legend>
-        <div id="inputs" class="row">
-            <div class="column-1"><div id="inputs-0" class="slider"></div></div>
-            <div class="column-2"><div id="inputs-1" class="slider"></div></div>
-            <div class="column-3"><div id="inputs-2" class="slider"></div></div>
-        </div>
-    </fieldset>
-    <fieldset id="differences">
-            <div class="column-1">
-                <input type="text" id="differences-0" readonly="readonly"/>
-            </div>
-            <div class="column-2">
-                <input type="text" id="differences-1" readonly="readonly"/>
-            </div>
-            <div class="column-3">
-                <input type="text" id="differences-2" readonly="readonly"/>
-            </div>
-    </fieldset>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <title>Lifestyle and metabolism</title>
+        <link rel="stylesheet" type="text/css" media="all" href="styles.css" />
+        <link rel="stylesheet" href="http://jqueryui.com/themes/base/jquery.ui.all.css">
+    </head>
+    <body>
+        <p id="status">Online</p>
+        <h1>Lifestyle and metabolism</h1>
+        <form id="mainform" action="index.html" method="post">
+            <fieldset id="energy-hours">
+                <legend>Energy/hour</legend>
+                    <div class="column-1">+0.5</div>
+                    <div class="column-2">+0.5</div>
+                    <div class="column-3">-2</div>
+            </fieldset>
+            <fieldset>
+                <legend>Hours</legend>
+                <div id="inputs" class="row">
+                    <div class="column-1"><div id="inputs-0" class="slider"></div></div>
+                    <div class="column-2"><div id="inputs-1" class="slider"></div></div>
+                    <div class="column-3"><div id="inputs-2" class="slider"></div></div>
+                </div>
+            </fieldset>
+            <fieldset id="differences">
+                    <div class="column-1">
+                        <input type="text" id="differences-0" readonly="readonly"/>
+                    </div>
+                    <div class="column-2">
+                        <input type="text" id="differences-1" readonly="readonly"/>
+                    </div>
+                    <div class="column-3">
+                        <input type="text" id="differences-2" readonly="readonly"/>
+                    </div>
+            </fieldset>
+            
+            <fieldset>
+                <legend>Totals</legend>
+                
+                <div class="clearer">
+                    <label for="total-energy-difference">Energy difference</label>
+                    <label for="total-hours">Hours</label>
+                </div>
+                <div class="clearer">
+                    <div class="button" id="total-energy-difference">0</div>
+                    <div class="button" id="total-hours">0</div>
+                </div>
+                
+                <div class="clearer">
+                    <button type="submit" id="reset" class="button reset">Reset</button>
+                <div>
+            </fieldset>
+        </form>
+        
+        <script>
+        var cacheStatusValues = [];
+        cacheStatusValues[0] = 'uncached';
+        cacheStatusValues[1] = 'idle';
+        cacheStatusValues[2] = 'checking';
+        cacheStatusValues[3] = 'downloading';
+        cacheStatusValues[4] = 'updateready';
+        cacheStatusValues[5] = 'obsolete';
+        
+        var cache = window.applicationCache;
+        cache.addEventListener('cached', logEvent, false);
+        cache.addEventListener('checking', logEvent, false);
+        cache.addEventListener('downloading', logEvent, false);
+        cache.addEventListener('error', logEvent, false);
+        cache.addEventListener('noupdate', logEvent, false);
+        cache.addEventListener('obsolete', logEvent, false);
+        cache.addEventListener('progress', logEvent, false);
+        cache.addEventListener('updateready', logEvent, false);
+        
+        function logEvent(e) {
+            var online, status, type, message;
+            online = (navigator.onLine) ? 'yes' : 'no';
+            status = cacheStatusValues[cache.status];
+            type = e.type;
+            message = 'online: ' + online;
+            message+= ', event: ' + type;
+            message+= ', status: ' + status;
+            if (type == 'error' && navigator.onLine) {
+                message+= ' (prolly a syntax error in manifest)';
+            }
+            console.log(message);
+        }
+        
+        window.applicationCache.addEventListener(
+            'updateready',
+            function(){
+                window.applicationCache.swapCache();
+                console.log('swap cache has been called');
+            },
+            false
+        );
+        
+        //setInterval(function(){cache.update()}, 10000);
+        </script>
+        
+        <!--script type="text/javascript" src="jquery-1.4.min.js"></script-->
+        <script src="http://jqueryui.com/jquery-1.5.1.js"></script>
+        <script src="http://jqueryui.com/ui/jquery.ui.core.js"></script>
+        <script src="http://jqueryui.com/ui/jquery.ui.widget.js"></script>
+    	<script src="http://jqueryui.com/ui/jquery.ui.mouse.js"></script>
+    	<script src="http://jqueryui.com/ui/jquery.ui.slider.js"></script>
     
-    <fieldset>
-        <legend>Game score</legend>
-        
-        <div class="clearer">
-            <div class="button" id="total-energy-difference">0</div>
-            <div class="button" id="total-hours">0</div>
-        </div>
-        
-        <div class="clearer">
-            <button type="submit" id="reset" class="button reset">Reset</button>
-        <div>
-    </fieldset>
-</form>
-
-<script>
-var cacheStatusValues = [];
-cacheStatusValues[0] = 'uncached';
-cacheStatusValues[1] = 'idle';
-cacheStatusValues[2] = 'checking';
-cacheStatusValues[3] = 'downloading';
-cacheStatusValues[4] = 'updateready';
-cacheStatusValues[5] = 'obsolete';
-
-var cache = window.applicationCache;
-cache.addEventListener('cached', logEvent, false);
-cache.addEventListener('checking', logEvent, false);
-cache.addEventListener('downloading', logEvent, false);
-cache.addEventListener('error', logEvent, false);
-cache.addEventListener('noupdate', logEvent, false);
-cache.addEventListener('obsolete', logEvent, false);
-cache.addEventListener('progress', logEvent, false);
-cache.addEventListener('updateready', logEvent, false);
-
-function logEvent(e) {
-    var online, status, type, message;
-    online = (navigator.onLine) ? 'yes' : 'no';
-    status = cacheStatusValues[cache.status];
-    type = e.type;
-    message = 'online: ' + online;
-    message+= ', event: ' + type;
-    message+= ', status: ' + status;
-    if (type == 'error' && navigator.onLine) {
-        message+= ' (prolly a syntax error in manifest)';
-    }
-    console.log(message);
-}
-
-window.applicationCache.addEventListener(
-    'updateready',
-    function(){
-        window.applicationCache.swapCache();
-        console.log('swap cache has been called');
-    },
-    false
-);
-
-//setInterval(function(){cache.update()}, 10000);
-</script>
-
-<!--script type="text/javascript" src="jquery-1.4.min.js"></script-->
-<script src="http://jqueryui.com/jquery-1.5.1.js"></script>
-<script src="http://jqueryui.com/ui/jquery.ui.core.js"></script>
-    <script src="http://jqueryui.com/ui/jquery.ui.widget.js"></script>
-	<script src="http://jqueryui.com/ui/jquery.ui.mouse.js"></script>
-	<script src="http://jqueryui.com/ui/jquery.ui.slider.js"></script>
-
-<script type="text/javascript" src="../../js/analyse.js"></script>
-<script type="text/javascript" src="offline.js"></script>
-<script type="text/javascript" src="lifestyle.js"></script>
-<script type="text/javascript" src="main.js"></script>
-</body>
-s</html>
+        <script type="text/javascript" src="../../js/analyse.js"></script>
+        <script type="text/javascript" src="offline.js"></script>
+        <script type="text/javascript" src="lifestyle.js"></script>
+        <script type="text/javascript" src="main.js"></script>
+    </body>
+</html>
