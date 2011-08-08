@@ -7,24 +7,39 @@
         <link rel="stylesheet" href="http://jqueryui.com/themes/base/jquery.ui.all.css">
     </head>
     <body>
-        <p id="status">Online</p>
-        <h1>Lifestyle and metabolism</h1>
-        <form id="mainform" action="index.html" method="post">
-            <fieldset id="energy-hours">
-                <legend>Energy/hour</legend>
-                    <div class="column-1">+0.5</div>
-                    <div class="column-2">+0.5</div>
-                    <div class="column-3">-2</div>
-            </fieldset>
-            <fieldset>
-                <legend>Hours</legend>
-                <div id="inputs" class="row">
-                    <div class="column-1"><div id="inputs-0" class="slider"></div></div>
-                    <div class="column-2"><div id="inputs-1" class="slider"></div></div>
-                    <div class="column-3"><div id="inputs-2" class="slider"></div></div>
-                </div>
-            </fieldset>
-            <fieldset id="differences">
+        <div id="main">
+            <h1>Lifestyle and metabolism</h1>
+            <form id="mainform" action="index.html" method="post">
+                <fieldset id="energy-hours">
+                    <legend>Energy/hour</legend>
+                        <div class="column-1">+0.5</div>
+                        <div class="column-2">+0.5</div>
+                        <div class="column-3">-2</div>
+                </fieldset>
+                <fieldset>
+                    <legend>Hours</legend>
+                    <div id="inputs" class="row">
+                        <div class="column-1"><div id="inputs-0" class="slider"></div></div>
+                        <div class="column-2"><div id="inputs-1" class="slider"></div></div>
+                        <div class="column-3"><div id="inputs-2" class="slider"></div></div>
+                    </div>
+                </fieldset>
+                
+                <fieldset id="hours">
+                    <legend>Activity hours</legend>
+                    <div class="column-1">
+                        <input type="text" id="hours-0" readonly="readonly"/>
+                    </div>
+                    <div class="column-2">
+                        <input type="text" id="hours-1" readonly="readonly"/>
+                    </div>
+                    <div class="column-3">
+                        <input type="text" id="hours-2" readonly="readonly"/>
+                    </div>
+                </fieldset>
+                
+                <fieldset id="differences">
+                    <legend>Energy differences</legend>
                     <div class="column-1">
                         <input type="text" id="differences-0" readonly="readonly"/>
                     </div>
@@ -34,25 +49,27 @@
                     <div class="column-3">
                         <input type="text" id="differences-2" readonly="readonly"/>
                     </div>
-            </fieldset>
-            
-            <fieldset>
-                <legend>Totals</legend>
+                </fieldset>
                 
-                <div class="clearer">
-                    <label for="total-energy-difference">Energy difference</label>
-                    <label for="total-hours">Hours</label>
-                </div>
-                <div class="clearer">
-                    <div class="button" id="total-energy-difference">0</div>
-                    <div class="button" id="total-hours">0</div>
-                </div>
+                <fieldset id="totals">
+                    <legend>Totals</legend>
+                    
+                    <div class="clearer">
+                        <label for="total-energy-difference">Energy difference:</label>
+                        <div class="field" id="total-energy-difference">0</div>
+                    </div>
+                    <div class="clearer">
+                        <label for="total-hours">Hours:</label>
+                        <div class="field" id="total-hours">0</div>
+                    </div>
+                </fieldset>
                 
-                <div class="clearer">
-                    <button type="submit" id="reset" class="button reset">Reset</button>
-                <div>
-            </fieldset>
-        </form>
+                <fieldset id="reset">
+                    <button type="submit" id="reset" class="button reset clearer">Reset</button>
+                </fieldset>
+            </form>
+            <p id="status">Online</p>
+        </div>
         
         <script>
         var cacheStatusValues = [];

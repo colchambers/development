@@ -28,8 +28,7 @@ p
 
 p#status
 {
-	float: right;
-	width: 6em;
+	width: 90%;
 	font-weight: bold;
 	text-align: center;
 	text-transform: uppercase;
@@ -62,7 +61,6 @@ input
 
 /* interface */
 .button {
-    background-color: #03C9FF;
     border: 1px solid #097bfc;
     border-radius: 15px 15px 15px 15px;
     display: block;
@@ -80,8 +78,9 @@ input
     border-radius: 7px 7px 7px 7px;
     font-size: 15px;
     height: 30px;
-    width: 80px;
-    padding: 4px;
+    width: 90%;
+    padding: 4px 116px;
+    margin: 0;
 }
 
 .scoreboard input {
@@ -115,7 +114,7 @@ input
     clear:both
 }
 
-.column-1, .column-2, .column-3 {
+.column-1, .column-2, .column-3, #totals label, #totals .field, #differences input, #hours input {
     position: relative;
     float: left;
     
@@ -131,9 +130,23 @@ input
     margin-right:auto;
 }
 
-#differences input {
+#differences input, #hours input {
     border: 0;
     margin: 0;
     padding: 0;
-    width: 5%;
+}
+
+#totals label {
+    float: left;
+    width: 50%;
+    text-align: right;
+}
+
+#totals .field {
+    width: 50%;
+}
+
+#main {
+    margin: 2% auto;
+    width: 250px;
 }

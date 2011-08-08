@@ -12,7 +12,7 @@ jQuery(document).ready(function($) {
    
    $("#reset").click(
        function (){
-        //Lifestyle.reset()
+        Lifestyle.reset()
        }
    );
 
@@ -29,7 +29,6 @@ jQuery(document).ready(function($) {
     //Lifestyle.loadLifestyle();
     Lifestyle.init();
     Lifestyle.initialiseActivityDisplay();
-    Lifestyle.updateTotals();
 
 });
 

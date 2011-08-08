@@ -31,6 +31,7 @@ var Lifestyle = {
     activityDefaultHours: [14, 8, 2],
     inputsToDifferences: [],
     inputsToActivities: [],
+    hoursToActivities: [],
     differencesToActivities: [],
     activityNames: ['work', 'rest', 'play'],
     activities: [],
@@ -47,11 +48,14 @@ var Lifestyle = {
             activityId = x+1;
             inputId = 'inputs-'+x;
             differencesId = 'differences-'+x;
+            hoursId = 'hours-'+x;
             this.inputsToDifferences[inputId] = differencesId;
             this.inputsToActivities[inputId] = activityId;
             this.inputsToActivities[activityId] = inputId;
             this.differencesToActivities[differencesId] = activityId;
             this.differencesToActivities[activityId] = differencesId;
+            this.hoursToActivities[hoursId] = activityId;
+            this.hoursToActivities[activityId] = hoursId;
             this.calculateActivityEnergyDifferenceById(activityId);
         }
         
@@ -91,8 +95,11 @@ var Lifestyle = {
     		});
 
             this.calculateActivityEnergyDifferenceById(id);
-            this.displayActivityEnergyDifferenceById(id);
+            
         }
+        
+        this.updateTotals();
+        this.updateDisplay();
     },
     
     updateActivityEnergyDifferenceById: function(id, hours){
@@ -102,15 +109,25 @@ var Lifestyle = {
         
         this.updateActivityHoursById(id, hours);
         this.calculateActivityEnergyDifferenceById(id);
-        this.displayActivityEnergyDifferenceById(id);
         this.updateTotals();
+        this.updateDisplay();
     },
     
-    displayActivityEnergyDifferenceById: function(id){
-        if(!id){
+    displayActivityHoursById: function(id){
+        if(!id) {
             return;
         }
         
+        activity = this.getActivityById(id);
+        $( "#"+this.hoursToActivities[id] ).val( activity.hours );
+    },
+    
+    displayActivityEnergyDifferenceById: function(id){
+        if(!id) {
+            return;
+        }
+        
+        activity = this.getActivityById(id);
         $( "#"+this.differencesToActivities[id] ).val( activity.energyDifference );
     },
     
@@ -132,7 +149,10 @@ var Lifestyle = {
         return this.activities[id];
     },
     
-    updateTotals: function () {
+    /*
+     * @return vaoid
+     */
+    updateTotals: function() {
         totalEnergy = 0;
         totalHours = 0;
         var activity;
@@ -145,8 +165,35 @@ var Lifestyle = {
         
         this.totalHours = totalHours;
         this.totalEnergy = totalEnergy;
-       $( '#total-energy-difference' ).text( totalEnergy );
-       $( '#total-hours' ).text( totalHours );
+    },
+    
+    /*
+     * @return vaoid
+     */
+    displayTotals: function() {
+       $( '#total-energy-difference' ).text( this.totalEnergy );
+       $( '#total-hours' ).text( this.totalHours );
+    },
+    
+    /*
+     * @param int id activity id
+     * @return vaoid
+     */
+    updateDisplay: function() {
+        for(x=1;x<this.activities.length;x++) {
+            id = x;
+            this.displayActivityHoursById(id);
+            this.displayActivityEnergyDifferenceById(id);
+        }
+        this.displayTotals();
+    },
+    
+    /*
+     * Reset objects and display
+     * @return vaoid
+     */
+    reset: function() {
+        
     }
 
 };
