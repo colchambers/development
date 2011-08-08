@@ -40,9 +40,7 @@ var Lifestyle = {
 
     init: function() {
         
-        this.activities[1] = new Activity(1, 'work', 0.5, 14);
-        this.activities[2] = new Activity(2, 'rest', 0.5, 8);
-        this.activities[3] = new Activity(3, 'play', -2, 2);
+        this.initialiseActivities();
         
         for(x=0;x<this.activities.length-1;x++){
             activityId = x+1;
@@ -59,6 +57,12 @@ var Lifestyle = {
             this.calculateActivityEnergyDifferenceById(activityId);
         }
         
+    },
+    
+    initialiseActivities: function() {
+        this.activities[1] = new Activity(1, 'work', 0.5, 14);
+        this.activities[2] = new Activity(2, 'rest', 0.5, 8);
+        this.activities[3] = new Activity(3, 'play', -2, 2);
     },
     
     getFieldValue: function(id){
@@ -193,7 +197,12 @@ var Lifestyle = {
      * @return vaoid
      */
     reset: function() {
-        
+        this.initialiseActivities();
+        for(x=1;x<this.activities.length;x++) {
+            this.calculateActivityEnergyDifferenceById(x);
+        }
+        this.updateTotals();
+        this.updateDisplay();
     }
 
 };
