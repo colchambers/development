@@ -1,0 +1,114 @@
+<html>
+    <head>
+        <title>Chemistry</title>
+    </head>
+    <body>
+        <h1>Chemistry</h1>
+        <div id="container">
+          <form action="">
+            <fieldset class="singleRow">
+              <label for="1">Text:</label>
+              <input id="1" type="text" />
+              <input type="submit" value="submit" />
+            </fieldset>
+            <fieldset class="singleRow">
+              <label for="2">Text:</label>
+              <input id="2" type="text" />
+              <input type="submit" value="submit" />
+            </fieldset>  
+          </form>
+        </div> 
+        
+        <form id="mainform" action="index.html" method="post">
+            <fieldset>
+                <legend>Energy/hour</legend>
+                    <div class="column-1 column">+0.5</div>
+                    <div class="column-2 column">+0.5</div>
+                    <div class="column-3 column">-2</div>
+            </fieldset>
+        </form>
+        <script>
+        
+                console.log('1 ');
+            var Chemistry = {
+                /*
+                 * Element factory. Find and used js factory pattern. 
+                 * @param string name element name
+                 */
+                createElement: function (name){
+                    var element = null;
+                    switch(name) {
+                        case 'Hydrogen':
+                            element = new Hydrogen();
+                            break;
+                        case 'Oxygen':
+                            element = new Oxygen();
+                            break;
+                        case 'Carbon':
+                            element = new Carbon();
+                            break;
+                    }
+                    
+                    return element;
+                },
+                
+                bindElements: function (element, names){
+                    console.log('bindElements:1');
+                    //return;
+                    for(y=0;y<names.length;y++){
+                        //element.elements[element.elements.length] = this.createElement(names[x]);
+                        console.log(names[y]);
+                    }
+                    
+                    return element;
+                }
+            
+            }
+            function Hydrogen() {
+                this.elements = [];
+            }
+            
+            function Oxygen() {
+                this.elements = [];
+            }
+            
+            new Oxygen();
+            
+            function Carbon() {
+                this.elements = [];
+            }
+            
+            var hydrogen = Chemistry.createElement('Hydrogen');
+            console.log('hydrogen = ');
+            console.log(hydrogen);
+            
+            
+            function Glucose(){
+                this.elements = [];
+                this.carbons = 4;
+                
+                this.init = function(){
+                    var elementsToBind = null;
+                    var carbon = null;
+                    for(var x=0;x<this.carbons;x++) {
+                        console.log('init:'+x);
+                        elementsToBind = ['Oxygen', 'Hydrogen'];
+                        carbon = Chemistry.createElement('Carbon');
+                        Chemistry.bindElements(carbon, elementsToBind);
+                        this.elements[this.elements.length] = carbon; 
+                    }
+                }
+            }
+            glucose = new Glucose();
+            glucose.init();
+            
+            console.log('glucose = ');
+            console.log(glucose);
+            
+            
+            
+            
+        
+        </script>
+    </body>
+</html>
