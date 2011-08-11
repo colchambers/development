@@ -1,8 +1,8 @@
 /* offline test styles */
 *
 {
-	padding: 0;
-	margin: 0;
+    padding: 0;
+    margin: 0;
 }
 
 body
@@ -165,4 +165,14 @@ input
 /* hide online/offline */
 p#status {
     display: none;
+}
+
+#total-energy-difference, #total-hours {
+    background-color: #ef2929;
+    color: white;
+}
+
+#total-energy-difference.correct, #total-hours.correct{
+    background-color: #8ae234;
+    color: black;
 }

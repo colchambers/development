@@ -37,6 +37,11 @@ var Lifestyle = {
     activities: [],
     totalEnergy: 0,
     totalHours: 0,
+    energyMinimum: -0.5,
+    energyMaximum: 0.5,
+    requiredHours: 24,
+    energyCorrect: false,
+    hoursCorrect: false,
 
     init: function() {
         
@@ -91,7 +96,7 @@ var Lifestyle = {
             input = $( "#"+this.inputsToActivities[id]);
             input.slider({
                 orientation: "vertical",
-    			range: "min",
+        		range: "min",
     			min: this.ACTIVITY_HOURS_MIN,
     			max: this.ACTIVITY_HOURS_MAX,
     			value: activity.hours,
@@ -177,6 +182,32 @@ var Lifestyle = {
     displayTotals: function() {
        $( '#total-energy-difference' ).text( this.totalEnergy );
        $( '#total-hours' ).text( this.totalHours );
+       
+       // Update on correct feedback
+       correct = this.isEnergyCorrect(this.totalEnergy);
+       if(correct!==this.energyCorrect) {
+           this.energyCorrect = correct;
+           if(this.energyCorrect) {
+               $( '#total-energy-difference' ).addClass('correct');
+           }
+           else {
+               $( '#total-energy-difference' ).removeClass('correct');
+           }
+       }
+       
+       correct = this.isHoursCorrect(this.totalHours);
+       Out.append("correct = "+ correct);
+       if(correct!==this.hoursCorrect) {
+           this.hoursCorrect = correct;
+           if(this.hoursCorrect) {
+               Out.append('adding correct class');
+               $( '#total-hours' ).addClass('correct');
+           }
+           else {
+               Out.append('removing correct class');
+               $( '#total-hours' ).removeClass('correct');
+           }
+       }
     },
     
     /*
@@ -206,6 +237,24 @@ var Lifestyle = {
         }
         this.displayTotals();
         this.updateSliders();
+    },
+    
+    /*
+     * Is the energy value correct. Must be between given ranges
+     * @param int value energy value
+     * @return vaoid
+     */
+    isEnergyCorrect: function(value) {
+        return  value>=this.energyMinimum && value<=this.energyMaximum;
+    },
+    
+    /*
+     * Is the hours value correct. Must be between given ranges
+     * @param int value energy value
+     * @return vaoid
+     */
+    isHoursCorrect: function(value) {
+        return  value==this.requiredHours;
     },
     
     /*
