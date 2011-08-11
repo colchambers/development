@@ -1,0 +1,110 @@
+<html>
+    <head>
+        <title>Human icon</title>
+        <style>
+        
+            .large-circle {
+                display: block;
+                height: 60px;
+                width: 60px;
+                background-color: #cacd80;
+                border-color: #6e9141;
+                -moz-border-radius: 30px;
+                -webkit-border-radius: 30px;
+                -khtml-border-radius: 30px;
+                border-radius: 30px;
+            }
+            
+            .medium-circle {
+                display: block;
+                height: 30px;
+                width: 30px;
+                background-color: #cacd80;
+                border-oclor: #6e9141;
+                -moz-border-radius: 15px;
+                -webkit-border-radius: 15px;
+                -khtml-border-radius: 15px;
+                border-radius: 15px;
+            }
+            
+            .small-circle {
+                display: block;
+                height: 30px;
+                width: 30px;
+                background-color: #cacd80;
+                border-color: #6e9141;
+                -moz-border-radius: 15px;
+                -webkit-border-radius: 15px;
+                -khtml-border-radius: 15px;
+                border-radius: 15px;
+            }
+            
+            .head {
+                margin-left: 45px;
+            }
+            
+            #left-arm, #torso, #right-arm {
+                float:left;
+            }
+            
+            #torso, #right-arm {
+            }
+            
+            #human {
+                width: 120px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Human icon</h1>
+        <p>This is a simple page demonstrating a Human icon in css.</p>
+        <div id="human">
+            <div class="medium-circle head">m</div>
+            <div id="left-arm" class="small-circle">s</div>
+            <div id="torso" class="large-circle">l</div>
+            <div id="right-arm" class="small-circle">s</div>
+        </div>
+        
+        
+    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+    <script src="../../lib/raphael-min.js"></script>
+ 
+        <script>
+          $(document).ready(function() {
+            drawLogo();
+        $("#torso").click(function () {
+              console.log('hide human');
+              $(this).effect("scale", {percent: 200, origin: 'center'}, 1000);
+        });
+        
+        function drawLogo()
+{
+    var paper = Raphael('logo', 100, 100);//creates canvas width=height=100px
+    var rect = paper.rect(1,1,98,98, 10);//chessboard background
+    rect.attr("fill","#efd5a4");
+    var circle1 = paper.circle(20,20,12);
+    var circle2 = paper.circle(50,20,12);
+    var circle3 = paper.circle(80,20,12);
+    var circle4 = paper.circle(20,50,12);
+    var circle5 = paper.circle(50,50,12);
+    var circle6 = paper.circle(80,50,12);
+    var circle7 = paper.circle(20,80,12);
+    var circle8 = paper.circle(50,80,12);
+    var circle9 = paper.circle(80,80,12);
+    paper.path("M35,0 L35,100");
+    paper.path("M65,0 L65,100");
+    paper.path("M0,35 L100,35");
+    paper.path("M0,65 L100,65");
+
+    circle1.animate({scale:"0"}, 2000);
+    //setTimeout(circle1.animate({scale:"1"}, 2000), 2000);
+
+}
+
+        
+          });
+          </script>
+    </body>
+</html>
