@@ -180,6 +180,21 @@ var Lifestyle = {
     },
     
     /*
+     * Update the slider values and positions
+     * @return vaoid
+     */
+    updateSliders: function() {
+        var activity;
+        for(x=1;x<Lifestyle.activities.length;x++){
+            id = x;
+            activity = this.getActivityById(id);
+            input = $( "#"+this.inputsToActivities[id]);
+            input.slider({ value: activity.hours});
+            
+        }
+    },
+    
+    /*
      * @param int id activity id
      * @return vaoid
      */
@@ -190,6 +205,7 @@ var Lifestyle = {
             this.displayActivityEnergyDifferenceById(id);
         }
         this.displayTotals();
+        this.updateSliders();
     },
     
     /*
