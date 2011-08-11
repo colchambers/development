@@ -150,3 +150,19 @@ input
     margin: 2% auto;
     width: 250px;
 }
+
+/* activity colours */
+/* red */
+.column-1 .ui-slider-range { background: #ef2929; }
+.column-1 .ui-slider-handle { border-color: #ef2929; }
+/* green */
+.column-2 .ui-slider-range { background: #8ae234; }
+.column-2 .ui-slider-handle { border-color: #8ae234; }
+/* blue */
+.column-3 .ui-slider-range { background: #729fcf; }
+.column-3 .ui-slider-handle { border-color: #729fcf; }
+
+/* hide online/offline */
+p#status {
+    display: none;
+}
