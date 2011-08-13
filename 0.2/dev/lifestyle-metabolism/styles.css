@@ -191,3 +191,12 @@ p#status {
 #panel-place-holder {
     margin-bottom: 30px;
 }
+
+/* humans */
+#human {
+}
+
+#ghost {
+    position: absolute;
+    z-index: 100;
+}

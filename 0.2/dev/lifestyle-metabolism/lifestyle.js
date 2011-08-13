@@ -24,7 +24,7 @@ var Lifestyle = {
     ACTIVITY_PLAY: 2,
     
     ACTIVITY_HOURS_MIN: 0,
-    ACTIVITY_HOURS_MAX: 24,
+    ACTIVITY_HOURS_MAX: 18,
     
     fields: [],
     energyDifferences: [0.5, 0.5, -2],
@@ -77,7 +77,7 @@ var Lifestyle = {
              * @url http://raphaeljs.com/icons/
              */
     drawHuman: function () {
-        var paper = Raphael('human', 200, 200, {fill: "#000", stroke: "none"});//creates canvas width=height=100px
+        
         
         var path = "M21.021,16.349c-0.611-1.104-1.359-1.998-2.109-2.623c-0.875,";
             path += "0.641-1.941,1.031-3.103,1.031c-1.164,0-2.231-0.391-3.105-1.031c-0.75,";
@@ -89,8 +89,20 @@ var Lifestyle = {
             path += "1.725,0.496C22.602,21.541,22.443,18.912,21.021,16.349zM15.808,13.757c2.362,";
             path += "0,4.278-1.916,4.278-4.279s-1.916-4.279-4.278-4.279c-2.363,0-4.28,";
             path += "1.916-4.28,4.279S13.445,13.757,15.808,13.757z";
-        this.human = paper.path(path).attr({fill: "#000", stroke: "none"});
-        this.human.translate(100, 100);
+        
+        var paperGhost = Raphael('ghost', 200, 200, {fill: "#000", stroke: "none"});//creates canvas width=height=100px    
+        this.ghost = paperGhost.path(path).attr({fill: "#0d0", "fill-opacity": 0.5,stroke: "none"});
+        this.ghost.translate(100, 80);
+        scale = 2;
+        this.ghost.scale(scale, scale);
+        
+        var paper = Raphael('human', 200, 200, {fill: "#000", stroke: "none"});//creates canvas width=height=100px
+        this.human = paper.path(path).attr({fill: "#000", "fill-opacity": 0.9,stroke: "none"});
+        this.human.translate(100, 80);
+        
+        
+        
+        this.text = paper.text(115, 180, 'John').attr({'font-size': 20});
     },
     
     getFieldValue: function(id){
@@ -250,7 +262,10 @@ var Lifestyle = {
      * @return vaoid
      */
     updateHuman: function() {
-        scale = 1+(this.totalEnergy/5);
+        if(this.totalEnergy < -7.5){
+            return;
+        }
+        scale = 2+(this.totalEnergy/5);
         //this.human.animate({scale:}, 2000);
         this.human.scale(scale, scale);
     },

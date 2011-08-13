@@ -3,18 +3,15 @@ Ext.require([
 ]);
 
 Ext.onReady(function() {
-    var html = '<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Sed metus nibh, sodales a, '+
-    'porta at, vulputate eget, dui. Pellentesque ut nisl. Maecenas tortor turpis, interdum non, sodales non, iaculis ac, '+
-    'lacus. Vestibulum auctor, tortor quis iaculis malesuada, libero lectus bibendum purus, sit amet tincidunt quam turpis '+
-    'vel lacus. In pellentesque nisl non sem. Suspendisse nunc sem, pretium eget, cursus a, fringilla vel, urna.<br/><br/>'+
-    'Aliquam commodo ullamcorper erat. Nullam vel justo in neque porttitor laoreet. Aenean lacus dui, consequat eu, adipiscing '+
-    'eget, nonummy non, nisi. Morbi nunc est, dignissim non, ornare sed, luctus eu, massa. Vivamus eget quam. Vivamus tincidunt '+
-    'diam nec urna. Curabitur velit. Lorem ipsum dolor sit amet.</p>';
+    var html = '<p>Meet John. John isn\'t taking the best care of his body. His work hard '+
+    'play hard lsfestyle makes him prone to weight gain.</p>'+
+    '<p>See if you can help him by balancing his work, rest and play. You need to use the sliders '+
+    ' to adjust the hours he spends on each activity. Each activity may gain or lose energy per hour. You need to </p>';
     
     var configs = [{
-        title: 'Menu',
+        title: 'Help',
         collapsible:true,
-        width:400,
+        width:250,
         html: html,
         collapsed: true
     }];
