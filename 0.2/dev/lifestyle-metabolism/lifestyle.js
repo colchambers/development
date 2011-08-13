@@ -77,7 +77,7 @@ var Lifestyle = {
              * @url http://raphaeljs.com/icons/
              */
     drawHuman: function () {
-        var paper = Raphael('human', 300, 300, {fill: "#000", stroke: "none"});//creates canvas width=height=100px
+        var paper = Raphael('human', 200, 200, {fill: "#000", stroke: "none"});//creates canvas width=height=100px
         
         var path = "M21.021,16.349c-0.611-1.104-1.359-1.998-2.109-2.623c-0.875,";
             path += "0.641-1.941,1.031-3.103,1.031c-1.164,0-2.231-0.391-3.105-1.031c-0.75,";
@@ -90,6 +90,7 @@ var Lifestyle = {
             path += "0,4.278-1.916,4.278-4.279s-1.916-4.279-4.278-4.279c-2.363,0-4.28,";
             path += "1.916-4.28,4.279S13.445,13.757,15.808,13.757z";
         this.human = paper.path(path).attr({fill: "#000", stroke: "none"});
+        this.human.translate(100, 100);
     },
     
     getFieldValue: function(id){
@@ -249,8 +250,9 @@ var Lifestyle = {
      * @return vaoid
      */
     updateHuman: function() {
-        
-        this.human.animate({scale:1+(this.totalEnergy/5)}, 2000);
+        scale = 1+(this.totalEnergy/5);
+        //this.human.animate({scale:}, 2000);
+        this.human.scale(scale, scale);
     },
     
     /*

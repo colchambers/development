@@ -176,3 +176,18 @@ p#status {
     background-color: #8ae234;
     color: black;
 }
+
+/* Floating help panel */
+.floating-panel {
+    margin-left: auto;
+    margin-right: auto;
+    position: absolute;
+    text-align: center;
+    top: 0;
+    width: 100%;
+    z-index: 999;
+}
+
+#panel-place-holder {
+    margin-bottom: 30px;
+}

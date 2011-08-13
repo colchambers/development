@@ -2,10 +2,25 @@
     <head>
         <title>Panel</title>
         <link rel="stylesheet" type="text/css" href="../../lib/sencha/ext-4.0.2a/resources/css/ext-all.css" />
-        <script type="text/javascript" src="../../lib/sencha/ext-4.0.2a/ext-all-dev.js"></script>
-        <script type="text/javascript" src="panel.js"></script>
+        
+        <style>
+            .floating-panel {
+                margin-left: auto;
+                margin-right: auto;
+                position: absolute;
+                text-align: center;
+                top: 0;
+                width: 100%;
+                z-index: 999;
+            }
+            
+            #panel-place-holder {
+                margin-bottom: 30px;
+            }
+        </style>
     </head>
     <body>
+        <div id="panel-place-holder"></div>
         <h1>Panel</h1>
         <div id="container">
           <form action="">
@@ -31,6 +46,7 @@
             </fieldset>
         </form>
         
-        
+        <script type="text/javascript" src="../../lib/sencha/ext-4.0.2a/ext-all-dev.js"></script>
+        <script type="text/javascript" src="panel.js"></script>
     </body>
 </html>
