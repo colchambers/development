@@ -1,0 +1,53 @@
+<html>
+    <head>
+        <title>Sliders</title>
+        <link rel="stylesheet" href="http://jqueryui.com/themes/base/jquery.ui.all.css">
+        <link rel="stylesheet" type="text/css" href="../../lib/sencha/ext-4.0.2a/resources/css/ext-all.css" />
+        
+        <style>
+            #custom-slider {
+                width:214px;
+                padding-top:6px;
+                background-image:url(images/ticks.gif);
+            }
+            
+            h3 {
+                padding:15px 0 5px;
+            }
+            
+            #slider-range {
+                margin: 5px;
+                padding: 5px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Ext Slider Example</h1>
+    <p>Sliders support keyboard adjustments, configurable snapping, axis clicking and animation.</p>
+    <p>The source is not minified - see <a href="slider.js">slider.js</a></p>
+    <h3>Basic Slider</h3>
+
+    <h3>CSS Customized Slider</h3>
+
+    <div id="custom-slider"></div>
+
+    <h3>Slider with multiple thumbs</h3>
+    <div id="multi-slider-horizontal"></div>
+
+    <h3>Vertical Slider with multiple thumbs</h3>
+    <div id="multi-slider-vertical"></div>
+    
+    <div id="inputs" class="row">
+        <div class="column-1"><div id="slider-range" class="slider"></div></div>
+        <div class="column-1"><input id="amount" class="slider" /></div>
+    </div>
+
+    <!-- extra space for scrolling -->
+
+    <div style="height:150px;"></div>
+          <script src="../../lib/jquery/1.5.1.min.js"></script>
+        <script src="../../lib/jquery/jquery-ui-1.8.15.custom.min.js"></script>
+        <script type="text/javascript" src="../../lib/sencha/ext-4.0.2a/ext-all-dev.js"></script>
+        <script type="text/javascript" src="slider-multi.js"></script>
+    </body>
+</html>

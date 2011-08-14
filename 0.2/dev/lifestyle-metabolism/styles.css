@@ -191,6 +191,12 @@ p#status {
 #panel-place-holder {
     margin-bottom: 30px;
 }
+.x-panel-body p{
+    margin: 1px;
+    padding: 5px;
+    text-align: left;
+    text-align: justify;
+}
 
 /* humans */
 #human {
@@ -199,4 +205,9 @@ p#status {
 #ghost {
     position: absolute;
     z-index: 100;
+}
+
+/* human and sliders side by side */
+fieldset#john {
+    float: left;
 }
