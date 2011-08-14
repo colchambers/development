@@ -24,7 +24,7 @@ var Lifestyle = {
     ACTIVITY_PLAY: 2,
     
     ACTIVITY_HOURS_MIN: 0,
-    ACTIVITY_HOURS_MAX: 18,
+    ACTIVITY_HOURS_MAX: 24,
     
     fields: [],
     energyDifferences: [0.5, 0.5, -2],
@@ -126,22 +126,25 @@ var Lifestyle = {
         var difference;
         var activity;
         var id;
-        for(x=1;x<this.activities.length;x++){
+        var values = [];
+        var totalHours = 0;
+        for(x=1;x<this.activities.length-1;x++){
             id = x;
             activity = this.getActivityById(id);
-            input = $( "#"+this.inputsToActivities[id]);
-            input.slider({
-                orientation: "vertical",
-        		range: "min",
-    			min: this.ACTIVITY_HOURS_MIN,
-    			max: this.ACTIVITY_HOURS_MAX,
-    			value: activity.hours,
-    			slide: updateActivityEnergyDifference
-    		});
+            totalHours += activity.hours;
+            values.push(totalHours);
 
             this.calculateActivityEnergyDifferenceById(id);
             
         }
+        
+        input = $( "#"+this.inputsToActivities[1]);
+            input.slider({
+    			min: this.ACTIVITY_HOURS_MIN,
+    			max: this.ACTIVITY_HOURS_MAX,
+    			values: values,
+    			slide: updateActivityEnergyDifference
+    		});
         
         this.updateTotals();
         this.updateDisplay();
@@ -158,6 +161,27 @@ var Lifestyle = {
         this.updateDisplay();
     },
     
+    /*
+     * @param array hours values passed from slider
+     */
+    updateActivityEnergyDifferences: function(hours){
+        var activityHours;
+        var totalHours = 0;
+        for(x=1;x<this.activities.length;x++){
+            id = x;
+            if(x<3) {
+                activityHours = hours[x-1] - totalHours;
+            }
+            else {
+                activityHours = this.ACTIVITY_HOURS_MAX-totalHours;
+            }
+            totalHours += activityHours;
+            this.updateActivityHoursById(id, activityHours);
+            this.calculateActivityEnergyDifferenceById(id);
+        }
+        this.updateTotals();
+        this.updateDisplay();
+    },
     displayActivityHoursById: function(id){
         if(!id) {
             return;
@@ -249,13 +273,16 @@ var Lifestyle = {
      */
     updateSliders: function() {
         var activity;
-        for(x=1;x<Lifestyle.activities.length;x++){
+        var values = [];
+        for(x=1;x<Lifestyle.activities.length-1;x++){
             id = x;
             activity = this.getActivityById(id);
-            input = $( "#"+this.inputsToActivities[id]);
-            input.slider({ value: activity.hours});
+            values.push(activity.hours);
             
         }
+        
+        input = $( "#"+this.inputsToActivities[0]);
+        input.slider({ values: values});
     },
     
     /*

@@ -87,7 +87,7 @@ jQuery(document).ready(function($) {
     //return;
 	$( "#slider-range" ).slider({
 		//orientation: "vertical",
-		range: true,
+		range: "min",
 		values: [ 17, 67 ],
 		slide: function( event, ui ) {
 			$( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
