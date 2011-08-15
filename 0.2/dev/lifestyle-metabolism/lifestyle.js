@@ -163,9 +163,12 @@ var Lifestyle = {
             
         // Add values to slider handles
         children = input.children();
+        var handle;
         for(x=0;x<children.length;x++) {
             activity = this.getActivityById(x+1);
-            $(children[x]).text(activity.energyDifference);
+            handle = $(children[x]);
+            handle.text(activity.energyDifference);
+            handle.addClass(this.activityNames[x]);
         }
         
         this.updateTotals();

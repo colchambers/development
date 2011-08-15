@@ -136,7 +136,11 @@ input
     padding: 0;
 }
 
-#differences a.ui-slider-handle, #inputs a.ui-slider-handle, #totals a.ui-slider-handle {
+#inputs a.ui-slider-handle {
+    width: 5px;
+}
+
+#differences a.ui-slider-handle, #totals a.ui-slider-handle {
     width: 30px;
     text-align: center;
     text-decoration: none;
@@ -157,6 +161,10 @@ input
 /* red */
 .column-1 .ui-slider-range { background: #ef2929; }
 .column-1 .ui-slider-handle { border-color: #ef2929; }
+.work {
+    background: #ef2929; 
+    border-color: #ef2929; 
+}
 /* green */
 .column-2 .ui-slider-range { background: #8ae234; }
 .column-2 .ui-slider-handle { border-color: #8ae234; }
