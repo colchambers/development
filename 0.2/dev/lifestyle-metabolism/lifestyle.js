@@ -26,6 +26,9 @@ var Lifestyle = {
     ACTIVITY_HOURS_MIN: 0,
     ACTIVITY_HOURS_MAX: 24,
     
+    TOTAL_ENERGY_DIFFERENCE_MIN: -10,
+    TOTAL_ENERGY_DIFFERENCE_MAX: 10,
+    
     fields: [],
     energyDifferences: [0.5, 0.5, -2],
     activityDefaultHours: [14, 8, 2],
@@ -128,22 +131,55 @@ var Lifestyle = {
         var id;
         var values = [];
         var totalHours = 0;
-        for(x=1;x<this.activities.length-1;x++){
+        var differences = [];
+        for(x=1;x<this.activities.length;x++){
             id = x;
             activity = this.getActivityById(id);
             totalHours += activity.hours;
-            values.push(totalHours);
+            if(x<this.activities.length-1) {
+                values.push(totalHours);
+            }
 
             this.calculateActivityEnergyDifferenceById(id);
+            differences.push(activity.energyDifference);
             
         }
         
         input = $( "#"+this.inputsToActivities[1]);
             input.slider({
-    			min: this.ACTIVITY_HOURS_MIN,
+                min: this.ACTIVITY_HOURS_MIN,
     			max: this.ACTIVITY_HOURS_MAX,
     			values: values,
     			slide: updateActivityEnergyDifference
+    		});
+            
+        input = $( "#differences-all");
+            input.slider({
+        		min: this.TOTAL_ENERGY_DIFFERENCE_MIN,
+    			max: this.TOTAL_ENERGY_DIFFERENCE_MAX,
+    			values: differences,
+                disabled: true
+    		});
+            
+        // Add values to slider handles
+        children = input.children();
+        for(x=0;x<children.length;x++) {
+            activity = this.getActivityById(x+1);
+            $(children[x]).text(activity.energyDifference);
+        }
+        
+        this.updateTotals();
+        this.initialiseTotalsDisplay();
+        this.updateDisplay();
+    },
+    
+    initialiseTotalsDisplay: function() {
+        input = $( "#total-energy-difference");
+            input.slider({
+        		min: this.TOTAL_ENERGY_DIFFERENCE_MIN,
+    			max: this.TOTAL_ENERGY_DIFFERENCE_MAX,
+    			value: this.totalEnergy,
+                disabled: true
     		});
         
         this.updateTotals();
@@ -167,6 +203,7 @@ var Lifestyle = {
     updateActivityEnergyDifferences: function(hours){
         var activityHours;
         var totalHours = 0;
+        var differences = [];
         for(x=1;x<this.activities.length;x++){
             id = x;
             if(x<3) {
@@ -178,7 +215,21 @@ var Lifestyle = {
             totalHours += activityHours;
             this.updateActivityHoursById(id, activityHours);
             this.calculateActivityEnergyDifferenceById(id);
+            
+            differences.push(activity.energyDifference);
         }
+        
+        
+        input = $( "#differences-all");
+        input.slider({values: differences});
+
+        // Add values to slider handles
+        children = input.children();
+        for(x=0;x<children.length;x++) {
+            activity = this.getActivityById(x+1);
+            $(children[x]).text(activity.energyDifference);
+        }
+        
         this.updateTotals();
         this.updateDisplay();
     },
@@ -240,31 +291,29 @@ var Lifestyle = {
      * @return vaoid
      */
     displayTotals: function() {
-       $( '#total-energy-difference' ).text( this.totalEnergy );
-       $( '#total-hours' ).text( this.totalHours );
+       var id = '#total-energy-difference';
        
+       element = $(id)
+       element.slider({ value: this.totalEnergy});
+       
+       // Add values to slider handles
+        children = element.children();
+        console.log(children);
+        for(x=0;x<children.length;x++) {
+            $(children[x]).text(this.totalEnergy);
+        }
        // Update on correct feedback
        correct = this.isEnergyCorrect(this.totalEnergy);
        if(correct!==this.energyCorrect) {
            this.energyCorrect = correct;
            if(this.energyCorrect) {
-               $( '#total-energy-difference' ).addClass('correct');
+               element.addClass('correct');
            }
            else {
-               $( '#total-energy-difference' ).removeClass('correct');
+               element.removeClass('correct');
            }
        }
        
-       correct = this.isHoursCorrect(this.totalHours);
-       if(correct!==this.hoursCorrect) {
-           this.hoursCorrect = correct;
-           if(this.hoursCorrect) {
-               $( '#total-hours' ).addClass('correct');
-           }
-           else {
-               $( '#total-hours' ).removeClass('correct');
-           }
-       }
     },
     
     /*

@@ -34,6 +34,5 @@ jQuery(document).ready(function($) {
 
 function updateActivityEnergyDifference(event, ui){
     activityId = Lifestyle.inputsToActivities[ $(this).attr('id')];
-    console.log(ui.values);
     Lifestyle.updateActivityEnergyDifferences(ui.values);
 }

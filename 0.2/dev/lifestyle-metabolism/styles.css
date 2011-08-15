@@ -7,8 +7,8 @@
 
 body
 {
-	font-family: arial, helvetica, sans-serif;
-	font-size: 85%;
+    font-family: arial, helvetica, sans-serif;
+    font-size: 85%;
 	margin: 10px;
 	color: #333;
 	background-color: #fff;
@@ -136,14 +136,16 @@ input
     padding: 0;
 }
 
-#totals label {
-    float: left;
-    width: 50%;
-    text-align: right;
+#differences a.ui-slider-handle, #inputs a.ui-slider-handle, #totals a.ui-slider-handle {
+    width: 30px;
+    text-align: center;
+    text-decoration: none;
+    height: 18px;
+    top: -0.4em;
 }
 
 #totals .field {
-    width: 50%;
+    width: 100%;
 }
 
 #main {
@@ -167,13 +169,13 @@ p#status {
     display: none;
 }
 
-#total-energy-difference, #total-hours {
-    background-color: #ef2929;
+#total-energy-difference {
+    background: #ef2929;
     color: white;
 }
 
-#total-energy-difference.correct, #total-hours.correct{
-    background-color: #8ae234;
+#total-energy-difference.correct {
+    background: #8ae234;
     color: black;
 }
 
