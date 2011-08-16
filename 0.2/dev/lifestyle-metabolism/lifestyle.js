@@ -46,6 +46,7 @@ var Lifestyle = {
     energyCorrect: false,
     hoursCorrect: false,
     human: null,
+    firstUse: true,
 
     init: function() {
         
@@ -174,6 +175,9 @@ var Lifestyle = {
         this.updateTotals();
         this.initialiseTotalsDisplay();
         this.updateDisplay();
+        if(this.firstUse) {
+            this.runTutorial(1);
+        }
     },
     
     initialiseTotalsDisplay: function() {
@@ -394,6 +398,111 @@ var Lifestyle = {
         }
         this.updateTotals();
         this.updateDisplay();
+    },
+    
+    /*
+     * Run through a tutorial wizard to explain the app and activities
+     * @return void
+     */
+    runTutorial: function(step) {
+        console.log('runTutorial: step = '+step);
+        var field = $('#feedback div');
+        var html = '';
+        var fieldNames = [];
+        fieldNames['john'] = true;
+        fieldNames['activities'] = false;
+        fieldNames['hours'] = false;
+        fieldNames['differences'] = false;
+        fieldNames['totals'] = false;
+        
+        var tutorialHtml = [];
+        var nextId = 'tutorial-next';
+        var previousId = 'tutorial-previous';
+        tutorialHtml[0] = '<p>Meet John. John\'s not feeling so good and isn\'t taking the best care of his body. His work hard '+
+                'play hard lifestyle puts his body out of kilter and makes him prone to weight gain.</p>';
+        tutorialHtml[1] = '<p> You\'re going to help John by adjusting his lifestyle so to bring his body and weight back into line.</p> '+
+                '<p>To make this easier we\'ve added a ghost image of John at his ideal weight as a target to aim for.</p> '+
+                'You\'ll also know you\'ve reached the goal when the background behind John turns green like it has done now.</p>';
+        tutorialHtml[2] = '<h2>Activities. impact on energy</h2><p>See if you can help John by balancing his work, rest and play. You need to use the sliders '+
+                ' to adjust the hours he spends on each activity. Each activity may gain or lose energy per hour. You need to </p>';
+        tutorialHtml[3] = '<h2>The daily lifestyle (hours spent)</h2><p>Meet John. John\'s not feeling so good and isn\'t taking the best care of his body. His work hard '+
+                'play hard lifestyle puts his body out of kilter and makes him prone to weight gain.</p>';
+        tutorialHtml[4] = '<h2>The impact of each activity</h2><p>Meet John. John\'s not feeling so good and isn\'t taking the best care of his body. His work hard '+
+                'play hard lifestyle puts his body out of kilter and makes him prone to weight gain.</p>';
+        tutorialHtml[5] = '<h2>The cumulative impact on energy</h2><p>Meet John. John\'s not feeling so good and isn\'t taking the best care of his body. His work hard '+
+                'play hard lifestyle puts his body out of kilter and makes him prone to weight gain.</p>';
+        
+        html = tutorialHtml[step-1];
+        switch(step){
+            case 1:
+                // introduction
+            case 2:
+                // Show targets
+                // turn human background green
+                // make john size of ghost. animate so you see him get smaller. 
+                break; 
+            case 3:
+                fieldNames['activities'] = true;
+                break; 
+                
+            case 4:
+                fieldNames['activities'] = true;
+                fieldNames['hours'] = true;
+                break; 
+            case 5:
+                fieldNames['activities'] = true;
+                fieldNames['hours'] = true;
+                fieldNames['differences'] = true;
+                break; 
+            case 6:
+                fieldNames['activities'] = true;
+                fieldNames['hours'] = true;
+                fieldNames['differences'] = true;
+                fieldNames['totals'] = true;
+                break;     
+        }
+        
+        if(step>1) {
+            html+= ' <div id="'+previousId+'">&lt; previous </div>';
+        }
+        if(step<tutorialHtml.length) {
+            html+= ' <div id="'+nextId+'">next &gt;</div>';
+        }
+        field.html(html);
+
+        console.log('runTutorial: 1');
+        if(step>1) {
+            $('#'+previousId).click(function() {
+                Lifestyle.runTutorial(step-1)
+            });
+        }
+        if(step<tutorialHtml.length) {
+            $('#'+nextId).click(function() {
+                console.log('step = '+step);
+                Lifestyle.runTutorial(step+1)
+            });
+        }
+        
+        console.log('runTutorial: 3');
+        console.log('runTutorial: fieldNames.length = '+fieldNames.length);
+        var displayClass = 'hide';
+        var fieldName;
+        var field = null;
+        for(fieldName in fieldNames){
+            console.log('display: fieldNames[fieldName] '+fieldNames[fieldName]);
+            field = $('#'+fieldName);
+            console.log(field);
+            if(!fieldNames[fieldName]){
+                console.log('display: hide '+fieldName);
+               field.addClass(displayClass);
+                continue;
+            }
+            console.log('display: show '+fieldName);
+            field.removeClass(displayClass);
+        }
+        
+        console.log('runTutorial: 4');
+        this.firstUse = false;
     }
 
 };
