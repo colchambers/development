@@ -225,3 +225,16 @@ fieldset#john {
 .hide {
     display: none;
 }
+
+/* Tutorial */
+#tutorial-previous {
+    float: left;
+}
+
+#tutorial-next {
+    float: right;
+}
+
+.#tutorial-next:hover {
+    color: #000;
+}

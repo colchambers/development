@@ -406,8 +406,10 @@ var Lifestyle = {
      */
     runTutorial: function(step) {
         console.log('runTutorial: step = '+step);
-        var field = $('#feedback div');
+        var field = $('#feedback div.content');
+        var navigationElement = $('#feedback div.navigation');
         var html = '';
+        var navigationHtml = '';
         var fieldNames = [];
         fieldNames['john'] = true;
         fieldNames['activities'] = false;
@@ -463,12 +465,13 @@ var Lifestyle = {
         }
         
         if(step>1) {
-            html+= ' <div id="'+previousId+'">&lt; previous </div>';
+            navigationHtml+= ' <div id="'+previousId+'">&lt; previous </div>';
         }
         if(step<tutorialHtml.length) {
-            html+= ' <div id="'+nextId+'">next &gt;</div>';
+            navigationHtml+= ' <div id="'+nextId+'">next &gt;</div>';
         }
         field.html(html);
+        navigationElement.html(navigationHtml);
 
         console.log('runTutorial: 1');
         if(step>1) {
