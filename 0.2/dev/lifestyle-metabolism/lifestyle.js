@@ -17,11 +17,17 @@ var Binding = function(a, a) {
     this.b = b;
 }
 
+var TutorialStep = function(html, fieldIds, actions) {
+    this.html = html;
+    this.fieldIds = fieldIds;
+    this.actions = actions;
+}
+
 var Lifestyle = {
     
-    ACTIVITY_WORK: 0,
-    ACTIVITY_REST: 1,
-    ACTIVITY_PLAY: 2,
+    ACTIVITY_WORK: 1,
+    ACTIVITY_REST: 2,
+    ACTIVITY_PLAY: 3,
     
     ACTIVITY_HOURS_MIN: 0,
     ACTIVITY_HOURS_MAX: 24,
@@ -47,6 +53,8 @@ var Lifestyle = {
     hoursCorrect: false,
     human: null,
     firstUse: true,
+    elementCompleteStatus: {},
+    elementCompleteIds: ['human-background', 'human-size'],
 
     init: function() {
         
@@ -66,6 +74,8 @@ var Lifestyle = {
             this.hoursToActivities[activityId] = hoursId;
             this.calculateActivityEnergyDifferenceById(activityId);
         }
+        
+        this.resetCompletedElementsDisplay();
         
         this.drawHuman();
         
@@ -149,8 +159,8 @@ var Lifestyle = {
         input = $( "#"+this.inputsToActivities[1]);
             input.slider({
                 min: this.ACTIVITY_HOURS_MIN,
-    			max: this.ACTIVITY_HOURS_MAX,
-    			values: values,
+                max: this.ACTIVITY_HOURS_MAX,
+        		values: values,
     			slide: updateActivityEnergyDifference
     		});
             
@@ -400,6 +410,23 @@ var Lifestyle = {
         this.updateDisplay();
     },
     
+    setElementCompleteStatus: function(id, status){
+        
+    },
+    
+    getActivityValueById: function(id, value) {
+         var activity = this.getActivityById(id);
+         var result;
+         for(prop in activity){
+             Out.append('prop = '+prop);
+             if(prop != value){
+                 continue;
+             }
+             result = activity[prop];
+         }
+         return result;
+    },
+    
     /*
      * Run through a tutorial wizard to explain the app and activities
      * @return void
@@ -410,102 +437,215 @@ var Lifestyle = {
         var navigationElement = $('#feedback div.navigation');
         var html = '';
         var navigationHtml = '';
-        var fieldNames = [];
-        fieldNames['john'] = true;
-        fieldNames['activities'] = false;
-        fieldNames['hours'] = false;
-        fieldNames['differences'] = false;
-        fieldNames['totals'] = false;
+        var fieldIds = {};
+        fieldIds.john = true;
+        fieldIds.ghost = false;
+        fieldIds.activities = false;
+        fieldIds.hours = false;
+        fieldIds.differences = false;
+        fieldIds.totals = false;
         
-        var tutorialHtml = [];
+        // Set fields to default
+        //$('#human').removeClass(classComplete);
+        this.resetCompletedElementsDisplay();
+        
+        // navigation
         var nextId = 'tutorial-next';
         var previousId = 'tutorial-previous';
-        tutorialHtml[0] = '<p>Meet John. John\'s not feeling so good and isn\'t taking the best care of his body. His work hard '+
-                'play hard lifestyle puts his body out of kilter and makes him prone to weight gain.</p>';
-        tutorialHtml[1] = '<p> You\'re going to help John by adjusting his lifestyle so to bring his body and weight back into line.</p> '+
-                '<p>To make this easier we\'ve added a ghost image of John at his ideal weight as a target to aim for.</p> '+
-                'You\'ll also know you\'ve reached the goal when the background behind John turns green like it has done now.</p>';
-        tutorialHtml[2] = '<h2>Activities. impact on energy</h2><p>See if you can help John by balancing his work, rest and play. You need to use the sliders '+
-                ' to adjust the hours he spends on each activity. Each activity may gain or lose energy per hour. You need to </p>';
-        tutorialHtml[3] = '<h2>The daily lifestyle (hours spent)</h2><p>Meet John. John\'s not feeling so good and isn\'t taking the best care of his body. His work hard '+
-                'play hard lifestyle puts his body out of kilter and makes him prone to weight gain.</p>';
-        tutorialHtml[4] = '<h2>The impact of each activity</h2><p>Meet John. John\'s not feeling so good and isn\'t taking the best care of his body. His work hard '+
-                'play hard lifestyle puts his body out of kilter and makes him prone to weight gain.</p>';
-        tutorialHtml[5] = '<h2>The cumulative impact on energy</h2><p>Meet John. John\'s not feeling so good and isn\'t taking the best care of his body. His work hard '+
-                'play hard lifestyle puts his body out of kilter and makes him prone to weight gain.</p>';
         
-        html = tutorialHtml[step-1];
+        var tutorialSteps = [];
+        // 1
+        // introduction
+        var html = '<p>Meet John.</p><p> John\'s isn\'t taking the best care of his body and isn\'t feeling so good.</p>'+
+                '<p> His work hard play hard lifestyle puts his body out of kilter and makes him prone to weight gain.</p>';
+            html+='hours '+this.getActivityValueById(this.ACTIVITY_WORK, 'hours');
+        tutorialSteps.push(new TutorialStep(html));
+        
+        // 2
+        html = '<p> Your goal is to help John by adjusting his lifestyle to bring his body and weight '+
+                'back into line.</p>';
+        tutorialSteps.push(new TutorialStep(html));
+        
+        // 3
+        html = '<p>To give you an idea of what you\'re aiming for we\'ve added a ghost image of John at '+
+                'his ideal weight as a target to aim for.</p>';
+        tutorialSteps.push(new TutorialStep(html, {ghost: true}));
+        
+        // 4 make john size of ghost. animate so you see him get smaller.
+        html = '<p>When John is the same size as the ghost target as he is right now you\'ve achieved the goal.</p>';
+        actions = function(){
+            Lifestyle.elementCompleteStatus['human-size'] = true;
+        }
+        tutorialSteps.push(new TutorialStep(html, {ghost: true}, actions));
+        
+        // 5 turn human background green
+        html = '<p>Another sign that you\'ve reached the goal is the background behind John turning green. Like it has now.</p>';
+        actions = function(){
+            Lifestyle.elementCompleteStatus['human-background'] = true;
+        }
+        tutorialSteps.push(new TutorialStep(html, {ghost: true}, actions));
+        
+        // 6
+        html = '<h2>Activities. impact on energy</h2><p>so how do you actually help John?</p><p>Johns problem is balancing his work, rest and play.</p>'
+        html += '<p>He works too hard and doesn\'t leave enough time to rest and play.</p>';
+        tutorialSteps.push(new TutorialStep(html, {ghost: true}));
+        
+        // 6
+        html = '<h2>Activity controls</h2><p>the hours John spends on work, rest and play and shown in the Activites and hours fields.</p>'
+        html += '<p>Right now John spends '+this.getActivityValueById(this.ACTIVITY_WORK, 'hours')+'.</p>';
+        tutorialSteps.push(new TutorialStep(html, {ghost: true, activities: true, hours: true}));
+        
+        // 7
+        html = '<h2>Activities. impact on energy</h2><p>See if you can help John by balancing his work, rest and play. You need to use the sliders '+
+                ' to adjust the hours he spends on each activity. Each activity may gain or lose energy per hour. You need to </p>';
+        tutorialSteps.push(new TutorialStep(html, {ghost: true, activities: true}));
+        html = '<h2>The daily lifestyle (hours spent)</h2><p>Meet John. John\'s not feeling so good and isn\'t taking the best care of his body. His work hard '+
+                'play hard lifestyle puts his body out of kilter and makes him prone to weight gain.</p>';
+        tutorialSteps.push(new TutorialStep(html, fieldIds));
+        html = '<h2>The impact of each activity</h2><p>Meet John. John\'s not feeling so good and isn\'t taking the best care of his body. His work hard '+
+                'play hard lifestyle puts his body out of kilter and makes him prone to weight gain.</p>';
+        tutorialSteps.push(new TutorialStep(html, fieldIds));
+        html = '<h2>The cumulative impact on energy</h2><p>Meet John. John\'s not feeling so good and isn\'t taking the best care of his body. His work hard '+
+                'play hard lifestyle puts his body out of kilter and makes him prone to weight gain.</p>';
+        tutorialSteps.push(new TutorialStep(html, fieldIds));
+        html = '<h2>final step. Show and explain reset and finish level button. call to action.</h2><p>Meet John. John\'s not feeling so good and isn\'t taking the best care of his body. His work hard '+
+                'play hard lifestyle puts his body out of kilter and makes him prone to weight gain.</p>';
+        tutorialSteps.push(new TutorialStep(html, fieldIds));
+        
+        var classComplete = 'complete';
+        /*
         switch(step){
             case 1:
-                // introduction
+                /
             case 2:
                 // Show targets
-                // turn human background green
-                // make john size of ghost. animate so you see him get smaller. 
+                
+                 
                 break; 
-            case 3:
-                fieldNames['activities'] = true;
+            case 3: 
+                
+                //$('#human').addClass(classComplete);
+                
                 break; 
                 
             case 4:
-                fieldNames['activities'] = true;
-                fieldNames['hours'] = true;
+                fieldIds['activities'] = true;
+                fieldIds['hours'] = true;
                 break; 
             case 5:
-                fieldNames['activities'] = true;
-                fieldNames['hours'] = true;
-                fieldNames['differences'] = true;
+                fieldIds['activities'] = true;
+                fieldIds['hours'] = true;
+                fieldIds['differences'] = true;
                 break; 
             case 6:
-                fieldNames['activities'] = true;
-                fieldNames['hours'] = true;
-                fieldNames['differences'] = true;
-                fieldNames['totals'] = true;
+                fieldIds['activities'] = true;
+                fieldIds['hours'] = true;
+                fieldIds['differences'] = true;
+                fieldIds['totals'] = true;
                 break;     
-        }
+        }*/
         
         if(step>1) {
             navigationHtml+= ' <div id="'+previousId+'">&lt; previous </div>';
         }
-        if(step<tutorialHtml.length) {
+        if(step<tutorialSteps.length) {
             navigationHtml+= ' <div id="'+nextId+'">next &gt;</div>';
         }
-        field.html(html);
+        
+        tutorialStep = tutorialSteps[step-1];
+        field.html(tutorialStep.html);
         navigationElement.html(navigationHtml);
+        if(tutorialStep.actions) {
+            tutorialStep.actions();
+        }
 
-        console.log('runTutorial: 1');
+        //console.log('runTutorial: 1');
         if(step>1) {
             $('#'+previousId).click(function() {
                 Lifestyle.runTutorial(step-1)
             });
         }
-        if(step<tutorialHtml.length) {
+        if(step<tutorialSteps.length) {
             $('#'+nextId).click(function() {
-                console.log('step = '+step);
+                //console.log('step = '+step);
                 Lifestyle.runTutorial(step+1)
             });
         }
         
-        console.log('runTutorial: 3');
-        console.log('runTutorial: fieldNames.length = '+fieldNames.length);
-        var displayClass = 'hide';
-        var fieldName;
-        var field = null;
-        for(fieldName in fieldNames){
-            console.log('display: fieldNames[fieldName] '+fieldNames[fieldName]);
-            field = $('#'+fieldName);
-            console.log(field);
-            if(!fieldNames[fieldName]){
-                console.log('display: hide '+fieldName);
-               field.addClass(displayClass);
-                continue;
-            }
-            console.log('display: show '+fieldName);
-            field.removeClass(displayClass);
-        }
+        // merge default field ids with step specific
+        this.objectToArray(tutorialStep.fieldIds, fieldIds);
+        this.UpdateTutorialFieldDisplay(fieldIds);
+        this.updateCompletedElementsDisplay();
         
         console.log('runTutorial: 4');
         this.firstUse = false;
+    },
+    
+    UpdateTutorialFieldDisplay: function(fieldIds){
+        var displayClass = 'hide';
+        var fieldName;
+        var field = null;
+        for(fieldName in fieldIds){
+            //console.log('display: fieldIds[fieldName] '+fieldIds[fieldName]);
+            field = $('#'+fieldName);
+            //console.log(field);
+            if(!fieldIds[fieldName]){
+                //console.log('display: hide '+fieldName);
+               field.addClass(displayClass);
+                continue;
+            }
+            //console.log('display: show '+fieldName);
+            field.removeClass(displayClass);
+        }
+    },
+    
+    /*
+     * convert an object to an array
+     * @param object o
+     * @param array a (optional)
+     * @return array
+     */
+    objectToArray: function(o, a) {
+        a = typeof(a) == 'object'?a:[];
+        for(prop in o){
+            a[prop] = o[prop];
+        }
+        return a;
+    },
+    
+    updateCompletedElementsDisplay: function(){
+        var completed = false;
+        var classCompleted = 'complete';
+        for(id in  this.elementCompleteStatus){
+            completed = this.elementCompleteStatus[id];
+            switch(id){
+                case 'human-background':
+                    element = $('#human');
+                    if(completed){
+                        element.addClass(classCompleted);
+                    }
+                    else {
+                        element.removeClass(classCompleted);
+                    }
+                    break;
+                case 'human-size':
+                    if(completed){
+                        scale = 2;
+                        this.human.scale(scale, scale);
+                    }
+                    else {
+                        this.updateHuman();
+                    }
+                    
+                    break;
+            }
+        }
+    },
+    
+    resetCompletedElementsDisplay: function(){
+        for(x=0;x<this.elementCompleteIds.length;x++){
+            this.elementCompleteStatus[this.elementCompleteIds[x]] = false;
+        }
     }
 
 };

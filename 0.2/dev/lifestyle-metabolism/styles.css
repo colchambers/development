@@ -9,16 +9,17 @@ body
 {
     font-family: arial, helvetica, sans-serif;
     font-size: 85%;
-	margin: 10px;
+    margin: 10px;
 	color: #333;
 	background-color: #fff;
 }
 
-h1
+#main h1
 {
 	font-size: 1.6em;
 	font-weight: normal;
 	margin-bottom: 0.5em;
+    text-align: center;
 }
 
 p
@@ -227,6 +228,9 @@ fieldset#john {
 }
 
 /* Tutorial */
+.feedback p {
+    margin-bottom: 1em;
+}
 #tutorial-previous {
     float: left;
 }
@@ -237,4 +241,8 @@ fieldset#john {
 
 .#tutorial-next:hover {
     color: #000;
+}
+
+#human.complete {
+    background-color: #0F0;
 }
