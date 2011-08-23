@@ -79,7 +79,7 @@ var Lifestyle = {
     
     initialiseActivities: function() {
         this.activities[1] = new Activity(1, 'work', 0.5, 14);
-        this.activities[2] = new Activity(2, 'rest', 0.5, 8);
+        this.activities[2] = new Activity(2, 'rest', 1, 8);
         this.activities[3] = new Activity(3, 'play', -2, 2);
     },
     
@@ -488,19 +488,20 @@ var Lifestyle = {
         tutorialSteps.push(new TutorialStep(html, title, {ghost: true}, actions));
         
         // 3.Activities
-        html = '<h2>Activities. impact on energy</h2><p>so how do you actually help John?</p><p>Johns problem is balancing his work, rest and play.</p>'
-        html += '<p>He works too hard and doesn\'t leave enough time to rest and play.</p>';
-        tutorialSteps.push(new TutorialStep(html, title, {ghost: true}));
+        title = 'Activities. Impact on energy';
+        html = '<p>Johns day is broken down into 3 types of actvity. Next to John an activities ';
+        html += 'chart has appeared listing these activities. They are: ';
+        html += this.getActivityValueById(this.ACTIVITY_WORK, 'name')+', ';
+        html += this.getActivityValueById(this.ACTIVITY_REST, 'name')+' and ';
+        html +=  this.getActivityValueById(this.ACTIVITY_PLAY, 'name')+'.</p>';
+        // energy
+        html += '<h3>Energy</h3><p>Each activity uses energy at a different rate per hour. The rate is shown';
+        html += 'below its corresponding acitvity.</p>'
+        // hours 
+        html += '<h3>Hours</h3><p>The hours John spends on each activity are shown in the hours section.</p>'
         
-        // 7
-        html = '<h2>Activity controls</h2><p>the hours John spends on work, rest and play and shown in the Activites and hours fields.</p>'
-        html += '<p>Right now John spends '+this.getActivityValueById(this.ACTIVITY_WORK, 'hours')+'.</p>';
-        tutorialSteps.push(new TutorialStep(html, {ghost: true, activities: true, hours: true}));
+        tutorialSteps.push(new TutorialStep(html, title, {ghost: true, activities: true, hours: true}));
         
-        // 8
-        html = '<h2>Activities. impact on energy</h2><p>See if you can help John by balancing his work, rest and play. You need to use the sliders '+
-                ' to adjust the hours he spends on each activity. Each activity may gain or lose energy per hour. You need to </p>';
-        tutorialSteps.push(new TutorialStep(html, {ghost: true, activities: true}));
         html = '<h2>The daily lifestyle (hours spent)</h2><p>Meet John. John\'s not feeling so good and isn\'t taking the best care of his body. His work hard '+
                 'play hard lifestyle puts his body out of kilter and makes him prone to weight gain.</p>';
         tutorialSteps.push(new TutorialStep(html, fieldIds));
