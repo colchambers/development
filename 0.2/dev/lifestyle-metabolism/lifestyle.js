@@ -441,6 +441,7 @@ var Lifestyle = {
         fieldIds.hours = false;
         fieldIds.differences = false;
         fieldIds.totals = false;
+        var displayElements;
         
         // Set fields to default
         //$('#human').removeClass(classComplete);
@@ -495,62 +496,35 @@ var Lifestyle = {
         html += this.getActivityValueById(this.ACTIVITY_REST, 'name')+' and ';
         html +=  this.getActivityValueById(this.ACTIVITY_PLAY, 'name')+'.</p>';
         // energy
-        html += '<h3>Energy</h3><p>Each activity uses energy at a different rate per hour. The rate is shown';
-        html += 'below its corresponding acitvity.</p>'
+        html += '<h3>Energy balance</h3><p>Each activity has a different energy balance. Some end up ';
+        html += 'losing the body energy, others gain energy. This energy lost or gained per hour is ';
+        html += 'shown below each activity.</p>';
         // hours 
-        html += '<h3>Hours</h3><p>The hours John spends on each activity are shown in the hours section.</p>'
-        
+        html += '<h3>Hours</h3><p>The hours John spends on each activity are shown in the hours section.</p>';
         tutorialSteps.push(new TutorialStep(html, title, {ghost: true, activities: true, hours: true}));
         
-        html = '<h2>The daily lifestyle (hours spent)</h2><p>Meet John. John\'s not feeling so good and isn\'t taking the best care of his body. His work hard '+
-                'play hard lifestyle puts his body out of kilter and makes him prone to weight gain.</p>';
-        tutorialSteps.push(new TutorialStep(html, fieldIds));
-        html = '<h2>The impact of each activity</h2><p>Meet John. John\'s not feeling so good and isn\'t taking the best care of his body. His work hard '+
-                'play hard lifestyle puts his body out of kilter and makes him prone to weight gain.</p>';
-        tutorialSteps.push(new TutorialStep(html, fieldIds));
-        html = '<h2>The cumulative impact on energy</h2><p>Meet John. John\'s not feeling so good and isn\'t taking the best care of his body. His work hard '+
-                'play hard lifestyle puts his body out of kilter and makes him prone to weight gain.</p>';
-        tutorialSteps.push(new TutorialStep(html, fieldIds));
-        html = '<h2>final step. Show and explain reset and finish level button. call to action.</h2><p>Meet John. John\'s not feeling so good and isn\'t taking the best care of his body. His work hard '+
-                'play hard lifestyle puts his body out of kilter and makes him prone to weight gain.</p>';
-        tutorialSteps.push(new TutorialStep(html, fieldIds));
+        // 4.Cumulative impact
+        title = 'Cumulative impact';
+        html = '<p>Weight gain is the result of the excess energy over time. The two sections have appeared to ';
+        html += 'show these effects.</p>';
+        html += '<h3>Cumulative Energy</h3><p>Shows the amount of energy added or lost per day on each ';
+        html += 'activity e.g. energy x hours.</p>';
+        // energy
+        html += '<h3>Total Energy</h3><p>The amount of energy added or lost per day from all activities.</p>';
+        displayElements = {ghost: true, activities: true, hours: true, differences: true, totals: true};
+        tutorialSteps.push(new TutorialStep(html, title, displayElements));
+        
         
         var classComplete = 'complete';
-        /*
-        switch(step){
-            case 1:
-                /
-            case 2:
-                // Show targets
-                
-                 
-                break; 
-            case 3: 
-                
-                //$('#human').addClass(classComplete);
-                
-                break; 
-                
-            case 4:
-                fieldIds['activities'] = true;
-                fieldIds['hours'] = true;
-                break; 
-            case 5:
-                fieldIds['activities'] = true;
-                fieldIds['hours'] = true;
-                fieldIds['differences'] = true;
-                break; 
-            case 6:
-                fieldIds['activities'] = true;
-                fieldIds['hours'] = true;
-                fieldIds['differences'] = true;
-                fieldIds['totals'] = true;
-                break;     
-        }*/
         
         if(step>1) {
             navigationHtml+= ' <div id="'+previousId+'">&lt; previous </div>';
         }
+        navigationHtml+= '<ul class="steps">';
+        for(var x=1; x<tutorialSteps.length+1;x++){
+           navigationHtml+= '<li id="tutorial-navigation-'+x+'">'+x+'</li>'; 
+        }
+        navigationHtml+= '</ul>';
         if(step<tutorialSteps.length) {
             navigationHtml+= ' <div id="'+nextId+'">next &gt;</div>';
         }
@@ -568,6 +542,9 @@ var Lifestyle = {
             $('#'+previousId).click(function() {
                 Lifestyle.runTutorial(step-1);
             });
+        }
+        for(x=1; x<tutorialSteps.length+1;x++){
+            $('#tutorial-navigation-'+x).bind('click', { step: x }, Lifestyle.handleTutorialNavigation);
         }
         if(step<tutorialSteps.length) {
             $('#'+nextId).click(function() {
@@ -650,6 +627,10 @@ var Lifestyle = {
         for(x=0;x<this.elementCompleteIds.length;x++){
             this.elementCompleteStatus[this.elementCompleteIds[x]] = false;
         }
+    },
+    
+    handleTutorialNavigation: function (event){
+        Lifestyle.runTutorial(event.data.step);
     }
 
 };

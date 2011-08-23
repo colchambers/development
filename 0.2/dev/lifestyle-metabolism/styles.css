@@ -10,7 +10,7 @@ body
     font-family: arial, helvetica, sans-serif;
     font-size: 85%;
     margin: 10px;
-	color: #333;
+    color: #333;
 	background-color: #fff;
 }
 
@@ -245,4 +245,16 @@ fieldset#john {
 
 #human.complete {
     background-color: #0F0;
+}
+
+.navigation .steps li {
+    display: inline;
+    list-style-type: none;
+    padding-right: 10px;
+}
+
+.navigation .steps {
+    float: left;
+    text-align: center;
+    width: 50%;
 }
