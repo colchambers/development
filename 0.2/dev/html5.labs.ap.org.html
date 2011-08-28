@@ -1,0 +1,90 @@
+
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+    <title>Timeline Reader - AP Labs</title> 
+	<meta http-equiv="X-UA-Compatible" content="IE=9"/> 
+	<meta charset="UTF-8"/> 
+	<meta name="Description" content="AP Labs - Timeline Reader: An HTML5 news visualization and reader experiment. Created by Vectorform." /> 
+	<link rel="shortcut icon" type="image/x-icon" href="http://html5.labs.ap.org/favicon.ico" /> 
+	<link rel="stylesheet" href="http://html5.labs.ap.org/styles/fifth.css" type="text/css" /> 
+	<link rel="stylesheet" href="http://html5.labs.ap.org/styles/overlay.css" type="text/css" /> 
+ 
+	<script src="http://html5.labs.ap.org/scripts/lib/jquery.lib.min.js" type="text/javascript"></script> 
+	<script src="http://html5.labs.ap.org/scripts/splash.min.js" charset="utf-8" type="text/javascript"></script> 
+	<script src="http://html5.labs.ap.org/scripts/timeline-reader.min.js" charset="utf-8" type="text/javascript"></script> 
+	
+  	
+</head> 
+<body> 
+	<div id="header"> 
+		<h1 id="logo" class="logo">AP Associated Press</h1> 
+		<div id="theScrollBarHolder" class="scroll-bar-wrap ui-widget-content ui-corner-bottom ui-corner-top"> 
+			<div id="scroll-next" class="next">&raquo;</div> 
+			<div id="scroll-prev" class="prev">&laquo;</div> 
+			<!-- the handler to action the slide --> 
+			<div id="theScrollBar" class="scroll-bar"></div> 
+		</div> 
+		<div id="detail-nav"> 
+			<div class="next">&raquo;</div> 
+			<div class="prev">&laquo;</div> 
+			<div id="timeline" class="button">Back to Timeline</div> 
+		</div> 
+ 
+		<div class="button style" style="display: none">Style</div> 
+		<div class="button hide">View Queue</div><span id="queue-count"><span></span></span> 
+	</div> 
+	<div id="cat-button"><span></span></div> 
+	<div id="cat-id"></div> 
+	<aside> 
+			<header></header> 
+			<ul id="categories"></ul> 
+			<div id="detail-controls"> 
+				<h2 id="fonts">Text Size:</h2> 
+				<span class="button" id="smaller">Smaller</span> <span class="button" id="larger">Larger</span> 
+				<h2 id="more-images" style="display: none">Images:</h2> 
+				<div id="thumbs"></div> 
+			</div> 
+	</aside> 
+	<div id="content" > 
+		<div class="transperacy"></div> 
+		<div id="scroll-container"> 
+			<div id="scroll"></div> 
+		</div> 
+		<div id="detail"> 
+			<div id="overlay"></div> 
+		</div> 
+	</div> 
+	<div id="splash"> 
+		<canvas id="canvas-splash" width="960" height="620"></canvas> 
+	</div> 
+ 
+ 
+ 
+<script type="text/javascript"> 
+ 
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-1229999-25']);
+  _gaq.push(['_trackPageview']);
+  
+  _gaq.push(['b._setAccount', 'UA-252713-5']);
+  _gaq.push(['b._setDomainName', 'none']);
+  _gaq.push(['b._setAllowLinker', true]);
+  _gaq.push(['b._trackPageview']);
+ 
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+ 
+</script> 
+ 
+ 
+ 
+ 
+ 
+ 
+</body> 
+ 
+</html>

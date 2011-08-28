@@ -1,0 +1,127 @@
+
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+    <meta charset="utf-8"> 
+    <title>Raphael JS - Default functionality</title> 
+	<script src="../../lib/raphael-min.js"></script> 
+    
+        <script type="text/javascript" src="http://yui.yahooapis.com/3.3.0/build/yui/yui-min.js"></script>
+    <script type="text/javascript" src="../../yui/build/yahoo-dom-event/yahoo-dom-event.js"></script>
+    <script type="text/javascript" src="../../yui/build/element/element-beta-min.js"></script>
+    
+    <!-- script for debugging -->
+ <script type="text/javascript" src="../js/analyse.js"></script>
+ <!-- end script for debugging -->
+ <script type="text/javascript" src="../../yui/build/yuiloader/yuiloader.js"></script>
+</head> 
+<body> 
+ 
+<div id="demo"> 
+
+ 
+</div><!-- End demo --> 
+ 
+<div id="tabs"> 
+</div> 
+ 
+ 
+<div class="demo-description"> 
+<p>Click tabs to swap between content that is broken into logical sections.</p> 
+</div><!-- End demo-description --> 
+ 
+    <script>
+    
+    
+    // create a debugging console
+    //initialiseConsole();
+    
+/*
+    // Each of the following examples create a canvas that is 320px wide by 200px high
+// Canvas is created at the viewport’s 10,50 coordinate
+var paper = Raphael(10, 50, 320, 200);
+// Canvas is created at the top left corner of the #notepad element
+// (or its top right corner in dir="rtl" elements)
+var paper = Raphael(document.getElementById("demo"), 320, 200);
+// Same as above
+
+var paper = Raphael("demo", 320, 200);
+*/
+
+/*
+ * Tennis court dimensions
+ * Doubles
+ * Length:78'
+ * width:36'
+ *
+ * Singles width: 27'
+ * service length: 21'
+ * 
+ */
+ 
+ // dimension variables
+ var court = {};
+ court.scale = 10;
+ court.length = 76;
+ court.width = 38;
+ court.serviceLength = 21;
+ court.singlesWidth = 27;
+ court.area = {};
+ court.area.topPadding = 5;
+ court.area.sidePadding = 5;
+ court.area.length = (court.length + court.area.topPadding + 10);
+ court.area.width = (court.width + court.area.sidePadding + 10);
+ 
+ function getByScale(dimension){
+     return dimension * court.scale;
+ }
+ 
+ debug('court.singlesWidth = '+court.singlesWidth);
+ debug('court.serviceLength = '+court.serviceLength);
+ 
+ nonServiceLength = (court.length - court.serviceLength)/2;
+ serviceWidth = (court.width - court.singlesWidth)/2;
+ debug('nonServiceLength = '+nonServiceLength);
+ debug('serviceWidth = '+serviceWidth);
+ 
+ 
+// Image dump
+var set = Raphael(["demo", getByScale(court.area.length), getByScale(court.area.width), 
+{// main court
+    type: "rect",
+    x: getByScale(court.area.topPadding),
+    y: getByScale(court.area.sidePadding),
+    width: getByScale(court.length),
+    height: getByScale(court.width),
+    stroke: "#f00",
+    fill: "#0F0"
+}, { // centre line
+    type: "rect",
+    x: getByScale(court.area.topPadding),
+    y: getByScale(court.area.sidePadding),
+    width: getByScale((court.length/2)),
+    height: getByScale(court.width),
+}, { // singles court
+    type: "rect",
+    x: getByScale(court.area.topPadding),
+    y: getByScale(court.area.sidePadding + ((court.width - court.singlesWidth)/2)),
+    width: getByScale(court.length),
+    height: getByScale(court.singlesWidth),
+}, {// Service court 1
+    type: "rect",
+    x: getByScale(court.area.topPadding + ((court.length/2) - court.serviceLength)),
+    y: getByScale(court.area.sidePadding + ((court.width - court.singlesWidth)/2)),
+    width: getByScale(court.serviceLength*2),
+    height: getByScale(court.singlesWidth/2),
+}, {
+    type: "rect",
+    x: getByScale(court.area.topPadding + ((court.length/2) - court.serviceLength)),
+    y: getByScale(court.area.sidePadding + ((court.width - court.singlesWidth + court.singlesWidth)/2)),
+    width: getByScale(court.serviceLength*2),
+    height: getByScale(court.singlesWidth/2),
+}
+]);
+
+    </script>
+</body> 
+</html>

@@ -1,0 +1,159 @@
+
+ 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"> 
+<html> 
+<head> 
+<meta http-equiv="content-type" content="text/html; charset=utf-8"> 
+<title>Creating a Universal Console</title> 
+ 
+<style type="text/css"> 
+/*margin and padding on body element
+  can introduce errors in determining
+  element position and are not recommended;
+  we turn them off as a foundation for YUI
+  CSS treatments. */
+body {
+    margin:0;
+	padding:0;
+}
+</style> 
+ 
+<link type="text/css" rel="stylesheet" href="http://yui.yahooapis.com/3.3.0/build/cssfonts/fonts-min.css" /> 
+<script type="text/javascript" src="http://yui.yahooapis.com/3.3.0/build/yui/yui-min.js"></script> 
+ 
+ 
+<!--begin custom header content for this example--> 
+<style type="text/css"> 
+#demo .first button {
+    margin-bottom: 2em;
+}
+ 
+#demo .yui3-console .yui3-console-title {
+    border: 0 none;
+    color: #000;
+    font-size: 13px;
+    font-weight: bold;
+    margin: 0;
+    text-transform: none;
+}
+#demo .yui3-console .yui3-console-entry-meta {
+    margin: 0;
+}
+ 
+.clr {
+    clear: both;
+}
+</style> 
+ 
+<!--end custom header content for this example--> 
+ 
+</head> 
+ 
+<body class="yui3-skin-sam  yui-skin-sam"> 
+ 
+<h1>Creating a Universal Console</h1> 
+ 
+<div class="exampleIntro"> 
+	<p>In this example, three YUI instances are created, each binding a button to call <code>Y.log(...)</code>.  Then an additional, separate YUI instance is created that requests only the <code>console</code> module and creates a Console that listens for log events from all three.</p> 
+			
+</div> 
+ 
+<!--BEGIN SOURCE CODE FOR EXAMPLE =============================== --> 
+ 
+<div id="demo"> 
+    <div class="yui-g"> 
+        <div class="yui-u first"> 
+            <h4>YUI #1</h4> 
+            <button type="button" id="yui1">Log from YUI instance #1</button> 
+ 
+            <h4>YUI #2</h4> 
+            <button type="button" id="yui2">Log from YUI instance #2</button> 
+ 
+            <h4>YUI #3</h4> 
+            <button type="button" id="yui3">Log from YUI instance #3</button> 
+        </div> 
+        <div class="yui-u" id="yconsole"> 
+        </div> 
+    </div> 
+    <div class="clr"></div> 
+</div> 
+<script type="text/javascript"> 
+ 
+// Create the first YUI instance
+YUI({ filter: 'raw' }).use("node", function (Y) {
+    
+    Y.one( "#yui1" ).on( "click", function () {
+        Y.log( "Message from YUI instance #1" );
+    });
+ 
+});
+ 
+// Create the second YUI instance
+YUI({ filter: 'raw' }).use("node", function (Y) {
+ 
+    Y.one( "#yui2" ).on( "click", function () {
+        Y.log( "I'm the second YUI instance" );
+    });
+ 
+});
+ 
+// Create a third YUI instance
+YUI({ filter: 'raw' }).use("node", function (Y) {
+ 
+    Y.one( "#yui3" ).on( "click", function () {
+        Y.log( "And this is #3 YUI" );
+    });
+ 
+});
+ 
+// Create a separate YUI instance to listen to all instances' logging
+YUI({ filter: 'raw' }).use("console", function (Y) {
+ 
+    // Configure the Console's logSource to Y.Global to make it universal
+    new Y.Console({
+        logSource: Y.Global,
+        style: 'block',
+        newestOnTop: false,
+        width: "250px"
+    }).render( "#yconsole" );
+ 
+});
+ 
+</script> 
+ 
+<!--END SOURCE CODE FOR EXAMPLE =============================== --> 
+ 
+ 
+<!--MyBlogLog instrumentation--> 
+<script type="text/javascript" src="http://track2.mybloglog.com/js/jsserv.php?mblID=2007020704011645"></script> 
+</body> 
+</html> 
+ 
+<script type="text/javascript"
+src="http://l.yimg.com/d/lib/rt/rto1_78.js"></script><script>var rt_page="2012403201:FRTMA"; var
+rt_ip="137.108.145.250";
+if ("function" == typeof(rt_AddVar) ){ rt_AddVar("ys", escape("F04C9345")); rt_AddVar("cr", escape("sIXx0a6TBMT"));
+rt_AddVar("sg", escape("/SIG=13om7hvjo86qse994bv9c1&b=4&d=4Bbc2TFpYEJ3JxjXxsYJwXHFntBMLKexLR4-&s=78&i=eB3v9i3GNgTAnNr1uOZZ/1302786511/137.108.145.250/F04C9345")); rt_AddVar("yd", escape("2342644794"));
+}</script><noscript><img src="http://rtb.pclick.yahoo.com/images/nojs.gif?p=2012403201:FRTMA"></noscript>
+<!-- SpaceID=2012403201 loc=FSRVY noad --> 
+<script language=javascript> 
+if(window.yzq_d==null)window.yzq_d=new Object();
+window.yzq_d['e1goDkwNPK8-']='&U=12d3fagsk%2fN%3de1goDkwNPK8-%2fC%3d-1%2fD%3dFSRVY%2fB%3d-1%2fV%3d0';
+</script><noscript><img width=1 height=1 alt="" src="http://us.bc.yahoo.com/b?P=MXf5_kWTTNKDa45KSL.lgRMyiWyR.k2m8c8ACJt8&T=1823phgnd%2fX%3d1302786511%2fE%3d2012403201%2fR%3ddev_net%2fK%3d5%2fV%3d2.1%2fW%3dH%2fY%3dYAHOO%2fF%3d1220810926%2fH%3dc2VydmVJZD0iTVhmNV9rV1RUTktEYTQ1S1NMLmxnUk15aVd5Ui5rMm04YzhBQ0p0OCIgc2l0ZUlkPSI0NDY1NTUxIiB0U3RtcD0iMTMwMjc4NjUxMTU2ODY1NSIg%2fQ%3d-1%2fS%3d1%2fJ%3dF04C9345&U=12d3fagsk%2fN%3de1goDkwNPK8-%2fC%3d-1%2fD%3dFSRVY%2fB%3d-1%2fV%3d0"></noscript><script language=javascript> 
+if(window.yzq_d==null)window.yzq_d=new Object();
+window.yzq_d['eVgoDkwNPK8-']='&U=13e2lsghq%2fN%3deVgoDkwNPK8-%2fC%3d289534.9603437.10326224.9298098%2fD%3dFOOT%2fB%3d4123617%2fV%3d1';
+</script><noscript><img width=1 height=1 alt="" src="http://us.bc.yahoo.com/b?P=MXf5_kWTTNKDa45KSL.lgRMyiWyR.k2m8c8ACJt8&T=18249epft%2fX%3d1302786511%2fE%3d2012403201%2fR%3ddev_net%2fK%3d5%2fV%3d2.1%2fW%3dH%2fY%3dYAHOO%2fF%3d1795329616%2fH%3dc2VydmVJZD0iTVhmNV9rV1RUTktEYTQ1S1NMLmxnUk15aVd5Ui5rMm04YzhBQ0p0OCIgc2l0ZUlkPSI0NDY1NTUxIiB0U3RtcD0iMTMwMjc4NjUxMTU2ODY1NSIg%2fQ%3d-1%2fS%3d1%2fJ%3dF04C9345&U=13e2lsghq%2fN%3deVgoDkwNPK8-%2fC%3d289534.9603437.10326224.9298098%2fD%3dFOOT%2fB%3d4123617%2fV%3d1"></noscript> 
+<!-- VER-3.0.184192 --> 
+<script language=javascript> 
+if(window.yzq_p==null)document.write("<scr"+"ipt language=javascript src=http://l.yimg.com/d/lib/bc/bc_2.0.5.js></scr"+"ipt>");
+</script><script language=javascript> 
+if(window.yzq_p)yzq_p('P=MXf5_kWTTNKDa45KSL.lgRMyiWyR.k2m8c8ACJt8&T=17tlba64t%2fX%3d1302786511%2fE%3d2012403201%2fR%3ddev_net%2fK%3d5%2fV%3d1.1%2fW%3dJ%2fY%3dYAHOO%2fF%3d3726876995%2fH%3dc2VydmVJZD0iTVhmNV9rV1RUTktEYTQ1S1NMLmxnUk15aVd5Ui5rMm04YzhBQ0p0OCIgc2l0ZUlkPSI0NDY1NTUxIiB0U3RtcD0iMTMwMjc4NjUxMTU2ODY1NSIg%2fS%3d1%2fJ%3dF04C9345');
+if(window.yzq_s)yzq_s();
+</script><noscript><img width=1 height=1 alt="" src="http://us.bc.yahoo.com/b?P=MXf5_kWTTNKDa45KSL.lgRMyiWyR.k2m8c8ACJt8&T=181qvcrgq%2fX%3d1302786511%2fE%3d2012403201%2fR%3ddev_net%2fK%3d5%2fV%3d3.1%2fW%3dJ%2fY%3dYAHOO%2fF%3d319960731%2fH%3dc2VydmVJZD0iTVhmNV9rV1RUTktEYTQ1S1NMLmxnUk15aVd5Ui5rMm04YzhBQ0p0OCIgc2l0ZUlkPSI0NDY1NTUxIiB0U3RtcD0iMTMwMjc4NjUxMTU2ODY1NSIg%2fQ%3d-1%2fS%3d1%2fJ%3dF04C9345"></noscript><script language=javascript> 
+if(window.xzq_p==null)document.write("<scr"+"ipt language=javascript src='http://e.yimg.com/ii/yabcs.js'></scr"+"ipt>");
+</script><script language=javascript> 
+if(window.xzq_svr)xzq_svr('http://csc.beap.ad.yieldmanager.net/');
+if(window.xzq_p)xzq_p('i?bv=1.0.0&bs=(1285ec52l(gid$MXf5_kWTTNKDa45KSL.lgRMyiWyR.k2m8c8ACJt8,st$1302786511568655,v$1.0))&t=J-D');
+if(window.xzq_s)xzq_s();
+</script><noscript><img width=1 height=1 alt="" src="http://csc.beap.ad.yieldmanager.net/i?bv=1.0.0&bs=(1285ec52l(gid$MXf5_kWTTNKDa45KSL.lgRMyiWyR.k2m8c8ACJt8,st$1302786511568655,v$1.0))&t=J-D"></noscript> 
+<!-- p1.ydn.re1.yahoo.com compressed Thu Apr 14 06:08:31 PDT 2011 --> 

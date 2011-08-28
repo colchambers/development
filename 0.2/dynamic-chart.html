@@ -24,7 +24,6 @@
   
   <script type="text/javascript" src="http://code.jquery.com/jquery-1.5.min.js"></script> 
   <script type="text/javascript" src="http://jqueryui.com/jquery-1.5.1.js"></script> 
-  <script type="text/javascript" src="http://jqueryui.com/jquery-1.5.1.js"></script> 
   <script src="http://jqueryui.com/ui/jquery.ui.widget.js"></script> 
     <script src="http://jqueryui.com/ui/jquery.ui.mouse.js"></script> 
 	<script src="http://jqueryui.com/ui/jquery.ui.slider.js"></script> 
@@ -43,37 +42,13 @@
   
     var chartTypes = [];
     
-    function VisualisationType (type, title, method){
-    
-    this.type = type;
-    this.title = title;
-    this.method = method
-    }
     chartTypes[0] = new VisualisationType('columnchart', 'Column chart', 'ColumnChart')
 
-    
-    
-	var definedVariables = [];
-	
-	// define and document relationships between variables. 
-	definedVariables['dataUrl'] = new DefinedVariable('dataUrl', 'defaultDataUrl', 'du');
-	definedVariables['dataStatement'] = new DefinedVariable('dataStatement', 'defaultDataStatement', 'ds');
-	definedVariables['chartTitle'] = new DefinedVariable('chartTitle', 'defaultChartTitle', 'ct');
-	definedVariables['chartHeight'] = new DefinedVariable('chartHeight', 'defaultChartHeight', 'ch');
-	definedVariables['chartWidth'] = new DefinedVariable('chartWidth', 'defaultChartWidth', 'cw');
-	definedVariables['visualisationType'] = new DefinedVariable('visualisationType', 'visualisationType', 'vt');
-    
-    
-    for(var x=0;x<chartTypes.length;x++){
-		google.load("visualization", "1", {packages:[chartTypes[x].type]});
-    }
-
-
+    google.load("visualization", "1", {packages:[chartTypes[0].type]});
     google.setOnLoadCallback(initialiseForm);
-    //google.setOnLoadCallback(sendAndDraw);
     
     var data = null;
-    var chart = null;
+    var chart = new Visualisation_Chart();
     var chartOptions = null;
     var visualisationType = 0;
     var chartElementId = 'chart_div';
@@ -83,10 +58,6 @@
     var defaultChartHeight = 240;
 	var defaultChartTitle = 'Default Title';
     var defaultChartIs3D = true;
-    var numberOfRowsInForm = 10;
-    var queryUrls = [];
-    var queryString = '';
-	var queryStringValues = [];
 	
     /*
      * Create default chart and data values
@@ -95,20 +66,12 @@
     function initialiseData(){
     
 		// UK fat intake 1970-2000
-		chartOptions = createDefaultChartOptions();
+		chartOptions = chart.createDefaultOptions();
 		chartOptions.title = defaultChartTitle;
 		dataSource = null;
 	   
 		data = new google.visualization.DataTable(dataSource);
-		//data.url = defaultDataUrl; 
-		//data.statement = defaultDataStatement;
-		//data.query = new google.visualization.Query(data.url);
-		//data.query.setQuery(data.statement);
 		data.chartOptions = chartOptions;
-			data.source = 'Mean total fat intake in the UK per person per day, together with the percentage ';
-		data.source += 'of total energy in the fiet obtained form the different types of fatty acis, 1970 - 2000';
-		data.source += '(SK183) Understanding human nutrition. P72';
-		data.title = 'UK fat intake 1970-2000';
         
         data.addColumn('string', 'Year');
         data.addColumn('number', 'Sales');
@@ -135,7 +98,6 @@
 		// set default data source
 		data = dataSources[currentDataSourceId];
     
-    
     }
     
     /*
@@ -145,9 +107,8 @@
     function initialiseForm(){
     
         initialiseData();
-        initialiseChart();
+        chart.initialise();
        
-        //updateVisualization(typeId);
         // add an element to the form div
         var formHtml = '';
         formHtml += '<form id="form-1">';
@@ -158,22 +119,14 @@
         
         formHtml += '</form>';
         $("#form_div").append(formHtml);
-        // add onClick handler        
-        //$("#form-1").click(formChangeHandler);
-        //$("#range-1").change(formChangeHandler);
+        // add slider to update chart        
          $( "#slider-range" ).slider({
 			max: 5,
 			value: 2,
 			stop: function( event, ui ) {
 				updateDataSourceFromForm();
-                //$( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
 			}
 		});
-    }
-    
-    function formChangeHandler(){
-        updateDataSourceFromForm();
-        return false;
     }
     
     /*
@@ -183,8 +136,6 @@
     function updateDataSourceFromForm(){
         
         var range_1 = $( "#slider-range" ).slider("value");
-        //range_1 = parseInt(getRangeValue("#slider-range")); 
-        //alert('slider-range = ' + range_1 );
         
         switch(range_1){
             case 0:
@@ -201,12 +152,10 @@
                 break;
         }
         
-        updateVisualization(2);
+        chart.draw();
           
     }
     
-   
-
     </script>
   </body>
 </html>

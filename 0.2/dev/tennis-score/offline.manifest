@@ -1,0 +1,12 @@
+CACHE MANIFEST
+# rev 51
+
+NETWORK:
+*
+styles.css
+jquery-1.4.min.js
+offline.js
+index.html
+../../js/analyse.js
+        
+CACHE:                 
