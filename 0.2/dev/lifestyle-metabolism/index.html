@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <title>Lifestyle and metabolism</title>
+        <link rel="stylesheet" type="text/css" media="all" href="styles.css" />
+        <link rel="stylesheet" href="http://jqueryui.com/themes/base/jquery.ui.all.css">
+        <link rel="stylesheet" type="text/css" href="../../../lib/sencha/ext-4.0.2a/resources/css/ext-all.css" />
+    </head>
+    <body>
+        <div id="main">
+            <div id="panel-place-holder"></div>
+            <h1>Lifestyle and metabolism</h1>
+            <form id="mainform" action="index.html" method="post">
+
+                <fieldset id="john">
+                    <legend>John</legend>
+                    <div class="clearer">
+                        
+                        <div id="ghost"></div>
+                        <div id="human"></div>
+                        
+                    </div>
+                </fieldset>
+                <fieldset id="activities" >
+                    <legend>Activities</legend>
+                    <div id="" class="row">
+                        <div class="column-1"><label id="label-inputs-0" class="slider">Work</label></div>
+                        <div class="column-2"><label id="label-inputs-1" class="slider">Rest</label></div>
+                        <div class="column-3"><label id="label-inputs-2" class="slider">Play</label></div>
+                    </div>
+                    
+                    <fieldset id="energy" >
+                        <legend>Energy balance/hour</legend>
+                        <div id="energy-hours" class="row">
+                            <div class="column-1">0.5</div>
+                            <div class="column-2">1</div>
+                            <div class="column-3">-2</div>
+                        </div>
+                        <div id="inputs" class="row">
+                            <div class=""><div id="inputs-0" class="slider"></div></div>
+                        </div>
+                    </fieldset>
+                    
+                    <fieldset id="hours" >
+                        <legend>hours</legend>
+                        <div class="column-1">
+                            <input type="text" id="hours-0" readonly="readonly"/>
+                        </div>
+                        <div class="column-2">
+                            <input type="text" id="hours-1" readonly="readonly"/>
+                        </div>
+                        <div class="column-3">
+                            <input type="text" id="hours-2" readonly="readonly"/>
+                        </div>
+                    </fieldset>
+                    
+                    <fieldset id="differences" >
+                        <legend>Cumulative Energy</legend>
+                        <div class="column-1">
+                            <input type="text" id="differences-0" readonly="readonly"/>
+                        </div>
+                        <div class="column-2">
+                            <input type="text" id="differences-1" readonly="readonly"/>
+                        </div>
+                        <div class="column-3">
+                            <input type="text" id="differences-2" readonly="readonly"/>
+                        </div>
+                        
+                        <div id="" class="row">
+                            <div class=""><div id="differences-all" class="slider"></div></div>
+                        </div>
+                    </fieldset>
+                    
+                    <fieldset id="totals" >
+                        <legend>Total energy</legend>
+                        
+                        <div class="clearer">
+                            <div class="field" id="total-energy-difference"></div>
+                        </div>
+                        
+                    </fieldset>
+                </fieldset>
+                
+                
+                
+                
+                
+                <fieldset id="feedback" class="feedback clearer">
+                    <legend>Feedback</legend>
+                    
+                    <div class="navigation"></div>
+                    <div class="clearer content">
+                    </div>
+                    
+                </fieldset>
+                
+                <fieldset id="reset" class="hide">
+                    <button type="submit" id="reset" class="button reset clearer">Reset</button>
+                </fieldset>
+            </form>
+            <p id="status">Online</p>
+        </div>
+        
+        <script>
+        var cacheStatusValues = [];
+        cacheStatusValues[0] = 'uncached';
+        cacheStatusValues[1] = 'idle';
+        cacheStatusValues[2] = 'checking';
+        cacheStatusValues[3] = 'downloading';
+        cacheStatusValues[4] = 'updateready';
+        cacheStatusValues[5] = 'obsolete';
+        
+        var cache = window.applicationCache;
+        cache.addEventListener('cached', logEvent, false);
+        cache.addEventListener('checking', logEvent, false);
+        cache.addEventListener('downloading', logEvent, false);
+        cache.addEventListener('error', logEvent, false);
+        cache.addEventListener('noupdate', logEvent, false);
+        cache.addEventListener('obsolete', logEvent, false);
+        cache.addEventListener('progress', logEvent, false);
+        cache.addEventListener('updateready', logEvent, false);
+        
+        function logEvent(e) {
+            var online, status, type, message;
+            online = (navigator.onLine) ? 'yes' : 'no';
+            status = cacheStatusValues[cache.status];
+            type = e.type;
+            message = 'online: ' + online;
+            message+= ', event: ' + type;
+            message+= ', status: ' + status;
+            if (type == 'error' && navigator.onLine) {
+                message+= ' (prolly a syntax error in manifest)';
+            }
+            console.log(message);
+        }
+        
+        window.applicationCache.addEventListener(
+            'updateready',
+            function(){
+                window.applicationCache.swapCache();
+                console.log('swap cache has been called');
+            },
+            false
+        );
+        
+        //setInterval(function(){cache.update()}, 10000);
+        </script>
+        
+        <!--script type="text/javascript" src="jquery-1.4.min.js"></script-->
+        <script src="../../../lib/jquery/1.5.1.min.js"></script>
+        <script src="../../../lib/jquery/jquery-ui-1.8.15.custom.min.js"></script>
+        <script type="text/javascript" src="../../../lib/sencha/ext-4.0.2a/ext-all-dev.js"></script>
+        <script type="text/javascript" src="panel.js"></script>
+    
+        <script type="text/javascript" src="../../js/analyse.js"></script>
+        <script type="text/javascript" src="../../../lib/raphael/1.5.2/raphael.js"></script>
+        <script type="text/javascript" src="offline.js"></script>
+        <script type="text/javascript" src="lifestyle.js"></script>
+        <script type="text/javascript" src="main.js"></script>
+    </body>
+</html>

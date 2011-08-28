@@ -1,0 +1,85 @@
+<html>
+<body>
+<h1>fieldset test 1</h1>
+
+<style>
+html, body
+{
+  background: #156;
+  text-align: center;
+}
+
+#container
+{
+  background: #FFF;
+  border: 1px #222 solid;
+  height: 600px;
+  margin: 0 auto;
+  text-align: left;
+  width: 700px;
+}
+
+
+label
+{
+  float: left;
+  width: 50px;
+}
+
+.singleRow
+{
+
+}
+
+
+
+/* columns*/
+.column-1 {
+    width:30%;
+  }
+.column-2 {
+    width:30%;
+  }
+.column-3 {
+    width:30%;
+  }
+  
+.row {
+    clear:both
+}
+
+.column {
+    position: relative;
+    float: left;
+    text-align: center;
+}
+
+</style>
+
+</head>
+<body>
+<div id="container">
+  <form action="">
+    <fieldset class="singleRow">
+      <label for="1">Text:</label>
+      <input id="1" type="text" />
+      <input type="submit" value="submit" />
+    </fieldset>
+    <fieldset class="singleRow">
+      <label for="2">Text:</label>
+      <input id="2" type="text" />
+      <input type="submit" value="submit" />
+    </fieldset>  
+  </form>
+</div> 
+
+<form id="mainform" action="index.html" method="post">
+    <fieldset>
+        <legend>Energy/hour</legend>
+            <div class="column-1 column">+0.5</div>
+            <div class="column-2 column">+0.5</div>
+            <div class="column-3 column">-2</div>
+    </fieldset>
+</form>
+</body>
+</html>

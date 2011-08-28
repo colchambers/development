@@ -1,0 +1,260 @@
+/* offline test styles */
+*
+{
+    padding: 0;
+    margin: 0;
+}
+
+body
+{
+    font-family: arial, helvetica, sans-serif;
+    font-size: 85%;
+    margin: 10px;
+    color: #333;
+	background-color: #fff;
+}
+
+#main h1
+{
+	font-size: 1.6em;
+	font-weight: normal;
+	margin-bottom: 0.5em;
+    text-align: center;
+}
+
+p
+{
+	margin-bottom: 1em;
+}
+
+p#status
+{
+	width: 90%;
+	font-weight: bold;
+	text-align: center;
+	text-transform: uppercase;
+	padding: 4px;
+	color: #fff;
+	background-color: #090;
+}
+
+p#status.offline
+{
+	background-color: #900;
+}
+
+fieldset
+{
+	border: 0 none;
+	margin: 1em 0;
+}
+
+legend
+{
+	font-weight: bold;
+}
+
+input
+{
+	width: 5em;
+}
+
+
+/* interface */
+.button {
+    border: 1px solid #097bfc;
+    border-radius: 15px 15px 15px 15px;
+    display: block;
+    float: left;
+    font-size: 40px;
+    height: 60px;
+    margin: 10px;
+    padding: 10px;
+    width: 60px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.reset {
+    border-radius: 7px 7px 7px 7px;
+    font-size: 15px;
+    height: 30px;
+    width: 90%;
+    padding: 4px 116px;
+    margin: 0;
+}
+
+.scoreboard input {
+    font-size: 20px;
+    background-color: #03C9FF;
+    border: 0;
+}
+
+.clearer {
+    clear:both;
+}
+.round-corners{
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+} 
+
+/* columns */
+.column-1 {
+    width:30%;
+    float:left;
+  }
+.column-2 {
+    width:30%;
+  }
+.column-3 {
+        width:30%;
+        float: right
+  }
+  
+.row {
+    clear:both
+}
+
+.column-1, .column-2, .column-3, #totals label, #totals .field, #differences input, #hours input {
+    position: relative;
+    float: left;
+    
+    /*align center*/
+    text-align: center;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.slider {
+    /*align center*/
+    margin-left:auto;
+    margin-right:auto;
+}
+
+#differences input, #hours input {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+#inputs a.ui-slider-handle {
+    width: 5px;
+}
+
+#differences a.ui-slider-handle, #totals a.ui-slider-handle {
+    width: 30px;
+    text-align: center;
+    text-decoration: none;
+    height: 18px;
+    top: -0.4em;
+}
+
+#totals .field {
+    width: 100%;
+}
+
+#main {
+    margin: 2% auto;
+    width: 250px;
+}
+
+/* activity colours */
+/* red */
+.column-1 .ui-slider-range { background: #ef2929; }
+.column-1 .ui-slider-handle { border-color: #ef2929; }
+.work {
+    background: #ef2929; 
+    border-color: #ef2929; 
+}
+/* green */
+.column-2 .ui-slider-range { background: #8ae234; }
+.column-2 .ui-slider-handle { border-color: #8ae234; }
+/* blue */
+.column-3 .ui-slider-range { background: #729fcf; }
+.column-3 .ui-slider-handle { border-color: #729fcf; }
+
+/* hide online/offline */
+p#status {
+    display: none;
+}
+
+#total-energy-difference {
+    background: #ef2929;
+    color: white;
+}
+
+#total-energy-difference.correct {
+    background: #8ae234;
+    color: black;
+}
+
+/* Floating help panel */
+.floating-panel {
+    margin-left: auto;
+    margin-right: auto;
+    position: absolute;
+    text-align: center;
+    top: 0;
+    width: 100%;
+    z-index: 999;
+}
+
+#panel-place-holder {
+    margin-bottom: 30px;
+}
+.x-panel-body p{
+    margin: 1px;
+    padding: 5px;
+    text-align: left;
+    text-align: justify;
+}
+
+/* humans */
+#human {
+}
+
+#ghost {
+    position: absolute;
+    z-index: 100;
+}
+
+/* human and sliders side by side */
+fieldset#john {
+    float: left;
+}
+
+.hide {
+    display: none;
+}
+
+/* Tutorial */
+.feedback p {
+    margin-bottom: 1em;
+}
+#tutorial-previous {
+    float: left;
+}
+
+#tutorial-next {
+    float: right;
+}
+
+.#tutorial-next:hover {
+    color: #000;
+}
+
+#human.complete {
+    background-color: #0F0;
+}
+
+.navigation .steps li {
+    display: inline;
+    list-style-type: none;
+    padding-right: 10px;
+}
+
+.navigation .steps {
+    float: left;
+    text-align: center;
+    width: 50%;
+}
