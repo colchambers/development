@@ -31,7 +31,7 @@
 
 	</style>
 
-	<script type="text/javascript" src="../build/Three.js"></script>
+	<script type="text/javascript" src="../../lib/3d/Three.js"></script>
 	<script type="text/javascript" src="js/Detector.js"></script>
 	<script type="text/javascript" src="js/RequestAnimationFrame.js"></script>
 	<script type="text/javascript" src="js/Stats.js"></script>
@@ -71,7 +71,7 @@
 
 	var t, d, dPlanet, dMoon, dMoonVec = new THREE.Vector3();
 
-	var postprocessing = { enabled : true, bloom: false };
+	var postprocessing = { enabled : false, bloom: false };
 
 	init();
 	animate();

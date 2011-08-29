@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>Getting Started with Three.js</title>
+	
+	<style type="text/css">
+
+		body {
+			background: #FFF;
+			color: #EEE;
+			padding: 0;
+			margin: 0;
+			font-weight: bold;
+			overflow: hidden;
+
+			font-family: Monospace;
+			font-size: 13px;
+			text-align: center;
+		}
+
+		#info {
+			position: absolute;
+			top: 0px;
+			width: 100%;
+			padding: 5px;
+			z-index: 100;
+		}
+
+		a { color: green; }
+		b { color: green; }
+
+	</style>
+	
+	<script type="text/javascript" src="../../lib/jquery/1.6.2.js"></script>
+	<script type="text/javascript" src="../../lib/3d/Three.js"></script>
+	<script type="text/javascript" src="js/Detector.js"></script>
+	<script type="text/javascript" src="js/RequestAnimationFrame.js"></script>
+	<script type="text/javascript" src="js/Stats.js"></script>
+    <body>
+		<div id="info">
+			<a href="http://github.com/mrdoob/three.js" target="_blank">three.js</a> - earth [fly camera]<br/><br/>
+			<b>WASD</b> move, <b>R|F</b> up | down, <b>Q|E</b> roll, <b>up|down</b> pitch, <b>left|right</b> yaw<br/>
+		</div>
+    <script type="text/javascript">
+	var radius = 6371,
+	tilt = 0.41,
+	rotationSpeed = 0.1,
+
+	cloudsScale = 1.005,
+	moonScale = 0.23,
+
+	height = SCREEN_HEIGHT = window.innerHeight,
+	width  = SCREEN_WIDTH = window.innerWidth,
+
+	container, stats,
+
+	camera, scene, renderer,
+	geometry, meshPlanet, meshClouds, meshMoon,
+	dirLight, ambientLight,
+
+	time = new Date().getTime();
+	var postprocessing = { enabled : false, bloom: false };
+	window.onload = function() {
+
+		if ( !Detector.webgl ) {
+
+			Detector.addGetWebGLMessage();
+			return;
+
+		}
+
+		init();
+		animate();
+
+	}
+	
+    function init() {
+
+		container = document.createElement( 'div' );
+		document.body.appendChild( container );
+
+
+		scene = new THREE.Scene();
+
+		camera = new THREE.FlyCamera({
+
+			fov: 35,
+			aspect: width / height,
+			movementSpeed: 1000,
+			domElement: container,
+			rollSpeed: Math.PI / 24,
+			autoForward: false,
+			dragToLook: false,
+			near: 50,
+			far: 1e7
+
+        });
+		
+		//camera.position.set( -15, 10, 15 );
+		camera.position.z = radius * 5;
+
+		var cube = new THREE.Mesh(
+			new THREE.CubeGeometry( 5, 5, 5 ),
+			new THREE.MeshLambertMaterial( { color: 0xFF0000 } )
+		);
+		scene.addObject( cube );
+
+		var light = new THREE.PointLight( 0xFFFF00 );
+		light.position.set( 10, 0, 10 );
+		scene.addLight( light );
+
+            //renderer.render(scene, camera);
+
+		renderer = new THREE.WebGLRenderer( { clearAlpha: 1, clearColor: 0xFFFFFF } );
+        renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+        renderer.sortObjects = false;
+
+		initPostprocessing();
+		renderer.autoClear = false;
+
+        container.appendChild( renderer.domElement );
+		
+		stats = new Stats();
+		stats.domElement.style.position = 'absolute';
+		stats.domElement.style.top = '0px';
+		stats.domElement.style.zIndex = 100;
+		container.appendChild( stats.domElement );
+
+		window.addEventListener( 'resize', onWindowResize, false );
+
+	};
+
+	function onWindowResize( event ) {
+
+		width = window.innerWidth;
+		height = window.innerHeight;
+
+		renderer.setSize( width, height );
+
+		camera.aspect = width / height;
+		camera.updateProjectionMatrix();
+
+		camera.screen.width = width;
+		camera.screen.height = height;
+
+		camera.radius = ( width + height ) / 4;
+
+	};
+
+	function initPostprocessing() {
+
+		postprocessing.scene = new THREE.Scene();
+
+		postprocessing.camera = new THREE.Camera();
+		postprocessing.camera.projectionMatrix = THREE.Matrix4.makeOrtho( SCREEN_WIDTH / - 2, SCREEN_WIDTH / 2,  SCREEN_HEIGHT / 2, SCREEN_HEIGHT / - 2, -10000, 10000 );
+		postprocessing.camera.position.z = 100;
+
+		var pars = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBAFormat };
+		postprocessing.rtTexture1 = new THREE.WebGLRenderTarget( SCREEN_WIDTH, SCREEN_HEIGHT, pars );
+		postprocessing.rtTexture2 = new THREE.WebGLRenderTarget( 512, 512, pars );
+		postprocessing.rtTexture3 = new THREE.WebGLRenderTarget( 512, 512, pars );
+
+		var screen_shader = THREE.ShaderUtils.lib["screen"];
+		var screen_uniforms = THREE.UniformsUtils.clone( screen_shader.uniforms );
+
+		screen_uniforms["tDiffuse"].texture = postprocessing.rtTexture1;
+		screen_uniforms["opacity"].value = 1.0;
+
+		postprocessing.materialScreen = new THREE.MeshShaderMaterial( {
+
+			uniforms: screen_uniforms,
+			vertexShader: screen_shader.vertexShader,
+			fragmentShader: screen_shader.fragmentShader,
+			blending: THREE.AdditiveBlending,
+			transparent: true
+
+		} );
+
+		var convolution_shader = THREE.ShaderUtils.lib["convolution"];
+		var convolution_uniforms = THREE.UniformsUtils.clone( convolution_shader.uniforms );
+
+		postprocessing.blurx = new THREE.Vector2( 0.001953125, 0.0 ),
+		postprocessing.blury = new THREE.Vector2( 0.0, 0.001953125 );
+
+		convolution_uniforms["tDiffuse"].texture = postprocessing.rtTexture1;
+		convolution_uniforms["uImageIncrement"].value = postprocessing.blurx;
+		convolution_uniforms["cKernel"].value = THREE.ShaderUtils.buildKernel( 4.0 );
+
+		postprocessing.materialConvolution = new THREE.MeshShaderMaterial( {
+
+			uniforms: convolution_uniforms,
+			vertexShader:   "#define KERNEL_SIZE 25.0\n" + convolution_shader.vertexShader,
+			fragmentShader: "#define KERNEL_SIZE 25\n"   + convolution_shader.fragmentShader
+
+		} );
+
+		var film_shader = THREE.ShaderUtils.lib["film"];
+		var film_uniforms = THREE.UniformsUtils.clone( film_shader.uniforms );
+
+		film_uniforms["tDiffuse"].texture = postprocessing.rtTexture1;
+
+		postprocessing.materialFilm = new THREE.MeshShaderMaterial( { uniforms: film_uniforms, vertexShader: film_shader.vertexShader, fragmentShader: film_shader.fragmentShader } );
+		postprocessing.materialFilm.uniforms.grayscale.value = 0;
+		postprocessing.materialFilm.uniforms.nIntensity.value = 0.35;
+		postprocessing.materialFilm.uniforms.sIntensity.value = 0.75;
+		postprocessing.materialFilm.uniforms.sCount.value = 2048;
+
+		postprocessing.quad = new THREE.Mesh( new THREE.PlaneGeometry( SCREEN_WIDTH, SCREEN_HEIGHT ), postprocessing.materialConvolution );
+		postprocessing.quad.position.z = - 500;
+		postprocessing.scene.addObject( postprocessing.quad );
+
+	};
+	
+	function animate() {
+
+		requestAnimationFrame( animate );
+
+		render();
+		stats.update();
+
+	};
+
+	function render() {
+		if ( postprocessing.enabled ) {
+
+			renderer.clear();
+
+			// Render scene into texture
+
+			renderer.render( scene, camera, postprocessing.rtTexture1, true );
+
+			if ( postprocessing.bloom ) {
+
+				// Render quad with blured scene into texture (convolution pass 1)
+
+				postprocessing.quad.materials = [ postprocessing.materialConvolution ];
+
+				postprocessing.materialConvolution.uniforms.tDiffuse.texture = postprocessing.rtTexture1;
+				postprocessing.materialConvolution.uniforms.uImageIncrement.value = postprocessing.blurx;
+
+				renderer.render( postprocessing.scene, postprocessing.camera, postprocessing.rtTexture2, true );
+
+				// Render quad with blured scene into texture (convolution pass 2)
+
+				postprocessing.materialConvolution.uniforms.tDiffuse.texture = postprocessing.rtTexture2;
+				postprocessing.materialConvolution.uniforms.uImageIncrement.value = postprocessing.blury;
+
+				renderer.render( postprocessing.scene, postprocessing.camera, postprocessing.rtTexture3, true );
+
+				// Render original scene with superimposed blur to texture
+
+				postprocessing.quad.materials = [ postprocessing.materialScreen ];
+
+				postprocessing.materialScreen.uniforms.tDiffuse.texture = postprocessing.rtTexture3;
+				postprocessing.materialScreen.uniforms.opacity.value = 0.75;
+
+				renderer.render( postprocessing.scene, postprocessing.camera, postprocessing.rtTexture1, false );
+
+			}
+
+			// Render to screen
+
+			postprocessing.materialFilm.uniforms.time.value += 0.01;
+			postprocessing.quad.materials = [ postprocessing.materialFilm ];
+
+			postprocessing.materialScreen.uniforms.tDiffuse.texture = postprocessing.rtTexture1;
+			renderer.render( postprocessing.scene, postprocessing.camera );
+
+		} else {
+
+			renderer.clear();
+			renderer.render( scene, camera );
+
+		}
+
+	};
+    </script>
+</head>
+</body>
+
+</html>
