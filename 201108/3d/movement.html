@@ -47,6 +47,10 @@
 	var radius = 6371,
 	tilt = 0.41,
 	rotationSpeed = 0.1,
+	movementSpeed = 10,
+	timer = 1,
+	momentum = 0.99,
+	friction = 0.01,
 
 	cloudsScale = 1.005,
 	moonScale = 0.23,
@@ -58,9 +62,24 @@
 
 	camera, scene, renderer,
 	geometry, meshPlanet, meshClouds, meshMoon,
-	dirLight, ambientLight,
+	dirLight, ambientLight, meshCube,
 
 	time = new Date().getTime();
+	var boundaries = {
+		top: 20,
+		bottom: -20,
+		left: -20,
+		right: 20,
+		front: -10,
+		back: 10,
+	
+	};
+	// Is a direction increasing or decreasing?
+	var directions = {
+		x: false,
+		y: false,
+		z: false
+	}
 	window.onload = function() {
 
 		if ( !Detector.webgl ) {
@@ -115,17 +134,17 @@
 		});
 		camera.position.set( -15, 10, 15 );
 
-		var cube = new THREE.Mesh(
+		meshCube = new THREE.Mesh(
 			new THREE.CubeGeometry( 5, 5, 5 ),
 			new THREE.MeshLambertMaterial( { color: 0xFF0000 } )
 		);
-		scene.addObject( cube );
+		scene.addObject( meshCube );
 
 		var light = new THREE.PointLight( 0xFFFF00 );
 		light.position.set( 10, 0, 10 );
 		scene.addLight( light );
 
-		//renderer.render(scene, camera);
+            //renderer.render(scene, camera);
 
 		stats = new Stats();
 		stats.domElement.style.position = 'absolute';
@@ -133,6 +152,7 @@
 		stats.domElement.style.zIndex = 100;
 		container.appendChild( stats.domElement );
 
+		directions.x = true;
 		window.addEventListener( 'resize', onWindowResize, false );
 
 	};
@@ -164,8 +184,48 @@
 		stats.update();
 
 	};
+	
+	function bounce() {
+		// Enforce bounddaries. check direction
+		if(meshCube.position.x>=boundaries.back) {
+			directions.x = false;
+		}
+		
+		if(meshCube.position.x<=boundaries.front) {
+			directions.x = true;
+		}
+
+		var change = 0;
+		timer++;
+		var gravity = 10;
+		//movementSpeed = 100;
+		if(timer<1000 && momentum>0) {
+			momentum = momentum*momentum;
+			//movementSpeed = movementSpeed*momentum;
+			change = (movementSpeed) * ((gravity/(timer)));
+			//console.log('change = '+change);
+			//console.log('movementSpeed = '+movementSpeed);
+			momentum = change;
+		}
+		
+		if(!change){
+			return;
+		}
+		console.log('change = '+change);
+		
+		// move
+		if(directions.x) {
+			meshCube.position.x+=change;
+		}
+		else {
+			meshCube.position.x-=change;
+		}
+}
 
 	function render() {
+		
+		bounce();
+		//console.log('meshCube.position.x = '+meshCube.position.x);
 		renderer.clear();
 		renderer.render( scene, camera );
 
