@@ -35,6 +35,7 @@
 	
 	<script type="text/javascript" src="../../lib/jquery/1.6.2.js"></script>
 	<script type="text/javascript" src="../../lib/3d/Three.js"></script>
+	<script type="text/javascript" src="../../lib/DAT.GUI.js"></script>
 	<script type="text/javascript" src="js/Detector.js"></script>
 	<script type="text/javascript" src="js/RequestAnimationFrame.js"></script>
 	<script type="text/javascript" src="js/Stats.js"></script>
@@ -58,7 +59,7 @@
 
 	camera, scene, renderer,
 	geometry, meshPlanet, meshClouds, meshMoon,
-	dirLight, ambientLight,
+	dirLight, ambientLight, ball, net, grid,
 
 	time = new Date().getTime();
 	window.onload = function() {
@@ -71,6 +72,7 @@
 		}
 
 		init();
+		init_datgui();
 		animate();
 
 	}
@@ -83,21 +85,7 @@
 
 		scene = new THREE.Scene();
 
-		//Court grid
-
-		var line_material = new THREE.LineBasicMaterial( { color: 0x000000, opacity: 0.2 } ),
-			geometry = new THREE.Geometry(),
-			floor = -75, step = 25;
-
-		for ( var i = 0; i <= 40; i ++ ) {
-			geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( - 500, floor, i * step - 500 ) ) );
-			geometry.vertices.push( new THREE.Vertex( new THREE.Vector3(   500, floor, i * step - 500 ) ) );
-			geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( i * step - 500, floor, -500 ) ) );
-			geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( i * step - 500, floor,  500 ) ) );
-		}
-
-		var line = new THREE.Line( geometry, line_material, THREE.LinePieces );
-		scene.addObject( line );
+		
 
 		renderer = new THREE.WebGLRenderer( { clearAlpha: 1, clearColor: 0xFFFFFF } );
 		renderer.setSize( width, height );
@@ -132,13 +120,19 @@
 
 		//var material = new THREE.MeshLambertMaterial( { color: 0xffffff, wireframe: true } );
 
-		var cube = new THREE.Mesh(
+		ball = new THREE.Mesh(
 			new THREE.SphereGeometry( 5, 5, 5 ),
 			new THREE.MeshLambertMaterial( { color: 0xFF0000 } )
 		);
-		scene.addObject( cube );
+		ball.position.x = 10;
+		ball.position.y = 40;
+		ball.position.z = 400;
+		scene.addObject( ball );
+		//camera.target = ball;
 		
-		camera.target = createNet(100, 50, 1, new THREE.Vector3(0, 0, 200));
+		createNet();
+		createCourt();
+		//createGrid();
 
 		var light = new THREE.PointLight( 0xFFFF00 );
 		light.position.set( 10, 0, 10 );
@@ -156,18 +150,110 @@
 
 	};
 	
-	function createNet(sx, sy, sz, p){
-		var mesh = new THREE.Mesh(
+	function createCourt() {
+		//Court grid
+
+		var line_material = new THREE.LineBasicMaterial( { color: 0x000000, opacity: 0.2 } ),
+			geometry = new THREE.Geometry(),
+			floor = 0;
+
+		var length = 500;
+		var width = 400;
+		var singles_width = 300;
+		var service_length = 300;
+		var centre = 0;
+		
+		dimensions = [
+				// Court boundary
+				// left
+				{x:-width, y:length},
+				{x:-width, y:-length},
+				// right
+				{x:width, y:length},
+				{x:width, y:-length},
+				// near
+				{x:width, y:length},
+				{x:-width, y:length},
+				// far
+				{x:width, y:-length},
+				{x:-width, y:-length},
+				// tramlines
+				// left
+				{x:-singles_width, y:-length},
+				{x:-singles_width, y:length},
+				// right
+				{x:singles_width, y:-length},
+				{x:singles_width, y:length},
+				// service boxes
+				// near
+				{x:singles_width, y:service_length},
+				{x:-singles_width, y:service_length},
+				// far
+				{x:singles_width, y:-service_length},
+				{x:-singles_width, y:-service_length},
+				// centre
+				{x:centre, y:service_length},
+				{x:centre, y:-service_length}
+			];
+		length = dimensions.length;
+		for(var x=0; x<length; x++){
+			geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( dimensions[x].x, floor, dimensions[x].y ) ) );
+		}
+		
+		grid = new THREE.Line( geometry, line_material, THREE.LinePieces );
+		scene.addObject( grid );
+	}
+	
+	function createGrid() {
+		//Court grid
+
+		var line_material = new THREE.LineBasicMaterial( { color: 0x000000, opacity: 0.2 } ),
+			geometry = new THREE.Geometry(),
+			floor = -75, step = 25;
+
+		for ( var i = 0; i <= 40; i ++ ) {
+			geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( - 500, floor, i * step - 500 ) ) );
+			geometry.vertices.push( new THREE.Vertex( new THREE.Vector3(   500, floor, i * step - 500 ) ) );
+			geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( i * step - 500, floor, -500 ) ) );
+			geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( i * step - 500, floor,  500 ) ) );
+		}
+
+		grid = new THREE.Line( geometry, line_material, THREE.LinePieces );
+		scene.addObject( grid );
+	}
+	
+	function createNet(){
+		var sx=700, sy=50, sz=1, p = new THREE.Vector3(0, sy/2, 0)
+		net = new THREE.Mesh(
 				new THREE.CubeGeometry( sx, sy, sz ), 
 				new THREE.MeshLambertMaterial( { color: 0x003300, wireframe: true  } ) 
 			);
-		mesh.scale.set( 1.5, 1.5, 1.5 );
-		mesh.updateMatrix();
-		//mesh.matrixAutoUpdate = false;
+		//net.scale.set( 1.5, 1.5, 1.5 );
+		net.updateMatrix();
+		//net.matrixAutoUpdate = false;
 
-		mesh.position = p;
-		scene.addObject(mesh);
-		return mesh;
+		net.position = p;
+		scene.addObject(net);
+	}
+	
+	function init_datgui() {
+		var gui = new DAT.GUI();
+
+		// Text field
+		positions = ['x', 'y', 'z'];
+		length = positions.length;
+		for(var x=0;x<length;x++){
+			gui.add(ball.position, positions[x]).name('ball.position.'+positions[x]);
+		}
+	   
+	    for(var x=0;x<length;x++){
+			gui.add(camera.position, positions[x]).name('camera.position.'+positions[x]);
+		}
+		
+		for(var x=0;x<length;x++){
+			gui.add(net.scale, positions[x], 1, 10).name('net.scale.'+positions[x]);
+		}
+		
 	}
 
 
