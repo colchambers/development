@@ -76,13 +76,13 @@ var paper = Raphael("demo", 320, 200);
      return dimension * court.scale;
  }
  
- debug('court.singlesWidth = '+court.singlesWidth);
- debug('court.serviceLength = '+court.serviceLength);
+ Out.append('court.singlesWidth = '+court.singlesWidth);
+ Out.append('court.serviceLength = '+court.serviceLength);
  
  nonServiceLength = (court.length - court.serviceLength)/2;
  serviceWidth = (court.width - court.singlesWidth)/2;
- debug('nonServiceLength = '+nonServiceLength);
- debug('serviceWidth = '+serviceWidth);
+ Out.append('nonServiceLength = '+nonServiceLength);
+ Out.append('serviceWidth = '+serviceWidth);
  
  
 // Image dump
