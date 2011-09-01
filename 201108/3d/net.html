@@ -60,8 +60,38 @@
 	camera, scene, renderer,
 	geometry, meshPlanet, meshClouds, meshMoon,
 	dirLight, ambientLight, ball, net, grid,
+	courtMesh,
 
 	time = new Date().getTime();
+	
+/*
+ * Tennis court dimensions
+ * Doubles
+ * Length:78'
+ * width:36'
+ *
+ * Singles width: 27'
+ * service length: 21'
+ * 
+ */
+ 
+ // dimension variables
+ var court = {};
+ court.scale = 10;
+ court.length = 76;
+ court.width = 38;
+ court.serviceLength = 21;
+ court.singlesWidth = 27;
+ court.area = {};
+ court.area.topPadding = 5;
+ court.area.sidePadding = 5;
+ court.area.length = (court.length + court.area.topPadding + 10);
+ court.area.width = (court.width + court.area.sidePadding + 10);
+ 
+ function getByScale(dimension){
+     return dimension * court.scale;
+ }
+
 	window.onload = function() {
 
 		if ( !Detector.webgl ) {
@@ -157,10 +187,10 @@
 			geometry = new THREE.Geometry(),
 			floor = 0;
 
-		var length = 500;
-		var width = 400;
-		var singles_width = 300;
-		var service_length = 300;
+		var length = getByScale(court.length);
+		var width = getByScale(court.width);
+		var singles_width = getByScale(court.singlesWidth);
+		var service_length = getByScale(court.serviceLength);
 		var centre = 0;
 		
 		dimensions = [
@@ -200,8 +230,8 @@
 			geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( dimensions[x].x, floor, dimensions[x].y ) ) );
 		}
 		
-		grid = new THREE.Line( geometry, line_material, THREE.LinePieces );
-		scene.addObject( grid );
+		courtMesh = new THREE.Line( geometry, line_material, THREE.LinePieces );
+		scene.addObject( courtMesh );
 	}
 	
 	function createGrid() {
