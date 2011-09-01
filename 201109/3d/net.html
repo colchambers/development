@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>Net</title>
+	
+	<style type="text/css">
+
+		body {
+			background: #000;
+			color: #EEE;
+			padding: 0;
+			margin: 0;
+			font-weight: bold;
+			overflow: hidden;
+
+			font-family: Monospace;
+			font-size: 13px;
+			text-align: center;
+		}
+
+		#info {
+			position: absolute;
+			top: 0px;
+			width: 100%;
+			padding: 5px;
+			z-index: 100;
+		}
+
+		a { color: green; }
+		b { color: green; }
+
+	</style>
+	
+	<script type="text/javascript" src="../../lib/jquery/1.6.2.js"></script>
+	<script type="text/javascript" src="../../lib/3d/Three.js"></script>
+	<script type="text/javascript" src="../../lib/DAT.GUI.js"></script>
+	<script type="text/javascript" src="js/Detector.js"></script>
+	<script type="text/javascript" src="js/RequestAnimationFrame.js"></script>
+	<script type="text/javascript" src="js/Stats.js"></script>
+    <body>
+		<div id="info">
+			<a href="http://github.com/mrdoob/three.js" target="_blank">three.js</a> - earth [trackball camera]<br/><br/>
+			<b>MOVE</b> mouse & press <b>LEFT/A:</b> rotate, <b>MIDDLE/S:</b> zoom, <b>RIGHT/D:</b> pan
+		</div>
+    <script type="text/javascript">
+	var radius = 6371,
+	tilt = 0.41,
+	rotationSpeed = 0.1,
+
+	cloudsScale = 1.005,
+	moonScale = 0.23,
+
+	height = window.innerHeight,
+	width  = window.innerWidth,
+
+	container, stats,
+
+	camera, scene, renderer,
+	geometry, meshPlanet, meshClouds, meshMoon,
+	dirLight, ambientLight, ball, net, grid,
+	courtMesh,
+
+	time = new Date().getTime();
+	
+/*
+ * Tennis court dimensions
+ * Doubles
+ * Length:78'
+ * width:36'
+ *
+ * Singles width: 27'
+ * service length: 21'
+ * 
+ */
+ 
+ // dimension variables
+ var court = {};
+ court.scale = 10;
+ court.length = 76;
+ court.width = 38;
+ court.serviceLength = 21;
+ court.singlesWidth = 27;
+ court.area = {};
+ court.area.topPadding = 5;
+ court.area.sidePadding = 5;
+ court.area.length = (court.length + court.area.topPadding + 10);
+ court.area.width = (court.width + court.area.sidePadding + 10);
+ 
+ function getByScale(dimension){
+     return dimension * court.scale;
+ }
+
+	window.onload = function() {
+
+		if ( !Detector.webgl ) {
+
+			Detector.addGetWebGLMessage();
+			return;
+
+		}
+
+		init();
+		init_datgui();
+		animate();
+
+	}
+	
+    function init() {
+
+		container = document.createElement( 'div' );
+		document.body.appendChild( container );
+
+
+		scene = new THREE.Scene();
+
+		
+
+		renderer = new THREE.WebGLRenderer( { clearAlpha: 1, clearColor: 0xFFFFFF } );
+		renderer.setSize( width, height );
+		renderer.sortObjects = false;
+		renderer.autoClear = false;
+		container.appendChild( renderer.domElement );
+		
+		camera = new THREE.TrackballCamera({
+
+			fov: 35,     // Field of view
+			aspect: width / height,  // Aspect ratio
+			near: .1,     // Near
+			far: 10000,       // Far
+
+			rotateSpeed: 1.0,
+			zoomSpeed: 1.2,
+			panSpeed: 0.2,
+
+			noZoom: false,
+			noPan: false,
+
+			staticMoving: false,
+			dynamicDampingFactor: 0.3,
+
+			
+			keys: [ 65, 83, 68 ], // [ rotateKey, zoomKey, panKey ],
+
+			domElement: renderer.domElement,
+
+		});
+		camera.position.set( 15, 200, 1000 );
+
+		//var material = new THREE.MeshLambertMaterial( { color: 0xffffff, wireframe: true } );
+
+		ball = new THREE.Mesh(
+			new THREE.SphereGeometry( 5, 5, 5 ),
+			new THREE.MeshLambertMaterial( { color: 0xFF0000 } )
+		);
+		ball.position.x = 10;
+		ball.position.y = 40;
+		ball.position.z = 400;
+		scene.addObject( ball );
+		//camera.target = ball;
+		
+		createNet();
+		createCourt();
+		//createGrid();
+
+		var light = new THREE.PointLight( 0xFFFF00 );
+		light.position.set( 10, 0, 10 );
+		scene.addLight( light );
+
+		//renderer.render(scene, camera);
+
+		stats = new Stats();
+		stats.domElement.style.position = 'absolute';
+		stats.domElement.style.top = '0px';
+		stats.domElement.style.zIndex = 100;
+		container.appendChild( stats.domElement );
+
+		window.addEventListener( 'resize', onWindowResize, false );
+
+	};
+	
+	function createCourt() {
+		//Court grid
+
+		var line_material = new THREE.LineBasicMaterial( { color: 0x000000, opacity: 0.2 } ),
+			geometry = new THREE.Geometry(),
+			floor = 0;
+
+		var length = getByScale(court.length);
+		var width = getByScale(court.width);
+		var singles_width = getByScale(court.singlesWidth);
+		var service_length = getByScale(court.serviceLength);
+		var centre = 0;
+		
+		dimensions = [
+				// Court boundary
+				// left
+				{x:-width, y:length},
+				{x:-width, y:-length},
+				// right
+				{x:width, y:length},
+				{x:width, y:-length},
+				// near
+				{x:width, y:length},
+				{x:-width, y:length},
+				// far
+				{x:width, y:-length},
+				{x:-width, y:-length},
+				// tramlines
+				// left
+				{x:-singles_width, y:-length},
+				{x:-singles_width, y:length},
+				// right
+				{x:singles_width, y:-length},
+				{x:singles_width, y:length},
+				// service boxes
+				// near
+				{x:singles_width, y:service_length},
+				{x:-singles_width, y:service_length},
+				// far
+				{x:singles_width, y:-service_length},
+				{x:-singles_width, y:-service_length},
+				// centre
+				{x:centre, y:service_length},
+				{x:centre, y:-service_length}
+			];
+		length = dimensions.length;
+		for(var x=0; x<length; x++){
+			geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( dimensions[x].x, floor, dimensions[x].y ) ) );
+		}
+		
+		courtMesh = new THREE.Line( geometry, line_material, THREE.LinePieces );
+		scene.addObject( courtMesh );
+	}
+	
+	function createGrid() {
+		//Court grid
+
+		var line_material = new THREE.LineBasicMaterial( { color: 0x000000, opacity: 0.2 } ),
+			geometry = new THREE.Geometry(),
+			floor = -75, step = 25;
+
+		for ( var i = 0; i <= 40; i ++ ) {
+			geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( - 500, floor, i * step - 500 ) ) );
+			geometry.vertices.push( new THREE.Vertex( new THREE.Vector3(   500, floor, i * step - 500 ) ) );
+			geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( i * step - 500, floor, -500 ) ) );
+			geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( i * step - 500, floor,  500 ) ) );
+		}
+
+		grid = new THREE.Line( geometry, line_material, THREE.LinePieces );
+		scene.addObject( grid );
+	}
+	
+	function createNet(){
+		var sx=700, sy=50, sz=1, p = new THREE.Vector3(0, sy/2, 0)
+		net = new THREE.Mesh(
+				new THREE.CubeGeometry( sx, sy, sz ), 
+				new THREE.MeshLambertMaterial( { color: 0x003300, wireframe: true  } ) 
+			);
+		//net.scale.set( 1.5, 1.5, 1.5 );
+		net.updateMatrix();
+		//net.matrixAutoUpdate = false;
+
+		net.position = p;
+		scene.addObject(net);
+	}
+	
+	function init_datgui() {
+		var gui = new DAT.GUI();
+
+		// Text field
+		positions = ['x', 'y', 'z'];
+		length = positions.length;
+		for(var x=0;x<length;x++){
+			gui.add(ball.position, positions[x]).name('ball.position.'+positions[x]);
+		}
+	   
+	    for(var x=0;x<length;x++){
+			gui.add(camera.position, positions[x]).name('camera.position.'+positions[x]);
+		}
+		
+		for(var x=0;x<length;x++){
+			gui.add(net.scale, positions[x], 1, 10).name('net.scale.'+positions[x]);
+		}
+		
+	}
+
+
+	function onWindowResize( event ) {
+
+		width = window.innerWidth;
+		height = window.innerHeight;
+
+		renderer.setSize( width, height );
+
+		camera.aspect = width / height;
+		camera.updateProjectionMatrix();
+
+		camera.screen.width = width;
+		camera.screen.height = height;
+
+		camera.radius = ( width + height ) / 4;
+
+	};
+
+	
+	
+	function animate() {
+
+		requestAnimationFrame( animate );
+
+		render();
+		stats.update();
+
+	};
+
+	function render() {
+		renderer.clear();
+		renderer.render( scene, camera );
+
+	};
+    </script>
+</head>
+</body>
+
+</html>
