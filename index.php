@@ -7,11 +7,8 @@
 	
 	Please choose from the following options. 
 	<ul>
-		<li><a href="embeddable-chart.html" >Embeddable chart</a>
-			<ul>
-				<li><a href="metabolise/0.2/" >v0.2</a></li>
-			</ul>
-		</li>
+		<li><a href="201109/" >201109</a></li>
+		<li><a href="201108/" >201108</a></li>
 	</ul>
 </body>
 </html>
