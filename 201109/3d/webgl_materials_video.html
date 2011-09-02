@@ -96,25 +96,19 @@
 				texture.minFilter = THREE.LinearFilter;
 				texture.magFilter = THREE.LinearFilter;
 
-				var i, j, ux, uy, ox, oy,
-					geometry,
-					xsize, ysize;
+				var geometry;
 
 				video_x = 480;
 				video_y = 204;
 
 				var parameters = { color: 0xffffff, map: texture },
-				material_base = new THREE.MeshLambertMaterial( parameters );
-
-				renderer.initMaterial( material_base, scene.lights, scene.fog );
-
 				geometry = new THREE.CubeGeometry( video_x, video_y, video_x );
 				material = new THREE.MeshLambertMaterial( parameters );
 				videoMesh = new THREE.Mesh( geometry, material );
 				
 				videoMesh.position.x = 0;
 				videoMesh.position.y = 0;
-				videoMesh.position.z = 0;
+				videoMesh.position.z = -500;
 
 				videoMesh.scale.x = videoMesh.scale.y = videoMesh.scale.z = 1;
 
