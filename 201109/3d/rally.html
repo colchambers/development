@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>Net</title>
+	
+	<style type="text/css">
+
+		body {
+			background: #000;
+			color: #EEE;
+			padding: 0;
+			margin: 0;
+			font-weight: bold;
+			overflow: hidden;
+
+			font-family: Monospace;
+			font-size: 13px;
+			text-align: center;
+		}
+
+		#info {
+			position: absolute;
+			top: 0px;
+			width: 100%;
+			padding: 5px;
+			z-index: 100;
+		}
+
+		a { color: green; }
+		b { color: green; }
+
+	</style>
+	
+	<script type="text/javascript" src="../../lib/jquery/1.6.2.js"></script>
+	<script type="text/javascript" src="../../lib/3d/Three.js"></script>
+	<script type="text/javascript" src="../../lib/Tween.js"></script>
+	<script type="text/javascript" src="../../lib/DAT.GUI.js"></script>
+	<script type="text/javascript" src="js/Detector.js"></script>
+	<script type="text/javascript" src="js/RequestAnimationFrame.js"></script>
+	<script type="text/javascript" src="js/Stats.js"></script>
+    <body>
+		<div id="info">
+			<a href="http://github.com/mrdoob/three.js" target="_blank">three.js</a> - earth [trackball camera]<br/><br/>
+			<b>MOVE</b> mouse & press <b>LEFT/A:</b> rotate, <b>MIDDLE/S:</b> zoom, <b>RIGHT/D:</b> pan
+		</div>
+		
+		<video id="video" autoplay loop style="display:none"  controls >
+			<source src="textures/4.step_out.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
+			<source src="textures/sintel.ogv" type='video/ogg; codecs="theora, vorbis"'>
+		</video>
+		
+    <script type="text/javascript">
+	var height = window.innerHeight,
+	width  = window.innerWidth,
+
+	container, stats,
+
+	camera, scene, renderer,
+	geometry, 
+	dirLight, ambientLight, ball, net, grid,
+	courtMesh,
+
+	time = new Date().getTime();
+	
+	var video, texture, material, videoMesh;
+	
+/*
+ * Tennis court dimensions
+ * Doubles
+ * Length:78'
+ * width:36'
+ *
+ * Singles width: 27'
+ * service length: 21'
+ * 
+ */
+ 
+ // dimension variables
+ var court = {};
+ court.scale = 10;
+ court.length = 76;
+ court.width = 38;
+ court.serviceLength = 21;
+ court.singlesWidth = 27;
+ court.area = {};
+ court.area.topPadding = 5;
+ court.area.sidePadding = 5;
+ court.area.length = (court.length + court.area.topPadding + 10);
+ court.area.width = (court.width + court.area.sidePadding + 10);
+ 
+ function getByScale(dimension){
+     return dimension * court.scale;
+ }
+
+	window.onload = function() {
+
+		if ( !Detector.webgl ) {
+
+			Detector.addGetWebGLMessage();
+			return;
+
+		}
+
+		init();
+		init_datgui();
+		animate();
+
+	}
+	
+    function init() {
+
+		container = document.createElement( 'div' );
+		document.body.appendChild( container );
+
+
+		scene = new THREE.Scene();
+
+		
+
+		renderer = new THREE.WebGLRenderer( { clearAlpha: 1, clearColor: 0xFFFFFF } );
+		renderer.setSize( width, height );
+		renderer.sortObjects = false;
+		renderer.autoClear = false;
+		container.appendChild( renderer.domElement );
+		
+		camera = new THREE.TrackballCamera({
+
+			fov: 35,     // Field of view
+			aspect: width / height,  // Aspect ratio
+			near: .1,     // Near
+			far: 10000,       // Far
+
+			rotateSpeed: 1.0,
+			zoomSpeed: 1.2,
+			panSpeed: 0.2,
+
+			noZoom: false,
+			noPan: false,
+
+			staticMoving: false,
+			dynamicDampingFactor: 0.3,
+
+			
+			keys: [ 65, 83, 68 ], // [ rotateKey, zoomKey, panKey ],
+
+			domElement: renderer.domElement,
+
+		});
+		camera.position.set( 15, 200, 1500 );
+
+		//var material = new THREE.MeshLambertMaterial( { color: 0xffffff, wireframe: true } );
+
+		ball = new THREE.Mesh(
+			new THREE.SphereGeometry( 5, 5, 5 ),
+			new THREE.MeshLambertMaterial( { color: 0xFF0000 } )
+		);
+		
+		ball.position.x = 10;
+		ball.position.y = 40;
+		ball.position.z = getByScale(court.length);
+		scene.addObject( ball );
+		//camera.target = ball;
+		
+		createBallAnimation();
+		createNet();
+		createCourt();
+		//createGrid();
+		initVideo();
+		renderer.autoClear = false;
+
+		var light = new THREE.PointLight( 0xFFFF00 );
+		light.position.set( 10, 0, 10 );
+		scene.addLight( light );
+
+		//renderer.render(scene, camera);
+
+		stats = new Stats();
+		stats.domElement.style.position = 'absolute';
+		stats.domElement.style.top = '0px';
+		stats.domElement.style.zIndex = 100;
+		container.appendChild( stats.domElement );
+
+		window.addEventListener( 'resize', onWindowResize, false );
+
+	};
+	
+	function createBallAnimation() {
+		var position_toss = { x : ball.position.x, y: ball.position.y, z: ball.position.z };
+		var target_toss = { x : ball.position.x, y: 250, z: ball.position.z };
+		var tween_toss = new TWEEN.Tween(position_toss).to(target_toss, 2000);
+		tween_toss.onUpdate(function(){
+			ball.position.x = position_toss.x;
+			ball.position.y = position_toss.y;
+			ball.position.z = position_toss.z;
+		});
+		
+		var position_serve = { x : target_toss.x, y: target_toss.y, z: target_toss.z };
+		
+		var target_serve = { x : -getByScale(court.singlesWidth*0.8), y: 0, z: -getByScale(court.serviceLength*0.8) };
+		//var target_serve = { x : target_toss.x+100, y: 0, z: target_toss.z+100 };
+		var tween_serve = new TWEEN.Tween(position_serve).to(target_serve, 2000);
+		tween_serve.onUpdate(function(){
+			ball.position.x = position_serve.x;
+			ball.position.y = position_serve.y;
+			ball.position.z = position_serve.z;
+		});
+		
+		var position_return = { x : target_serve.x, y: target_serve.y };
+		var target_return = { x : 10, y: 40 };
+		var tween_return = new TWEEN.Tween(position_return).to(target_return, 2000);
+		tween_return.onUpdate(function(){
+			ball.position.x = position_return.x;
+			ball.position.y = position_return.y;
+		});
+		tween_toss.chain(tween_serve);
+		//tween_serve.chain(tween_return);
+		tween_toss.start();
+	}
+	
+	function initVideo() {
+		video = document.getElementById( 'video' );
+
+		//video.volume = 0;
+		video.muted = true;
+
+		texture = new THREE.Texture( video );
+		texture.minFilter = THREE.LinearFilter;
+		texture.magFilter = THREE.LinearFilter;
+
+		var geometry;
+
+		video_x = getByScale(court.length);
+		video_y = getByScale(court.width);
+		video_z = 10;
+
+		var parameters = { color: 0xffffff, map: texture },
+		geometry = new THREE.CubeGeometry( video_x, video_y, video_z );
+		material = new THREE.MeshLambertMaterial( parameters );
+		videoMesh = new THREE.Mesh( geometry, material );
+		
+		videoMesh.position.x = -700;
+		videoMesh.position.y = 200;
+		videoMesh.position.z = 0;
+		
+		videoMesh.rotation.y = 1.5;
+
+		videoMesh.scale.x = videoMesh.scale.y = videoMesh.scale.z = 1;
+
+		scene.addObject(videoMesh);
+	}
+	function createCourt() {
+		//Court grid
+
+		var line_material = new THREE.LineBasicMaterial( { color: 0x000000, opacity: 0.2 } ),
+			geometry = new THREE.Geometry(),
+			floor = 0;
+
+		var length = getByScale(court.length);
+		var width = getByScale(court.width);
+		var singles_width = getByScale(court.singlesWidth);
+		var service_length = getByScale(court.serviceLength);
+		var centre = 0;
+		
+		dimensions = [
+				// Court boundary
+				// left
+				{x:-width, y:length},
+				{x:-width, y:-length},
+				// right
+				{x:width, y:length},
+				{x:width, y:-length},
+				// near
+				{x:width, y:length},
+				{x:-width, y:length},
+				// far
+				{x:width, y:-length},
+				{x:-width, y:-length},
+				// tramlines
+				// left
+				{x:-singles_width, y:-length},
+				{x:-singles_width, y:length},
+				// right
+				{x:singles_width, y:-length},
+				{x:singles_width, y:length},
+				// service boxes
+				// near
+				{x:singles_width, y:service_length},
+				{x:-singles_width, y:service_length},
+				// far
+				{x:singles_width, y:-service_length},
+				{x:-singles_width, y:-service_length},
+				// centre
+				{x:centre, y:service_length},
+				{x:centre, y:-service_length}
+			];
+		length = dimensions.length;
+		for(var x=0; x<length; x++){
+			geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( dimensions[x].x, floor, dimensions[x].y ) ) );
+		}
+		
+		courtMesh = new THREE.Line( geometry, line_material, THREE.LinePieces );
+		scene.addObject( courtMesh );
+	}
+	
+	function createGrid() {
+		//Court grid
+
+		var line_material = new THREE.LineBasicMaterial( { color: 0x000000, opacity: 0.2 } ),
+			geometry = new THREE.Geometry(),
+			floor = -75, step = 25;
+
+		for ( var i = 0; i <= 40; i ++ ) {
+			geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( - 500, floor, i * step - 500 ) ) );
+			geometry.vertices.push( new THREE.Vertex( new THREE.Vector3(   500, floor, i * step - 500 ) ) );
+			geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( i * step - 500, floor, -500 ) ) );
+			geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( i * step - 500, floor,  500 ) ) );
+		}
+
+		grid = new THREE.Line( geometry, line_material, THREE.LinePieces );
+		scene.addObject( grid );
+	}
+	
+	function createNet(){
+		var sx=700, sy=50, sz=1, p = new THREE.Vector3(0, sy/2, 0)
+		net = new THREE.Mesh(
+				new THREE.CubeGeometry( sx, sy, sz ), 
+				new THREE.MeshLambertMaterial( { color: 0x003300, wireframe: true  } ) 
+			);
+		//net.scale.set( 1.5, 1.5, 1.5 );
+		net.updateMatrix();
+		//net.matrixAutoUpdate = false;
+
+		net.position = p;
+		scene.addObject(net);
+	}
+	
+	function init_datgui() {
+		var court_gui = new DAT.GUI();
+
+		court_gui.name('Court');
+		// Text field
+		positions = ['x', 'y', 'z'];
+		length = positions.length;
+		for(var x=0;x<length;x++){
+			court_gui.add(ball.position, positions[x], 0, 2000, 20).name('ball.position.'+positions[x]);
+		}
+	   
+	    for(var x=0;x<length;x++){
+			court_gui.add(camera.position, positions[x], 0, 2000, 20).name('camera.position.'+positions[x]);
+		}
+		
+		for(var x=0;x<length;x++){
+			court_gui.add(net.scale, positions[x], 1, 10).name('net.scale.'+positions[x]);
+		}
+		
+		var video_gui = new DAT.GUI();
+
+		video_gui.name('Video');
+		// Text field
+		positions = ['x', 'y', 'z'];
+		length = positions.length;
+		for(var x=0;x<length;x++){
+			video_gui.add(videoMesh.rotation, positions[x], 0, 5, 0.1).name('videoMesh.rotation.'+positions[x]);
+		}
+		for(var x=0;x<length;x++){
+			video_gui.add(videoMesh.position, positions[x], -1500, 1500, 100).name('videoMesh.position.'+positions[x]);
+		}
+		
+		video_gui.add(video, 'muted');
+		video_gui.add(video, 'volume', 0, 1, 0.1);
+		
+	}
+
+
+	function onWindowResize( event ) {
+
+		width = window.innerWidth;
+		height = window.innerHeight;
+
+		renderer.setSize( width, height );
+
+		camera.aspect = width / height;
+		camera.updateProjectionMatrix();
+
+		camera.screen.width = width;
+		camera.screen.height = height;
+
+		camera.radius = ( width + height ) / 4;
+
+	};
+
+	
+	
+	function animate() {
+
+		requestAnimationFrame( animate );
+
+		render();
+		stats.update();
+		TWEEN.update();
+	};
+
+	function render() {
+		
+		
+		if ( video.readyState === video.HAVE_ENOUGH_DATA ) {
+			if ( texture ) texture.needsUpdate = true;
+		}
+				
+		renderer.clear();
+		renderer.render( scene, camera );
+
+	};
+    </script>
+</head>
+</body>
+
+</html>
