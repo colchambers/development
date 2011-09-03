@@ -72,12 +72,16 @@
 
 	camera, scene, renderer,
 	geometry, 
-	dirLight, ambientLight, ball, net, grid,
-	courtMesh,
+	light, ambientLight, ball, net, grid,
+	courtMesh, court_tile,
 
 	time = new Date().getTime();
-	
+	var objects = {};
+	objects.lights = {};
+	objects.video = null;
+	objects.meshes = {};
 	var video, texture, material, videoMesh;
+		;
 	
 /*
  * Tennis court dimensions
@@ -97,6 +101,11 @@
  court.width = 38;
  court.serviceLength = 21;
  court.singlesWidth = 27;
+ court.fenceHeight = 12;
+ court.overallLength = 120;
+ court.overallWidth = 60;
+ court.overallStadiumLength = 130;
+ court.overallStadiumWidth = 70;
  court.area = {};
  court.area.topPadding = 5;
  court.area.sidePadding = 5;
@@ -147,9 +156,8 @@
 		initVideo();
 		renderer.autoClear = false;
 
-		var light = new THREE.PointLight( 0xFFFF00 );
-		light.position.set( 10, 0, 10 );
-		scene.addLight( light );
+		
+		initLights();
 
 		//renderer.render(scene, camera);
 
@@ -163,11 +171,29 @@
 
 	};
 	
+	function createAndAddLight(options) {
+		light = options.t =='point'?new THREE.PointLight( options.c ): new THREE.DirectionalLight( options.c );
+		light.position.set( options.x, options.y, options.z );
+		if(options.t == 'directional') {
+			light.position.normalize();
+		}
+		scene.addLight( light );
+		return light;
+	}
+	function initLights() {
+		
+		objects.lights.pointLight = createAndAddLight({t: 'point', c: 0xffffff,
+				x: 10, y: 100, z: 10});
+				
+		objects.lights.directionLight = createAndAddLight({t: 'directional', c: 0xffffff,
+				x: 900, y: 1500, z: 1});
+	}
+	
 	function initBall() {
 		
 		ball = new THREE.Mesh(
 			new THREE.SphereGeometry( 5, 5, 5 ),
-			new THREE.MeshLambertMaterial( { color: 0xFF0000 } )
+			new THREE.MeshLambertMaterial( { color: 0xFFFF00 } )
 		);
 		
 		ball.position.x = 10;
@@ -189,7 +215,6 @@
 		var position_serve = { x : target_toss.x, y: target_toss.y, z: target_toss.z };
 		
 		var target_serve = { x : -getByScale(court.singlesWidth*0.8), y: 0, z: -getByScale(court.serviceLength*0.8) };
-		//var target_serve = { x : target_toss.x+100, y: 0, z: target_toss.z+100 };
 		var tween_serve = new TWEEN.Tween(position_serve).to(target_serve, 2000);
 		tween_serve.onUpdate(function(){
 			ball.position.x = position_serve.x;
@@ -266,11 +291,14 @@
 			domElement: renderer.domElement,
 
 		});
-		camera.position.set( 15, 200, 1200 );
+		camera.position.set( 15, 200, 640 );
 	}
 	
 	function initVideo() {
+		var overallStadiumLength = getByScale(court.overallStadiumLength);
+		
 		video = document.getElementById( 'video' );
+		objects.video = video;
 
 		//video.volume = 0;
 		video.muted = true;
@@ -281,43 +309,83 @@
 
 		var geometry;
 
-		video_x = getByScale(court.length);
-		video_y = getByScale(court.width);
-		video_z = 10;
+		video_x = 1;
+		video_y = getByScale(court.width)*0.6;
+		video_z = getByScale(court.width);
 
 		var parameters = { color: 0xffffff, map: texture },
 		geometry = new THREE.CubeGeometry( video_x, video_y, video_z );
 		material = new THREE.MeshLambertMaterial( parameters );
 		videoMesh = new THREE.Mesh( geometry, material );
+		objects.meshes.video = videoMesh;
 		
-		videoMesh.position.x = -700;
-		videoMesh.position.y = 200;
-		videoMesh.position.z = 0;
+		videoMesh.position.x = 0;
+		videoMesh.position.y = video_y/2; //100
+		videoMesh.position.z = (-overallStadiumLength/2)+30; // -600
 		
 		videoMesh.rotation.y = 1.5;
 
-		videoMesh.scale.x = videoMesh.scale.y = videoMesh.scale.z = 1;
-
 		scene.addObject(videoMesh);
 	}
+		
+	function createAndAddFence(options) {
+		var fence = new THREE.Mesh(
+			new THREE.CubeGeometry( options.w, options.h, options.d ),
+			new THREE.MeshLambertMaterial( { color: 0x0000FF } )
+		);
+		fence.position.x=options.x;
+		fence.position.y=options.y;
+		fence.position.z=options.z;
+		scene.addObject( fence );
+		return fence;
+	}
 	function createCourt() {
-		//Court grid
+		var length = getByScale(court.length)/2;
+		var width = getByScale(court.width)/2;
+		var singles_width = getByScale(court.singlesWidth)/2;
+		var service_length = getByScale(court.serviceLength)/2;
+		var centre = 0;
+		var overallStadiumLength = getByScale(court.overallStadiumLength);
+		var overallStadiumWidth = getByScale(court.overallStadiumWidth);
+		var fenceHeight = getByScale(court.fenceHeight);
+		
+		// fences
+		// blue top fence
+		top_fence = createAndAddFence({w:overallStadiumWidth, h: fenceHeight, d: 0, 
+						x:0, y: fenceHeight/2, z: (-overallStadiumLength/2)});
+		bottom_fence = createAndAddFence({w:overallStadiumWidth, h: fenceHeight, d: 0, 
+						x:0, y: fenceHeight/2, z: (overallStadiumLength/2)});
+		left_fence = createAndAddFence({w:0, h: fenceHeight, d: overallStadiumLength, 
+						x:(-overallStadiumWidth/2), y: fenceHeight/2, z: 0});
+		right_fence = createAndAddFence({w:0, h: fenceHeight, d: overallStadiumLength, 
+						x:(overallStadiumWidth/2), y: fenceHeight/2, z: 0});
 
-		var line_material = new THREE.LineBasicMaterial( { color: 0x000000, opacity: 0.2 } ),
+		// Green courtside
+		court_side_tile = new THREE.Mesh(
+			new THREE.CubeGeometry( overallStadiumWidth, 0, overallStadiumLength ),
+			new THREE.MeshLambertMaterial( { color: 0x00FF00 } )
+		);
+		court_side_tile.position.y=-2;
+		scene.addObject( court_side_tile );
+		
+		// blue court
+		court_tile = new THREE.Mesh(
+			new THREE.CubeGeometry( width*2, 0, length*2 ),
+			new THREE.MeshLambertMaterial( { color: 0x0000FF } )
+		);
+		court_tile.position.y=-1;
+		scene.addObject( court_tile );
+		
+		// Court lines
+		var line_material = new THREE.LineBasicMaterial( { color: 0xFFFFFF, opacity: 1, linewidth: 50 } ),
 			geometry = new THREE.Geometry(),
 			floor = 0;
-
-		var length = getByScale(court.length);
-		var width = getByScale(court.width);
-		var singles_width = getByScale(court.singlesWidth);
-		var service_length = getByScale(court.serviceLength);
-		var centre = 0;
 		
 		dimensions = [
 				// Court boundary
 				// left
-				{x:-width, y:length},
-				{x:-width, y:-length},
+				{x:-width, y:length, z: 0},
+				{x:-width, y:-length, z: 10},
 				// right
 				{x:width, y:length},
 				{x:width, y:-length},
@@ -386,16 +454,27 @@
 		scene.addObject(net);
 	}
 	
+	function createAndAddDatGui(options) {
+		var gui = new DAT.GUI();
+		var e = options.e;
+		var positions = ['x', 'y', 'z'];
+		var length = positions.length;
+		
+		gui.name(options.n);
+		
+		for(var x=0;x<length;x++){
+			gui.add(e.rotation, positions[x], 0, 5, 0.1).name('rotation.'+positions[x]);
+		}
+		for(var x=0;x<length;x++){
+			gui.add(e.position, positions[x],  -1500, 1500, 100).name('position.'+positions[x]);
+		}
+		
+		document.getElementById('gui-container').appendChild(gui.domElement);
+		gui.close();
+		return gui;
+	}
+	
 	function init_datgui() {
-		//DAT.GUI.autoPlace = false;
-
-/*		// Do some custom styles ...
-		gui.domElement.style.position = 'absolute';
-		gui.domElement.style.top = '20px';
-		gui.domElement.style.left = '20px';
-*/
-		
-		
 		var court_gui = new DAT.GUI();
 		
 		court_gui.name('Court');
@@ -413,34 +492,21 @@
 		for(var x=0;x<length;x++){
 			court_gui.add(net.scale, positions[x], 1, 10).name('net.scale.'+positions[x]);
 		}
-		
-		var video_gui = new DAT.GUI();
 
-		video_gui.name('Video');
-		// Text field
-		positions = ['x', 'y', 'z'];
-		length = positions.length;
-		for(var x=0;x<length;x++){
-			video_gui.add(videoMesh.rotation, positions[x], 0, 5, 0.1).name('videoMesh.rotation.'+positions[x]);
-		}
-		for(var x=0;x<length;x++){
-			video_gui.add(videoMesh.position, positions[x], -1500, 1500, 100).name('videoMesh.position.'+positions[x]);
-		}
-		
-		video_gui.add(video, 'muted');
-		video_gui.add(video, 'volume', 0, 1, 0.1);
-		
 		// Add guis to container
 		document.getElementById('gui-container').appendChild(court_gui.domElement);
-		document.getElementById('gui-container').appendChild(video_gui.domElement);
 		
 		// close guis
 		court_gui.close();
-		video_gui.close();
 		
-/*		video_gui.domElement.style.position = 'absolute';
-		video_gui.domElement.style.top = '20px';
-		video_gui.domElement.style.left = '20px';*/
+		var video_gui = createAndAddDatGui({e: objects.meshes.video, n: 'Video'});
+		video_gui.add(video, 'muted');
+		video_gui.add(video, 'volume', 0, 1, 0.1);
+		
+		// light
+		var light_gui = createAndAddDatGui({e: objects.lights.directionLight, n: 'Light'});
+		var point_light_gui = createAndAddDatGui({e: objects.lights.pointLight, n: 'Point Light'});
+		
 	}
 
 
