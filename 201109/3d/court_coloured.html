@@ -111,6 +111,10 @@
  court.area.sidePadding = 5;
  court.area.length = (court.length + court.area.topPadding + 10);
  court.area.width = (court.width + court.area.sidePadding + 10);
+ court.net = {}
+ court.net.singlesWidth = 36;
+ court.net.doublesWidth = 40;
+ court.net.height = 3.5;
  
  function getByScale(dimension){
      return dimension * court.scale;
@@ -202,25 +206,26 @@
 		scene.addObject( ball );
 	}
 	
+	function createTween(options) {
+		
+		var tween_toss = new TWEEN.Tween(options.p).to(options.t, 2000);
+		tween_toss.onUpdate(function(){
+			ball.position.x = options.p.x;
+			ball.position.y = options.p.y;
+			ball.position.z = options.p.z;
+		});
+		return tween_toss;
+	}
 	function createBallAnimation() {
+		var rallies = [];
 		var position_toss = { x : ball.position.x, y: ball.position.y, z: ball.position.z };
 		var target_toss = { x : ball.position.x, y: 250, z: ball.position.z };
-		var tween_toss = new TWEEN.Tween(position_toss).to(target_toss, 2000);
-		tween_toss.onUpdate(function(){
-			ball.position.x = position_toss.x;
-			ball.position.y = position_toss.y;
-			ball.position.z = position_toss.z;
-		});
-		
+		var tween_toss = createTween({p: position_toss, t: target_toss});
+	
 		var position_serve = { x : target_toss.x, y: target_toss.y, z: target_toss.z };
 		
 		var target_serve = { x : -getByScale(court.singlesWidth*0.8), y: 0, z: -getByScale(court.serviceLength*0.8) };
-		var tween_serve = new TWEEN.Tween(position_serve).to(target_serve, 2000);
-		tween_serve.onUpdate(function(){
-			ball.position.x = position_serve.x;
-			ball.position.y = position_serve.y;
-			ball.position.z = position_serve.z;
-		});
+		var tween_serve = createTween({p: position_serve, t: target_serve});
 		
 		var position_serve_post_bounce = { x : target_serve.x, y: target_serve.y, z: target_serve.z };
 		var target_serve_post_bounce = { x : -((target_toss.x-target_serve.x)*2), y: 40, z: -((target_toss.z+target_serve.z)*2) };
@@ -441,14 +446,12 @@
 	}
 	
 	function createNet(){
-		var sx=700, sy=50, sz=1, p = new THREE.Vector3(0, sy/2, 0)
+		var sx=getByScale(court.net.singlesWidth), sy=getByScale(court.net.height), sz=1, p = new THREE.Vector3(0, sy/2, 0)
 		net = new THREE.Mesh(
 				new THREE.CubeGeometry( sx, sy, sz ), 
 				new THREE.MeshLambertMaterial( { color: 0x003300, wireframe: true  } ) 
 			);
-		//net.scale.set( 1.5, 1.5, 1.5 );
 		net.updateMatrix();
-		//net.matrixAutoUpdate = false;
 
 		net.position = p;
 		scene.addObject(net);
