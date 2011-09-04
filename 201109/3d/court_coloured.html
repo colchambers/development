@@ -80,6 +80,7 @@
 	objects.lights = {};
 	objects.video = null;
 	objects.meshes = {};
+	objects.rallies = [];
 	var video, texture, material, videoMesh;
 		;
 	
@@ -202,74 +203,77 @@
 		
 		ball.position.x = 10;
 		ball.position.y = 40;
-		ball.position.z = getByScale(court.length);
+		ball.position.z = getByScale(court.length/2);
 		scene.addObject( ball );
 	}
 	
-	function createTween(options) {
+	function createTween(index) {
+		var options = objects.rallies[index];
 		
-		var tween_toss = new TWEEN.Tween(options.p).to(options.t, 2000);
-		tween_toss.onUpdate(function(){
+		var tween = new TWEEN.Tween(options.p).to(options.t, 2000);
+		tween.onUpdate(function(){
 			ball.position.x = options.p.x;
 			ball.position.y = options.p.y;
 			ball.position.z = options.p.z;
 		});
-		return tween_toss;
+		return tween;
 	}
 	function createBallAnimation() {
-		var rallies = [];
-		var position_toss = { x : ball.position.x, y: ball.position.y, z: ball.position.z };
-		var target_toss = { x : ball.position.x, y: 250, z: ball.position.z };
-		var tween_toss = createTween({p: position_toss, t: target_toss});
+		rallies = objects.rallies;
+		var singlesWidth = getByScale(court.singlesWidth);
+		var court_length = getByScale(court.length);
+		var court_width = getByScale(court.width);
+		
+		// toss
+		var rally_count = 0;
+		rallies[rally_count] = {
+			p: { x : ball.position.x, y: ball.position.y, z: ball.position.z },
+			t: { x : ball.position.x, y: 250, z: ball.position.z }
+		};
 	
-		var position_serve = { x : target_toss.x, y: target_toss.y, z: target_toss.z };
+		// serve
+		rally_count++;
+		rallies[rally_count] = {
+			t: { x : -getByScale((court.singlesWidth*0.8)/2), y: 0, z: -getByScale((court.serviceLength*0.8)/2) }
+		};
 		
-		var target_serve = { x : -getByScale(court.singlesWidth*0.8), y: 0, z: -getByScale(court.serviceLength*0.8) };
-		var tween_serve = createTween({p: position_serve, t: target_serve});
+		// serve after bounce
+		rally_count++;
+		rallies[rally_count] = {
+			t: { x : -((rallies[0].t.x-rallies[rally_count-1].t.x)*2), y: 40, z: -((rallies[0].t.z+rallies[rally_count-1].t.z)*2) }
+		};
+
+		// return
+		rally_count++;
+		rallies[rally_count] = {t: { x : 0, y: 80, z: 10 }};
 		
-		var position_serve_post_bounce = { x : target_serve.x, y: target_serve.y, z: target_serve.z };
-		var target_serve_post_bounce = { x : -((target_toss.x-target_serve.x)*2), y: 40, z: -((target_toss.z+target_serve.z)*2) };
-		var tween_serve_post_bounce = new TWEEN.Tween(position_serve_post_bounce).to(target_serve_post_bounce, 2000);
-		tween_serve_post_bounce.onUpdate(function(){
-			ball.position.x = position_serve_post_bounce.x;
-			ball.position.y = position_serve_post_bounce.y;
-			ball.position.z = position_serve_post_bounce.z;
-		});
+		// volley
+		rally_count++;
+		rallies[rally_count] = {t: { x : ((singlesWidth*0.7)/2), y: 0, z: -((court_length*0.8)/2) }};
 		
-		var position_return = { x : target_serve_post_bounce.x, y: target_serve_post_bounce.y, z: target_serve_post_bounce.z };
-		var target_return = { x : 0, y: 80, z: 10 };
-		var tween_return = new TWEEN.Tween(position_return).to(target_return, 2000);
-		tween_return.onUpdate(function(){
-			ball.position.x = position_return.x;
-			ball.position.y = position_return.y;
-			ball.position.z = position_return.z;
-		});
-		var position_volley = { x : target_return.x, y: target_return.y, z: target_return.z };
-		var target_volley = { x : 200, y: 0, z: -400 };
-		var tween_volley = new TWEEN.Tween(position_volley).to(target_volley, 2000);
-		tween_volley.onUpdate(function(){
-			ball.position.x = position_volley.x;
-			ball.position.y = position_volley.y;
-			ball.position.z = position_volley.z;
-		});
+		// volley after bounce
+		rally_count++;
+		rallies[rally_count] = {t: { x : ((singlesWidth*1.4)/2), y: 0, z: -((court_length*1.6)/2) }};
 		
-		var position_volley_post_bounce = { x : target_volley.x, y: target_volley.y, z: target_volley.z };
-		var target_volley_post_bounce = { x : 300, y: 40, z: -600 };
-		var tween_volley_post_bounce = new TWEEN.Tween(position_volley_post_bounce).to(target_volley_post_bounce, 2000);
-		tween_volley_post_bounce.onUpdate(function(){
-			ball.position.x = position_volley_post_bounce.x;
-			ball.position.y = position_volley_post_bounce.y;
-			ball.position.z = position_volley_post_bounce.z;
-		});
+		// Add positions from previous target
+		for(var x=0; x<rallies.length;x++) {
+			if(rallies[x].p) {
+				continue;
+			}
+			rallies[x].p = rallies[x-1].t;
+		}
 		
-		// chain
-		tween_toss.chain(tween_serve);
-		tween_serve.chain(tween_serve_post_bounce);
-		tween_serve_post_bounce.chain(tween_return);
-		tween_return.chain(tween_volley);
-		tween_volley.chain(tween_volley_post_bounce);
-		
-		tween_toss.start();
+		// chain tweens
+		var tweens = [];
+		for(var x=0; x<rallies.length;x++) {
+			tweens.push(createTween(x));
+			if(!x){
+				continue;
+			}
+			tweens[x-1].chain(tweens[x]);
+		}
+		// play
+		tweens[0].start();
 	}
 	
 	function initCamera() {
@@ -296,7 +300,7 @@
 			domElement: renderer.domElement,
 
 		});
-		camera.position.set( 15, 200, 640 );
+		camera.position.set( 15, 250, 840 );
 	}
 	
 	function initVideo() {
@@ -358,8 +362,8 @@
 		// blue top fence
 		top_fence = createAndAddFence({w:overallStadiumWidth, h: fenceHeight, d: 0, 
 						x:0, y: fenceHeight/2, z: (-overallStadiumLength/2)});
-		bottom_fence = createAndAddFence({w:overallStadiumWidth, h: fenceHeight, d: 0, 
-						x:0, y: fenceHeight/2, z: (overallStadiumLength/2)});
+		//bottom_fence = createAndAddFence({w:overallStadiumWidth, h: fenceHeight, d: 0, 
+		//				x:0, y: fenceHeight/2, z: (overallStadiumLength/2)});
 		left_fence = createAndAddFence({w:0, h: fenceHeight, d: overallStadiumLength, 
 						x:(-overallStadiumWidth/2), y: fenceHeight/2, z: 0});
 		right_fence = createAndAddFence({w:0, h: fenceHeight, d: overallStadiumLength, 
