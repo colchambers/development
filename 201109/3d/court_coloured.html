@@ -107,6 +107,7 @@
  court.overallWidth = 60;
  court.overallStadiumLength = 130;
  court.overallStadiumWidth = 70;
+ court.lineWidth = 2;
  court.color = '1C3764';
  court.area = {};
  court.area.topPadding = 5;
@@ -396,7 +397,7 @@
 		scene.addObject( court_tile );
 		
 		// Court lines
-		var line_material = new THREE.LineBasicMaterial( { color: 0xFFFFFF, opacity: 1, linewidth: 50 } ),
+		var line_material = new THREE.LineBasicMaterial( { color: 0xFFFFFF, opacity: 1, linewidth: getByScale(court.lineWidth) } ),
 			geometry = new THREE.Geometry(),
 			floor = 0;
 		
