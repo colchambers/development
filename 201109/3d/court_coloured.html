@@ -100,22 +100,26 @@
  court.scale = 10;
  court.length = 76;
  court.width = 38;
- court.serviceLength = 21;
+ court.serviceLength = 42;
  court.singlesWidth = 27;
  court.fenceHeight = 12;
  court.overallLength = 120;
  court.overallWidth = 60;
  court.overallStadiumLength = 130;
  court.overallStadiumWidth = 70;
+ court.color = '1C3764';
  court.area = {};
  court.area.topPadding = 5;
  court.area.sidePadding = 5;
  court.area.length = (court.length + court.area.topPadding + 10);
  court.area.width = (court.width + court.area.sidePadding + 10);
- court.net = {}
+ court.area.sideColor = '407201';
+ court.net = {};
  court.net.singlesWidth = 36;
  court.net.doublesWidth = 40;
  court.net.height = 3.5;
+ court.fences = {}
+ court.fences.color = court.color;
  
  function getByScale(dimension){
      return dimension * court.scale;
@@ -192,6 +196,10 @@
 				
 		objects.lights.directionLight = createAndAddLight({t: 'directional', c: 0xffffff,
 				x: 900, y: 1500, z: 1});
+		objects.lights.netTopSide = createAndAddLight({t: 'point', c: 0xffffff,
+				x: 0, y: 400, z: 1500});
+		objects.lights.netBottomSide = createAndAddLight({t: 'point', c: 0xffffff,
+				x: 0, y: 400, z: -1500});
 	}
 	
 	function initBall() {
@@ -223,24 +231,25 @@
 		var singlesWidth = getByScale(court.singlesWidth);
 		var court_length = getByScale(court.length);
 		var court_width = getByScale(court.width);
+		var toss_height = getByScale(12);
 		
 		// toss
 		var rally_count = 0;
 		rallies[rally_count] = {
 			p: { x : ball.position.x, y: ball.position.y, z: ball.position.z },
-			t: { x : ball.position.x, y: 250, z: ball.position.z }
+			t: { x : ball.position.x, y: toss_height, z: ball.position.z }
 		};
 	
 		// serve
 		rally_count++;
 		rallies[rally_count] = {
-			t: { x : -getByScale((court.singlesWidth*0.8)/2), y: 0, z: -getByScale((court.serviceLength*0.8)/2) }
+			t: { x : -getByScale((court.singlesWidth*0.7)/2), y: 0, z: -getByScale((court.serviceLength*0.9)/2) }
 		};
 		
 		// serve after bounce
 		rally_count++;
 		rallies[rally_count] = {
-			t: { x : -((rallies[0].t.x-rallies[rally_count-1].t.x)*2), y: 40, z: -((rallies[0].t.z+rallies[rally_count-1].t.z)*2) }
+			t: { x : ((rallies[rally_count-1].t.x)*2), y: getByScale(4), z: ((rallies[rally_count-1].t.z)*2) }
 		};
 
 		// return
@@ -340,7 +349,7 @@
 	function createAndAddFence(options) {
 		var fence = new THREE.Mesh(
 			new THREE.CubeGeometry( options.w, options.h, options.d ),
-			new THREE.MeshLambertMaterial( { color: 0x0000FF } )
+			new THREE.MeshLambertMaterial( { color: '0x'+court.fences.color } )
 		);
 		fence.position.x=options.x;
 		fence.position.y=options.y;
@@ -356,23 +365,24 @@
 		var centre = 0;
 		var overallStadiumLength = getByScale(court.overallStadiumLength);
 		var overallStadiumWidth = getByScale(court.overallStadiumWidth);
-		var fenceHeight = getByScale(court.fenceHeight);
+		var fenceHeight = getByScale(court.fenceHeight)+2;
+		var fenceY = (fenceHeight/2)-2;
 		
 		// fences
 		// blue top fence
 		top_fence = createAndAddFence({w:overallStadiumWidth, h: fenceHeight, d: 0, 
-						x:0, y: fenceHeight/2, z: (-overallStadiumLength/2)});
-		//bottom_fence = createAndAddFence({w:overallStadiumWidth, h: fenceHeight, d: 0, 
-		//				x:0, y: fenceHeight/2, z: (overallStadiumLength/2)});
+						x:0, y: fenceY, z: (-overallStadiumLength/2)});
+		bottom_fence = createAndAddFence({w:overallStadiumWidth, h: fenceHeight, d: 0, 
+						x:0, y: fenceY, z: (overallStadiumLength/2)});
 		left_fence = createAndAddFence({w:0, h: fenceHeight, d: overallStadiumLength, 
-						x:(-overallStadiumWidth/2), y: fenceHeight/2, z: 0});
+						x:(-overallStadiumWidth/2), y: fenceY, z: 0});
 		right_fence = createAndAddFence({w:0, h: fenceHeight, d: overallStadiumLength, 
-						x:(overallStadiumWidth/2), y: fenceHeight/2, z: 0});
+						x:(overallStadiumWidth/2), y: fenceY, z: 0});
 
 		// Green courtside
 		court_side_tile = new THREE.Mesh(
 			new THREE.CubeGeometry( overallStadiumWidth, 0, overallStadiumLength ),
-			new THREE.MeshLambertMaterial( { color: 0x00FF00 } )
+			new THREE.MeshLambertMaterial( { color: '0x'+court.area.sideColor } )
 		);
 		court_side_tile.position.y=-2;
 		scene.addObject( court_side_tile );
@@ -380,7 +390,7 @@
 		// blue court
 		court_tile = new THREE.Mesh(
 			new THREE.CubeGeometry( width*2, 0, length*2 ),
-			new THREE.MeshLambertMaterial( { color: 0x0000FF } )
+			new THREE.MeshLambertMaterial( { color: '0x'+court.color } )
 		);
 		court_tile.position.y=-1;
 		scene.addObject( court_tile );
@@ -450,7 +460,7 @@
 	}
 	
 	function createNet(){
-		var sx=getByScale(court.net.singlesWidth), sy=getByScale(court.net.height), sz=1, p = new THREE.Vector3(0, sy/2, 0)
+		var sx=getByScale(court.net.singlesWidth), sy=getByScale(court.net.height-0.25), sz=1, p = new THREE.Vector3(0, sy/2, 0)
 		net = new THREE.Mesh(
 				new THREE.CubeGeometry( sx, sy, sz ), 
 				new THREE.MeshLambertMaterial( { color: 0x003300, wireframe: true  } ) 
@@ -459,6 +469,16 @@
 
 		net.position = p;
 		scene.addObject(net);
+		
+		var height=getByScale(0.25), p = new THREE.Vector3(0, sy, 0)
+		tape = new THREE.Mesh(
+				new THREE.CubeGeometry( sx, height, sz ), 
+				new THREE.MeshLambertMaterial( { color: 0xFFFFFF } ) 
+			);
+		tape.updateMatrix();
+
+		tape.position = p;
+		scene.addObject(tape);
 	}
 	
 	function createAndAddDatGui(options) {
@@ -474,6 +494,10 @@
 		}
 		for(var x=0;x<length;x++){
 			gui.add(e.position, positions[x],  -1500, 1500, 100).name('position.'+positions[x]);
+		}
+		
+		if(options.t && options.t == 'light'){
+			gui.add(e, 'visible');
 		}
 		
 		document.getElementById('gui-container').appendChild(gui.domElement);
@@ -511,8 +535,10 @@
 		video_gui.add(video, 'volume', 0, 1, 0.1);
 		
 		// light
-		var light_gui = createAndAddDatGui({e: objects.lights.directionLight, n: 'Light'});
+		var light_gui = createAndAddDatGui({e: objects.lights.directionLight, n: 'Light', t:'light'});
 		var point_light_gui = createAndAddDatGui({e: objects.lights.pointLight, n: 'Point Light'});
+		var top_fence_light_gui = createAndAddDatGui({e: objects.lights.netTopSide, n: 'Top fence'});
+		var top_fence_light_gui = createAndAddDatGui({e: objects.lights.netBottomSide, n: 'Bottom fence'});
 		
 	}
 
