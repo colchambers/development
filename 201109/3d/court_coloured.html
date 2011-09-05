@@ -67,22 +67,20 @@
     <script type="text/javascript">
 	var height = window.innerHeight,
 	width  = window.innerWidth,
-
 	container, stats,
-
 	camera, scene, renderer,
 	geometry, 
 	light, ambientLight, ball, net, grid,
 	courtMesh, court_tile,
-
 	time = new Date().getTime();
+	var debug = false;
+
 	var objects = {};
 	objects.lights = {};
 	objects.video = null;
 	objects.meshes = {};
 	objects.rallies = [];
 	var video, texture, material, videoMesh;
-		;
 	
 /*
  * Tennis court dimensions
@@ -136,7 +134,9 @@
 		}
 
 		init();
-		init_datgui();
+		if(debug) {
+			init_datgui();
+		}
 		animate();
 
 	}
@@ -147,17 +147,13 @@
 		document.body.appendChild( container );
 		scene = new THREE.Scene();
 
-		renderer = new THREE.WebGLRenderer( { clearAlpha: 1, clearColor: 0xFFFFFF } );
+		renderer = new THREE.WebGLRenderer( { clearAlpha: 1, clearColor: 0x000000 } );
 		renderer.setSize( width, height );
 		renderer.sortObjects = false;
 		renderer.autoClear = false;
 		container.appendChild( renderer.domElement );
 
 		initCamera();
-		//var material = new THREE.MeshLambertMaterial( { color: 0xffffff, wireframe: true } );
-
-		//camera.target = ball;
-		
 		initBall();
 		createBallAnimation();
 		createNet();
@@ -166,10 +162,7 @@
 		initVideo();
 		renderer.autoClear = false;
 
-		
 		initLights();
-
-		//renderer.render(scene, camera);
 
 		stats = new Stats();
 		stats.domElement.style.position = 'absolute';
@@ -320,7 +313,9 @@
 		objects.video = video;
 
 		//video.volume = 0;
-		video.muted = true;
+		if(debug) {
+			video.muted = true;
+		}
 
 		texture = new THREE.Texture( video );
 		texture.minFilter = THREE.LinearFilter;
@@ -507,6 +502,7 @@
 	}
 	
 	function init_datgui() {
+		
 		var court_gui = new DAT.GUI();
 		
 		court_gui.name('Court');
