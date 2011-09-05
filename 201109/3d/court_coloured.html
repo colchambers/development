@@ -42,6 +42,10 @@
 			float: none;
 			margin-bottom: 0;
 		}
+		
+		.control {
+			display: inline;
+		}
 
 	</style>
 	
@@ -54,8 +58,10 @@
 	<script type="text/javascript" src="js/Stats.js"></script>
     <body>
 		<div id="info">
-			<a href="http://github.com/mrdoob/three.js" target="_blank">three.js</a> - earth [trackball camera]<br/><br/>
+			Tennis rally simulation<br/><br/>
 			<b>MOVE</b> mouse & press <b>LEFT/A:</b> rotate, <b>MIDDLE/S:</b> zoom, <b>RIGHT/D:</b> pan
+			
+			<div id="play_animation" class="control">Play</div> <div id="pause_animation" class="control">Pause</div> <div id="video_mute" class="control">Mute</div>
 		</div>
 		
 		<video id="video" autoplay loop style="display:none"  controls >
@@ -80,6 +86,7 @@
 	objects.video = null;
 	objects.meshes = {};
 	objects.rallies = [];
+	objects.tweens = [];
 	var video, texture, material, videoMesh;
 	
 /*
@@ -163,6 +170,7 @@
 		renderer.autoClear = false;
 
 		initLights();
+		initControls();
 
 		stats = new Stats();
 		stats.domElement.style.position = 'absolute';
@@ -267,7 +275,7 @@
 		}
 		
 		// chain tweens
-		var tweens = [];
+		var tweens = objects.tweens;
 		for(var x=0; x<rallies.length;x++) {
 			tweens.push(createTween(x));
 			if(!x){
@@ -275,6 +283,8 @@
 			}
 			tweens[x-1].chain(tweens[x]);
 		}
+		// loop tweens
+		tweens[tweens.length-1].chain(tweens[0]);
 		// play
 		tweens[0].start();
 	}
@@ -499,6 +509,24 @@
 		document.getElementById('gui-container').appendChild(gui.domElement);
 		gui.close();
 		return gui;
+	}
+	
+	function initControls() {
+		$('#pause_animation').click(function() {
+			objects.tweens[0].stop();
+		})
+		
+		$('#play_animation').click(function() {
+			objects.tweens[0].start();
+		})
+		
+		
+		$('#video_mute').click(function() {
+			
+			video.muted = video.muted? false: true;
+			var text = video.muted?'unmute': 'mute';
+			$('#video_mute').text(text);
+		})
 	}
 	
 	function init_datgui() {
