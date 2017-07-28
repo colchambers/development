@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg" lang="en">
+<head>
+    <title>Sticky Notes</title>
+    <link type="text/css" rel="stylesheet" href="css/sticky_note_styles.css"/>
+     <!--[if lte IE 8]>
+        <link rel="stylesheet" type="text/css" href="css/sticky_note_styles_ie8.css" />
+    <![endif]-->
+    <script src="vleapi.1.js"></script>
+    <script src="data/sticky_note_data.js"></script>
+    <script src="scripts/lib.js"></script>
+    <script src="scripts/json.js"></script>
+</head>
+
+<body id="root" class="body-style">
+<div id="mainDiv" class="hidden">
+    <div class="sidebar noSelectText">
+        <div class="verticalLayout">
+        <div class="side-bar-block note-block">
+            <textarea tabindex="1" class="note-text" id="textStringId">Write your note here!</textarea>
+        </div>
+        <div class="side-bar-block colours-side-bar-block">
+            <div id="color_picker">
+                <div>Choose Colour:</div>
+                <div class="default-option option-box"  id="setNoteBGColour0Id"></div>
+                <div class="yellow-option option-box" id="setNoteBGColour1Id"></div>
+                <div class="blue-option option-box"   id="setNoteBGColour2Id"></div>
+                <div class="red-option option-box"    id="setNoteBGColour3Id"></div>
+                <div class="green-option option-box"  id="setNoteBGColour4Id"></div>
+            </div>
+            <div id="btn_options">
+                <input tabindex="1" class="add-button" type="button" value="Create" id="addDivToPinBoardId" /><input tabindex="1" class="add-button" type="button" value="Update" id="updateSelectedDivId" /><input tabindex="1" class="add-button" type="button" value="Delete" id="deleteCurrentId" /><input tabindex="1" class="add-button" type="button" value="Delete All" id="deleteAllId" /><input tabindex="1" class="add-button" type="button" value="Print" id="printNotesId" /><input tabindex="1" class="add-button" type="button" value="File" id="fileNotesId" />
+            </div>
+            </div>
+        </div>
+    </div>
+    <div class="keyboard_notice" title="Use the Tab key to select controls or notes and the WASD keys to move a selected note. E key moves focus from a note to the textarea.">
+        Keyboard access: Use the Tab key to select controls/notes; WASD keys to move a selected note; E key moves focus from a note to the textarea.
+    </div>
+    <div id="pinboardId" class="pinboard"></div>
+
+
+    <div id="theTitleId" class="theTitle"><span id="titleTextId"></span></div>
+    <div class="popupBg hidden" id="popupFileWinId">
+        <div class="popupShadow"></div>
+        <div class="popup"> 
+             <p><b>New pin board</b></p>
+             <p><label>Title</label><input id='titleFileId' type='text' value='' maxlength='40' /></p>
+             <p class="buttonsPP"><input type='button' value='create' id="fileNewButtonId"/></p>
+             <hr />
+             <p id ="loadingAreaId"><label><b>Select pin board</b></label><select id='loadFileId'></select></p><br/>
+             <hr id="loadHrId" />
+            <p class="buttonsPP"><br/><input type='button' value='cancel' id="fileCancelButtonId"/></p>
+        </div>
+    </div>
+    
+    <div id="testDivId" class="testArea"></div>
+</div>
+<script src="scripts/sticky_note_scripts.js"></script>
+</body>
+</html>

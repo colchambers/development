@@ -1,0 +1,337 @@
+body {
+    font-size:100%;
+    line-height:1.125em;
+}
+body * {
+    line-height:1.125em;
+    font-size:14px;
+}
+html {
+    -ms-touch-action: none; /* Direct all pointer events to JavaScript code. */
+}
+ .container{
+    left:0px;
+    top:0px;
+    position:absolute;
+    overflow:hidden;
+    border: none;
+}
+.noSelectText * {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: default !important;
+}
+
+.note-text{
+    -webkit-touch-callout: text !important;
+    -webkit-user-select: text !important;
+    -khtml-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+    user-select: text !important;
+}
+
+.hidden{
+    visibility: hidden;
+}
+    
+#mainDiv{
+    left:0px;
+    top:0px;
+    position:absolute;
+}
+
+.body-style{
+    font-family: 'Times New Roman';
+}
+
+.sidebar{
+    width: 512px;
+    height: 78px;
+    position: absolute;
+    left: 0;
+    top: 45px;
+    background-color: #ffffff;
+    font-family: verdana;
+    font-size: small;
+}
+.verticalLayout {
+    display: table;
+    width: 100%;
+}
+.pinboard{
+  position: absolute;
+  left:135px;
+  top: 123px;
+  border:solid 2px #d4d2d2;
+}
+.pinboard:focus{
+ /*   border:solid 2px blue;*/
+}
+
+.postItNote, .testArea{
+    border-radius:3px;
+  padding: 2px 0px 0px 2px;
+  width:90px;
+  height:65px;
+  position: absolute;
+  left:0px;
+  top:0px;
+  background-color: #FFF7C6;
+  border-style: solid;
+  border-color: #676463;
+  border-width: 1px;
+  cursor: move;
+  overflow: hidden;
+  word-wrap: break-word;
+  font-family: 'Arial';
+  letter-spacing: 1px;
+  font-size: 14px;
+  line-height: 16px;
+  cursor: move;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  border:solid 2px transparent;
+  
+}
+.divLink{
+    width:100%;
+    height:100%;
+    display: inline-block;
+}
+.testArea{
+  visibility: hidden;
+}      
+
+.colour-select{
+  width:150px;
+}
+
+.note-text{
+    border-radius:3px;
+  padding: 2px 0px 0px 2px;
+  font-family: 'Arial';
+  font-size: 14px;
+  line-height: 16px;
+  letter-spacing: 1px;
+  width:90px;
+  height:65px;
+  border-width: 1px;
+  border-style: solid;
+  background-color: #FFF7C6;
+  outline: none;
+  resize: none;
+  overflow: hidden;
+    border-color:#676463;
+}
+
+.add-button{
+  margin:5px 5px 0 0px;
+}
+
+.yellow-option{
+  background-color:#fff7c6;
+}
+.blue-option{
+  background-color:#a2d7db;
+}
+.red-option{
+  background-color:#f8c7dc;
+}
+.green-option{
+  background-color:#b8dab7;
+}
+
+.option-box{
+  width:16px;
+  height:16px;
+  border:1px solid #676463;
+    border-radius:50%;
+  float: left;
+    margin: 4px 5px 4px 0px;
+}
+
+#btn_options {
+    clear: both;
+}
+
+.side-bar-block{
+    display:table-cell;
+    padding-left: 10px;
+    vertical-align: top;
+}
+.note-block {
+    padding-left:0;
+    width: 95px;
+}
+.btns-side-bar-block{
+    text-align:right;
+    float:left;
+}
+.settings-side-bar-block{
+    text-align:right;
+}
+.btns-side-bar-block .add-button:nth-of-type(1){
+    margin-top:0;
+}
+.shadow {
+  -moz-box-shadow: 2px 2px 10px #676463;
+  -webkit-box-shadow: 2px 2px 10px #676463;
+  box-shadow: 2px 2px 10px #676463;
+  /* For IE 8 */
+  -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#676463')";
+  /* For IE 5.5 - 7 */
+  filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#676463');
+  }
+
+
+.popupBg{
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:800px;
+    height:650px;
+    background-color: rgba(0,0,0,.2);
+
+}
+
+.popup{
+    position:absolute;
+    width:300px;
+    height:300px;
+    top:100px; 
+    left:250px;
+    background-color: lightgray;
+    border: solid 2px black;
+    border-radius: 10px;
+}
+
+.popup hr, .popup p {
+    margin:10px;
+}
+
+.popup select{
+    width:150px;
+}
+.popup label{
+    display:inline-block;
+    width:120px;
+}
+.buttonsP{
+    text-align: center;
+}
+.buttonsPP{
+    text-align: right;
+}
+
+.buttonsP input, .buttonsPP input {
+    width:80px;
+}
+
+.popupShadow{
+    position:absolute;
+    width:300px;
+    height:300px;
+    top:110px; 
+    left:260px;
+    background-color: black;
+    border: none;
+    background-color: rgba(0,0,0,.4);
+    border-radius: 5px;
+}
+  
+.theTitle{
+    position:absolute;
+    height:0px;
+    top:20px;
+    left:160px;
+    background-color: transparent;
+    text-align: center;
+    margin:auto;
+}
+#titleTextId{
+    background-color: #fff7c6;
+    border:solid 1px black;
+    font-size: 2em;
+    display:inline-block;
+    padding:10px;
+    height:30px;
+}
+
+#theTitleId {
+            z-index: -1;
+            top: 10px;
+            visibility: visible !important;
+}
+#titleTextId {
+	font-size: 1.6em;
+	background-color: transparent;
+	border: none;
+	padding: 0px;
+	color: #777777;
+}
+#pinboardId {
+    position:absolute;
+	background-color:#f6f6f6;
+    top: 123px;
+    left:0;
+}
+
+.keyboard_notice {
+	text-align: left;
+	font-family: Arial, Helvetica, sans-serif;
+    position: absolute;
+    top: 0;
+    width:512px;
+    color: #797574;
+    height: 35px;
+}     
+
+.popupBg{
+	width:880px;		
+}
+.note-text:hover {
+    cursor: text !important;
+}
+.option-box:hover,
+.add-button:hover {
+    cursor: pointer !important;
+}
+
+  @media print{
+      .sidebar{
+          display: none;
+      }
+
+      .pinboard{
+        left:10px;
+        display: block;
+      }
+      .theTitle{
+          left:0px;
+      }
+
+      .shadow {
+        /* For IE 8 */
+        -ms-filter: "";
+        /* For IE 5.5 - 7 */
+        filter: 0;
+         -moz-box-shadow:none;
+              -webkit-box-shadow: none;
+              box-shadow: none;
+      }
+
+      .postItNote{
+        display: block;
+        background-color:transparent;
+      }
+
+    
+ }
