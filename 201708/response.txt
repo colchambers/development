@@ -1,0 +1,21 @@
+C:\workspace\development\201708\node_modules\selenium-webdriver\lib\promise.js:2634
+        throw error;
+        ^
+
+WebDriverError: <html><head><title>POST not allowed</title></head><body><h1>POST not allowed</h1><p>You cannot POST to any URL other than the question.</p><p><a href='../../'>[List]</a> </p></body></html>
+
+    at WebDriverError (C:\workspace\development\201708\node_modules\selenium-webdriver\lib\error.js:27:5)
+    at parseHttpResponse (C:\workspace\development\201708\node_modules\selenium-webdriver\lib\http.js:536:11)
+    at doSend.then.response (C:\workspace\development\201708\node_modules\selenium-webdriver\lib\http.js:441:30)
+    at process._tickCallback (internal/process/next_tick.js:109:7)
+From: Task: WebDriver.createSession()
+    at Function.createSession (C:\workspace\development\201708\node_modules\selenium-webdriver\lib\webdriver.js:769:24)
+    at createDriver (C:\workspace\development\201708\node_modules\selenium-webdriver\index.js:170:33)
+    at Builder.build (C:\workspace\development\201708\node_modules\selenium-webdriver\index.js:635:14)
+    at Object.<anonymous> (C:\workspace\development\201708\seleniumtest.js:24:2)
+    at Module._compile (module.js:570:32)
+    at Object.Module._extensions..js (module.js:579:10)
+    at Module.load (module.js:487:32)
+    at tryModuleLoad (module.js:446:12)
+    at Function.Module._load (module.js:438:3)
+    at Module.runMain (module.js:604:10)
