@@ -31,6 +31,16 @@ module.exports = function () {
     });
 
     // External methods for reference
+    this.Then(/^the element "([^"]*)" text should be "([^"]*)"$/, function(selector, value) {
+
+        return helpers.getFirstElementContainingText(selector, value).then(function(element){
+            return element.getText().then(function (actualValue) {
+                return expect(actualValue).to.equal(value);
+            });
+        });
+    });
+
+    // External methods for reference
     this.Then(/^the question title should be "([^"]*)"$/, function(title) {
 
         var element = driver.findElement(by.css('#question'));

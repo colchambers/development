@@ -18,5 +18,5 @@ Feature: DB123 Tax credit calculator: Scenario 8
 #    And I set element "#taxYear" value to "6"
 #    And I set element "#income" value to "250000"
 
-    Then element "#resultSummary table tr:nth-child(2) td.right" "value" should be "0.00"
+    Then the element "#resultSummary table tr:nth-child(2) td.right" text should be "0.00"
 
