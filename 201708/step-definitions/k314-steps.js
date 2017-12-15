@@ -39,13 +39,6 @@ module.exports = function () {
         });
     });
 
-    this.Then(/^I set element "([^"]*)" "([^"]*)" to "([^"]*)"$/, function (selector, attribute, value) {
-        // get the element from the page
-        return driver.findElement(by.css(selector)).then(function(el) {
-            return el.setAttribute(attribute, value);
-        });
-    });
-
     this.Then(/^I set checkbox "([^"]*)" to selected$/, function (selector) {
         // get the element from the page
         return driver.findElement(by.css(selector)).then(function(el) {
@@ -53,16 +46,10 @@ module.exports = function () {
         });
     });
 
-    this.Then(/^I set "([^"]*)" selected option to "([^"]*)"$/, function (selector, value) {
+    this.Then(/^I click element "([^"]*)" with text "([^"]*)"$/, function (selector, text) {
         // get the element from the page
-        return driver.findElements(by.css(selector + " option")).then(function(elements){
-            for(var i=0; i<elements.length; i++) {
-
-            }
-
-            // return element.getText().then(function (actualValue) {
-            //     return expect(actualValue).to.equal(value);
-            // });
+        return helpers.getFirstElementContainingText(selector, text).then(function(el) {
+            return el.click();
         });
     });
 
@@ -77,8 +64,7 @@ module.exports = function () {
 
     // External methods for reference
     this.Then(/^the element "([^"]*)" text should be "([^"]*)"$/, function(selector, value) {
-
-        return helpers.getFirstElementContainingText(selector, value).then(function(element){
+        return driver.findElement(by.css(selector)).then(function(element){
             return element.getText().then(function (actualValue) {
                 return expect(actualValue).to.equal(value);
             });
