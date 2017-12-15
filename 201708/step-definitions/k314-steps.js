@@ -23,10 +23,55 @@ module.exports = function () {
     });
 
     this.Then(/^I set element "([^"]*)" value to "([^"]*)"$/, function (selector, value) {
-        // get the element from the page
+        // get the element froms the page
         return driver.findElement(by.css(selector)).then(function(el) {
             el.sendKeys(value);
             return el.sendKeys(selenium.Key.ENTER);
+        });
+    });
+
+    this.Then(/^I set text element "([^"]*)" value to "([^"]*)"$/, function (selector, value) {
+        // get the element froms the page
+        return driver.findElement(by.css(selector)).then(function(el) {
+            el.clear();
+            el.sendKeys(value);
+            return el.sendKeys(selenium.Key.ENTER);
+        });
+    });
+
+    this.Then(/^I set element "([^"]*)" "([^"]*)" to "([^"]*)"$/, function (selector, attribute, value) {
+        // get the element from the page
+        return driver.findElement(by.css(selector)).then(function(el) {
+            return el.setAttribute(attribute, value);
+        });
+    });
+
+    this.Then(/^I set checkbox "([^"]*)" to selected$/, function (selector) {
+        // get the element from the page
+        return driver.findElement(by.css(selector)).then(function(el) {
+            return el.click();
+        });
+    });
+
+    this.Then(/^I set "([^"]*)" selected option to "([^"]*)"$/, function (selector, value) {
+        // get the element from the page
+        return driver.findElements(by.css(selector + " option")).then(function(elements){
+            for(var i=0; i<elements.length; i++) {
+
+            }
+
+            // return element.getText().then(function (actualValue) {
+            //     return expect(actualValue).to.equal(value);
+            // });
+        });
+    });
+
+    this.Then(/^"([^"]*)" selected option should be "([^"]*)"$/, function (selector, value) {
+        // get the element from the page
+        return driver.findElement(by.css(selector + " option:checked")).then(function(element){
+            return element.getText().then(function (actualValue) {
+                return expect(actualValue).to.equal(value);
+            });
         });
     });
 
