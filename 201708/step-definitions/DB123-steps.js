@@ -1,5 +1,38 @@
 module.exports = function () {
 
+    this.Given(/^I fill out the "([^\"]*)" form with the following values:$/, function (name, table) {
+        var fields = table.hashes(), i, result;
+        for (i in fields) {
+            switch(fields[i].element) {
+                case "":
+                    result = shared.util.setElementValueTo(fields[i].name, fields[i].value);
+                    break;
+                case "checkbox":
+                    if(fields[i].value != "selected") {
+                        continue; // Step not yet written.
+                    }
+                    result = shared.util.setCheckboxToSelected(fields[i].name);
+                    break;
+                case "text":
+                    result = shared.util.setTextElementValueTo(fields[i].name, fields[i].value);
+                    break;
+            }
+        }
+        return result;
+    });
+
+    this.Then(/^the "([^\"]*)" form should contain the following values:$/, function (name, table) {
+        var fields = table.hashes(), i, result;
+        for (i in fields) {
+            switch (fields[i].element) {
+                default:
+                    result = shared.util.elementTextShouldBe(fields[i].name, fields[i].value);
+                    break;
+            }
+        }
+        return result;
+    });
+
     this.Given(/^I navigate to "([^\"]*)"$/, function (url) {
         return helpers.loadPage(url);
     });
@@ -14,53 +47,38 @@ module.exports = function () {
         // load google
         return helpers.loadPage(page.testLocalhost.url);
     });
-	
-	this.Then(/^the page title should be "([^"]*)"$/, function(pageTitle) {
-		var response = page.testLocalhost.titleContains(pageTitle)
-		// console.log(respone);
-	  return response;
-	});
+
+    this.Then(/^the page title should be "([^"]*)"$/, function (pageTitle) {
+        var response = page.testLocalhost.titleContains(pageTitle)
+        return response;
+    });
 
     this.Then(/^element "([^"]*)" "([^"]*)" should be "([^"]*)"$/, function (selector, attribute, value) {
-        return helpers.getAttributeValue(selector, attribute).then(function(actualValue){
-            return expect(actualValue).to.equal(value);
-        });
+        return shared.util.elementShouldBe(selector, attribute, value);
     });
 
     this.Then(/^I set element "([^"]*)" value to "([^"]*)"$/, function (selector, value) {
-        // get the element froms the page
-        return driver.findElement(by.css(selector)).then(function(el) {
-            el.sendKeys(value);
-            return el.sendKeys(selenium.Key.ENTER);
-        });
+        shared.util.setElementValueTo(selector, value);
     });
 
     this.Then(/^I set text element "([^"]*)" value to "([^"]*)"$/, function (selector, value) {
-        // get the element froms the page
-        return driver.findElement(by.css(selector)).then(function(el) {
-            el.clear();
-            el.sendKeys(value);
-            return el.sendKeys(selenium.Key.ENTER);
-        });
+        return shared.util.setTextElementValueTo(selector, value);
     });
 
     this.Then(/^I set checkbox "([^"]*)" to selected$/, function (selector) {
-        // get the element from the page
-        return driver.findElement(by.css(selector)).then(function(el) {
-            return el.click();
-        });
+        return shared.util.setCheckboxToSelected(selector);
     });
 
     this.Then(/^I click element "([^"]*)" with text "([^"]*)"$/, function (selector, text) {
         // get the element from the page
-        return helpers.getFirstElementContainingText(selector, text).then(function(el) {
+        return helpers.getFirstElementContainingText(selector, text).then(function (el) {
             return el.click();
         });
     });
 
     this.Then(/^"([^"]*)" selected option should be "([^"]*)"$/, function (selector, value) {
         // get the element from the page
-        return driver.findElement(by.css(selector + " option:checked")).then(function(element){
+        return driver.findElement(by.css(selector + " option:checked")).then(function (element) {
             return element.getText().then(function (actualValue) {
                 return expect(actualValue).to.equal(value);
             });
@@ -68,16 +86,12 @@ module.exports = function () {
     });
 
     // External methods for reference
-    this.Then(/^the element "([^"]*)" text should be "([^"]*)"$/, function(selector, value) {
-        return driver.findElement(by.css(selector)).then(function(element){
-            return element.getText().then(function (actualValue) {
-                return expect(actualValue).to.equal(value);
-            });
-        });
+    this.Then(/^the element "([^"]*)" text should be "([^"]*)"$/, function (selector, value) {
+        return shared.util.elementTextShouldBe(selector, value);
     });
 
     // External methods for reference
-    this.Then(/^the question title should be "([^"]*)"$/, function(title) {
+    this.Then(/^the question title should be "([^"]*)"$/, function (title) {
 
         var element = driver.findElement(by.css('#question'));
         // var response = page.testLocalhost.titleContains(title)

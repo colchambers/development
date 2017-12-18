@@ -8,24 +8,105 @@ Feature: DB123 Tax credit calculator: Scenario 8
     Given I navigate to page "Tax credit calculator"
 
   Scenario: Scenario 2
-    Given I set element "#status" value to "couple"
-    Then element "#status" "value" should be "couple"
-    Then I set element "#children" value to "4"
-    Then element "#children" "value" should be "4"
-    And I set checkbox "#hasBaby" to selected
-    Then element "#hasBaby" "selected" should be "true"
-    And I set element "#hours" value to "30 or more"
-    And I set element "#hoursPartner" value to "Between 16 and 29"
-    Then "#hoursPartner" selected option should be "Between 16 and 29"
-    And I set element "#regCB" value to "4"
-    And I set text element "#childcareCosts" value to "400"
-    Then element "#childcareCosts" "value" should be "400"
+    Given I fill out the "Tax credit calculator" form with the following values:
+    | name            | value             | element   |
+    | #status         | couple            |           |
+    | #children       | 4                 |           |
+    | #hasBaby        | selected          | checkbox  |
+    | #hours          | 30 or more        |           |
+    | #hoursPartner   | Between 16 and 29 |           |
+    | #regCB          | 4                 |           |
+    | #childcareCosts | 400               | text      |
+    | #income         | 28000             | text      |
+    | #taxYear        | 2015-16           |           |
 
-    And I set text element "#income" value to "28000"
-    Given I set element "#taxYear" value to "2015-16"
-    And I click element ".result_table tr:last-child td.right a" with text "Calculate"
+    When I click element ".result_table tr:last-child td.right a" with text "Calculate"
+    Then the "Tax credit calculator" form should contain the following values:
+      | name                                          | value    |
+      | #resultSummary table tr:first-child td.right  | 0.00     |
+      | #resultSummary table tr:nth-child(2) td.right | 6852.20  |
+      | #resultSummary table tr:nth-child(3) td.right | 11665.00 |
+      | #resultSummary table tr:nth-child(4) td.right | 18517.20 |
 
-    Then the element "#resultSummary table tr:first-child td.right" text should be "0.00"
-    And the element "#resultSummary table tr:nth-child(2) td.right" text should be "6852.20"
-    And the element "#resultSummary table tr:nth-child(3) td.right" text should be "11665.00"
-    And the element "#resultSummary table tr:nth-child(4) td.right" text should be "18517.20"
+  Scenario: Scenario 3
+    Given I fill out the "Tax credit calculator" form with the following values:
+      | name            | value             | element   |
+      | #status         | couple            |           |
+      | #children       | 2                 |           |
+      | #hasBaby        | selected          | checkbox  |
+      | #hours          | 30 or more        |           |
+      | #hoursPartner   | Between 16 and 29 |           |
+      | #regCB          | 1                 |           |
+      | #childcareCosts | 200               | text      |
+      | #income         | 28000             | text      |
+      | #taxYear        | 2015-16           |           |
+
+    When I click element ".result_table tr:last-child td.right a" with text "Calculate"
+    Then the "Tax credit calculator" form should contain the following values:
+      | name                                          | value   |
+      | #resultSummary table tr:first-child td.right  | 0.00    |
+      | #resultSummary table tr:nth-child(2) td.right | 2302.20 |
+      | #resultSummary table tr:nth-child(3) td.right | 6105.00 |
+      | #resultSummary table tr:nth-child(4) td.right | 8407.20 |
+
+  Scenario: Scenario 4
+    Given I fill out the "Tax credit calculator" form with the following values:
+      | name            | value             | element   |
+      | #status         | couple            |           |
+      | #children       | 2                 |           |
+      | #hasBaby        | selected          | checkbox  |
+      | #hours          | 30 or more        |           |
+      | #hoursPartner   | Between 16 and 29 |           |
+      | #regCB          | 1                 |           |
+      | #childcareCosts | 200               | text      |
+      | #income         | 10000             | text      |
+      | #taxYear        | 2015-16           |           |
+
+    When I click element ".result_table tr:last-child td.right a" with text "Calculate"
+    Then the "Tax credit calculator" form should contain the following values:
+      | name                                          | value    |
+      | #resultSummary table tr:first-child td.right  | 3312.20  |
+      | #resultSummary table tr:nth-child(2) td.right | 6370.00  |
+      | #resultSummary table tr:nth-child(3) td.right | 6105.00  |
+      | #resultSummary table tr:nth-child(4) td.right | 15787.20 |
+
+  Scenario: Scenario 5
+    Given I fill out the "Tax credit calculator" form with the following values:
+      | name            | value             | element   |
+      | #status         | couple            |           |
+      | #children       | 2                 |           |
+      | #hasBaby        | selected          | checkbox  |
+      | #hours          | Between 16 and 29 |           |
+      | #hoursPartner   | Not working       |           |
+      | #regCB          | 1                 |           |
+      | #childcareCosts | 200               | text      |
+      | #income         | 10000             | text      |
+      | #taxYear        | 2015-16           |           |
+
+    When I click element ".result_table tr:last-child td.right a" with text "Calculate"
+    Then the "Tax credit calculator" form should contain the following values:
+      | name                                          | value   |
+      | #resultSummary table tr:first-child td.right  | 2502.20 |
+      | #resultSummary table tr:nth-child(2) td.right | 0.00    |
+      | #resultSummary table tr:nth-child(3) td.right | 6105.00 |
+      | #resultSummary table tr:nth-child(4) td.right | 8607.20 |
+
+  Scenario: Scenario 6
+    Given I fill out the "Tax credit calculator" form with the following values:
+      | name            | value             | element   |
+      | #status         | single            |           |
+      | #children       | 2                 |           |
+      | #hasBaby        | selected          | checkbox  |
+      | #hours          | Between 16 and 29 |           |
+      | #regCB          | 1                 |           |
+      | #childcareCosts | 200               | text      |
+      | #income         | 10000             | text      |
+      | #taxYear        | 2015-16           |           |
+
+    When I click element ".result_table tr:last-child td.right a" with text "Calculate"
+    Then the "Tax credit calculator" form should contain the following values:
+      | name                                          | value    |
+      | #resultSummary table tr:first-child td.right  | 2502.20  |
+      | #resultSummary table tr:nth-child(2) td.right | 6370.00  |
+      | #resultSummary table tr:nth-child(3) td.right | 6105.00  |
+      | #resultSummary table tr:nth-child(4) td.right | 14977.20 |
