@@ -5,7 +5,7 @@ module.exports = function () {
     });
 
     this.Given(/^I navigate to page "([^\"]*)"$/, function (name) {
-        url = page.db123.url + page.db123.pages[name.toLowerCase()];
+        url = page.db123.getURL() + page.db123.pages[name.toLowerCase()];
         return helpers.loadPage(url);
     });
 

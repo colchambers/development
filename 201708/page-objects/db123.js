@@ -1,9 +1,18 @@
 module.exports = {
 
-    url: 'http://localhost:8887/DB123/development/content/',
+    defaultLocation: 'local',
+    urls: {
+        local: 'http://localhost:8887/DB123/development/content/',
+        live: 'http://students.open.ac.uk/social-science/db123/'
+    },
 
     pages: {
         "tax credit calculator": 'financial_tools/tool02.html'
+    },
+
+    getURL: function(location) {
+        location = location?location: this.defaultLocation;
+        return this.urls[location];
     },
 
     clickNavigationItem: function(containingText) {
