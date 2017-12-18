@@ -5,8 +5,7 @@ Feature: DB123 Tax credit calculator: Scenario 8
   cost is £273 fer week and household income is £25k.
 
   Background: Enter basic details
-    Given I navigate to "http://localhost:8887/DB123/development/content/financial_tools/tool02.html"
-
+    Given I navigate to page "Tax credit calculator"
 
   Scenario: Scenario 2
     Given I set element "#status" value to "couple"

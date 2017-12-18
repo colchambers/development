@@ -4,6 +4,11 @@ module.exports = function () {
         return helpers.loadPage(url);
     });
 
+    this.Given(/^I navigate to page "([^\"]*)"$/, function (name) {
+        url = page.db123.url + page.db123.pages[name.toLowerCase()];
+        return helpers.loadPage(url);
+    });
+
     this.Given(/^I am on the openmark localhost home page$/, function () {
 
         // load google
