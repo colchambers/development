@@ -6,8 +6,9 @@ Feature: DB123 Tax credit calculator: Scenario 8
 
   Background: Enter basic details
     Given I navigate to page "Tax credit calculator"
+      And I set element "#taxYear" value to "2015-16"
 
-  Scenario: Scenario 2
+  Scenario: Scenario 2: Check for consistency between years.
     Given I fill out the "Tax credit calculator" form with the following values:
     | name            | value             | element   |
     | #status         | couple            |           |
@@ -18,7 +19,6 @@ Feature: DB123 Tax credit calculator: Scenario 8
     | #regCB          | 4                 |           |
     | #childcareCosts | 400               | text      |
     | #income         | 28000             | text      |
-    | #taxYear        | 2015-16           |           |
 
     When I click element ".result_table tr:last-child td.right a" with text "Calculate"
     Then the "Tax credit calculator" form should contain the following values:
@@ -28,7 +28,7 @@ Feature: DB123 Tax credit calculator: Scenario 8
       | #resultSummary table tr:nth-child(3) td.right | 11665.00 |
       | #resultSummary table tr:nth-child(4) td.right | 18517.20 |
 
-  Scenario: Scenario 3
+  Scenario: Scenario 3: Baseline for subsequent checks
     Given I fill out the "Tax credit calculator" form with the following values:
       | name            | value             | element   |
       | #status         | couple            |           |
@@ -39,7 +39,6 @@ Feature: DB123 Tax credit calculator: Scenario 8
       | #regCB          | 1                 |           |
       | #childcareCosts | 200               | text      |
       | #income         | 28000             | text      |
-      | #taxYear        | 2015-16           |           |
 
     When I click element ".result_table tr:last-child td.right a" with text "Calculate"
     Then the "Tax credit calculator" form should contain the following values:
@@ -49,7 +48,7 @@ Feature: DB123 Tax credit calculator: Scenario 8
       | #resultSummary table tr:nth-child(3) td.right | 6105.00 |
       | #resultSummary table tr:nth-child(4) td.right | 8407.20 |
 
-  Scenario: Scenario 4
+  Scenario: Scenario 4: Working tax credit ex childcare
     Given I fill out the "Tax credit calculator" form with the following values:
       | name            | value             | element   |
       | #status         | couple            |           |
@@ -60,7 +59,6 @@ Feature: DB123 Tax credit calculator: Scenario 8
       | #regCB          | 1                 |           |
       | #childcareCosts | 200               | text      |
       | #income         | 10000             | text      |
-      | #taxYear        | 2015-16           |           |
 
     When I click element ".result_table tr:last-child td.right a" with text "Calculate"
     Then the "Tax credit calculator" form should contain the following values:
@@ -70,7 +68,7 @@ Feature: DB123 Tax credit calculator: Scenario 8
       | #resultSummary table tr:nth-child(3) td.right | 6105.00  |
       | #resultSummary table tr:nth-child(4) td.right | 15787.20 |
 
-  Scenario: Scenario 5
+  Scenario: Scenario 5: 30-hour element
     Given I fill out the "Tax credit calculator" form with the following values:
       | name            | value             | element   |
       | #status         | couple            |           |
@@ -81,7 +79,6 @@ Feature: DB123 Tax credit calculator: Scenario 8
       | #regCB          | 1                 |           |
       | #childcareCosts | 200               | text      |
       | #income         | 10000             | text      |
-      | #taxYear        | 2015-16           |           |
 
     When I click element ".result_table tr:last-child td.right a" with text "Calculate"
     Then the "Tax credit calculator" form should contain the following values:
@@ -91,7 +88,7 @@ Feature: DB123 Tax credit calculator: Scenario 8
       | #resultSummary table tr:nth-child(3) td.right | 6105.00 |
       | #resultSummary table tr:nth-child(4) td.right | 8607.20 |
 
-  Scenario: Scenario 6
+  Scenario: Scenario 6: Childcare if single
     Given I fill out the "Tax credit calculator" form with the following values:
       | name            | value             | element   |
       | #status         | single            |           |
@@ -101,7 +98,6 @@ Feature: DB123 Tax credit calculator: Scenario 8
       | #regCB          | 1                 |           |
       | #childcareCosts | 200               | text      |
       | #income         | 10000             | text      |
-      | #taxYear        | 2015-16           |           |
 
     When I click element ".result_table tr:last-child td.right a" with text "Calculate"
     Then the "Tax credit calculator" form should contain the following values:
@@ -110,3 +106,19 @@ Feature: DB123 Tax credit calculator: Scenario 8
       | #resultSummary table tr:nth-child(2) td.right | 6370.00  |
       | #resultSummary table tr:nth-child(3) td.right | 6105.00  |
       | #resultSummary table tr:nth-child(4) td.right | 14977.20 |
+
+  Scenario: Scenario 7: Working tax credit if no children
+    Given I fill out the "Tax credit calculator" form with the following values:
+      | name            | value             | element   |
+      | #status         | single            |           |
+      | #children       | none              |           |
+      | #hours          | 30 or more        |           |
+      | #income         | 10000             | text      |
+
+    When I click element ".result_table tr:last-child td.right a" with text "Calculate"
+    Then the "Tax credit calculator" form should contain the following values:
+      | name                                          | value   |
+      | #resultSummary table tr:first-child td.right  | 1302.20 |
+      | #resultSummary table tr:nth-child(2) td.right |    0.00 |
+      | #resultSummary table tr:nth-child(3) td.right |    0.00 |
+      | #resultSummary table tr:nth-child(4) td.right | 1302.20 |
