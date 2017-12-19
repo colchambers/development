@@ -59,7 +59,7 @@ Feature: DB123 Tax credit calculator: Scenario 8
 
   Scenario: 2015-16
     Given I set element "#taxYear" value to "2015-16"
-    And I click element ".result_table tr:last-child td.right a" with text "Calculate"
+    When I click element ".result_table tr:last-child td.right a" with text "Calculate"
     Then the "Tax credit calculator" form should contain the following values:
       | name                                          | value  |
       | #resultSummary table tr:first-child td.right  |   0.00 |
@@ -69,7 +69,7 @@ Feature: DB123 Tax credit calculator: Scenario 8
 
   Scenario: 2016-17
     Given I set element "#taxYear" value to "2016-17"
-    And I click element ".result_table tr:last-child td.right a" with text "Calculate"
+    When I click element ".result_table tr:last-child td.right a" with text "Calculate"
     Then the "Tax credit calculator" form should contain the following values:
       | name                                          | value  |
       | #resultSummary table tr:first-child td.right  |   0.00 |
@@ -79,7 +79,7 @@ Feature: DB123 Tax credit calculator: Scenario 8
 
   Scenario: 2017-18
     Given I set element "#taxYear" value to "2017-18"
-    And I click element ".result_table tr:last-child td.right a" with text "Calculate"
+    When I click element ".result_table tr:last-child td.right a" with text "Calculate"
     Then the "Tax credit calculator" form should contain the following values:
       | name                                          | value  |
       | #resultSummary table tr:first-child td.right  |   0.00 |
