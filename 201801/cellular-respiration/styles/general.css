@@ -1,0 +1,175 @@
+body {
+	/*background-color: #dcedff;*/
+}
+
+.container {
+    position: relative;
+	min-width: 480px;
+	max-width: 880px;
+	margin-bottom: 50px;
+	visibility: hidden;
+}
+
+.container:last-child {
+	margin-bottom: 0;
+}
+
+h2 {
+	font-size: 1.3em;
+}
+
+h3 {
+	font-size: 1.2em;
+}
+h4 {
+	font-size: 1.1em;
+}
+
+h2, h3, h4 {
+	margin-bottom: .4em;
+	/*color: #1f536b;*/
+}
+
+p {
+	margin-top: .4em;
+	margin-bottom: .8em;
+}
+
+ul, ol {
+	margin-top: .4em;
+	margin-bottom: .8em;
+	padding-left: 2em;
+}
+
+li {
+	margin-bottom: .4em;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+th, td {
+	padding: 2px 4px;
+	border: 1px solid #888888;
+	vertical-align: top;
+}
+
+.hanging-indent {
+	display: inline-block;
+	text-indent: -30px;
+}
+
+.indent {
+	padding-left: 30px;
+}
+
+.speaker {
+	margin-bottom: 1.5em;
+}
+
+.speaker p {
+	margin-top: 0.2em;
+	margin-bottom: 0.4em;
+}
+
+.source-ref {
+	font-size: 0.9em;
+	text-align: right;
+}
+
+.box-heading {
+	font-size: 1.1em;
+	font-weight: bold;
+}
+
+.not-http {
+	margin-top: 6em;
+}
+
+.fig-caption {
+	margin-bottom: .8em;
+	color: #296e8f;
+}
+
+.screen-reader {
+	position: absolute;
+	top: 0;
+	left: -9999px
+}
+
+.no-select {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.btn-group {
+	margin-top: 20px;
+	padding: 1px;
+	/*overflow: auto;*/
+}
+
+.btn-group button {
+	/*display: block;
+	float: left;*/
+}
+
+.btn-no-style {
+	margin: 0;
+	border: none;
+	border-radius: 0;
+	padding: 0;
+	background: none;
+	font: inherit;
+	color: inherit;
+	cursor: auto;
+}
+
+.general-feedback {
+	display: none;
+	border-top: 1px dotted #999999;
+	margin-top: 20px;
+	padding-top: 10px;
+}
+
+.general-feedback-retry {
+	display: none;
+}
+
+.notice {
+	color: grey;
+	font-size: .9em;
+}
+
+.keyboard-notice {
+	position: absolute;
+	left: -999px;
+	max-width: 600px;
+	/*margin-top: 10px;*/
+	margin-bottom: 10px;
+	padding: 10px;
+	background-color: #f1f1f1;
+	border: 1px solid #333333;
+}
+
+.bold {
+	font-weight: bold;
+}
+
+.italic {
+	font-style: italic;
+}
+
+.hidden {
+	display: none;
+}
+
+.center {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}

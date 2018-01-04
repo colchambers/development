@@ -1,0 +1,72 @@
+body {
+    margin:0;
+    padding:0;
+}
+body * {
+    font-family: Arial, sans-serif;
+    font-size:14px;
+    line-height:1.4;
+}
+table {
+    min-width: 300px;
+}
+table, tr, td, th {
+    border:1px solid #888;
+    border-collapse: collapse;
+}
+table tbody tr td.c2, table thead tr th.c2, table thead tr td.r0.c1 {
+    width:5em;
+}
+table tbody tr td, table thead tr th{
+    padding:5px;
+
+}
+table tbody tr td input, table tbody tr td select {
+    width:inherit;
+    text-align: center;
+}
+table tbody tr td {
+    vertical-align: top;
+}
+table thead tr th, table tbody tr.total td, table tbody tr.total td input {
+    vertical-align: middle;
+    font-weight: bold;
+}
+input[type="button"] {
+    display: inline-block;
+    margin-right: 10px;
+    border: 1px solid #002158;
+    border-radius: 3px;
+    padding: 2px 8px 3px;
+    background-color: #fff;
+    vertical-align: top;
+    line-height: 1.5;
+    font-size: 1em;
+    transition: background-color .25s,color .25s;
+    cursor: pointer;
+    margin-top:20px;
+}
+input[type="button"]:hover, input[type="button"]:focus {
+    background: #002158;
+    color: #fff;
+    outline: 0;
+}
+
+input[type="text"] {
+    width: 100%;
+    /*height: 100%;*/
+    overflow: auto;
+}
+
+/* Colour options */
+option:first-child {
+    color: #990000;
+}
+
+option:last-child {
+    color: #044205;
+}
+
+td.cell-text input{
+    border: none;
+}
