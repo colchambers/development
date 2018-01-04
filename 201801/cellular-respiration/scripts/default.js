@@ -3,18 +3,26 @@ var slctTbl = slctTbl || {};
 slctTbl.setup = (function () {
   var allInputs; // Store reference to input elements that user can update.
   var data = {
-    'headers': [
-        'Chemical',
-        'Molecules'
-    ],
-    'text': [
-        ['Glucose + 6 O2']
-    ],
-    'lang': {
-        'co2': 'Carbon Dioxide (CO2):',
-        'total': 'ATP from Aerobic respiration:',
-        'totalRoles': 'ATP  from anaerobic respiration'
-    }
+      'rows': [
+          [   {'type':'header'},
+              'Chemical',
+              'Molecules'
+          ],
+          [{'type':'header'},'Inputs'],
+          [{'id':'GlucoseO2'}, 'Glucose + 6 O2'],
+          [   {'type':'header'},
+              'Outputs'
+          ],
+          [{'id':'ATPanaerobic', 'readonly': 'readonly'}, 'ATP from anaerobic respiration:'],
+          [{'id':'ATPaerobic', 'readonly': 'readonly'}, 'ATP from aerobic respiration:'],
+          [{'id':'CO2', 'readonly': 'readonly'}, 'Carbon Dioxide (CO2)']
+      ],
+      'modal': {
+          'GlucoseO2' : ['GlucoseO2', 1],
+          'ATPanaerobic': ['ATPanaerobic', 2],
+          'ATPaerobic': ['ATPaerobic', 30],
+          'CO2': ['CO2', 6]
+      }
   };
   var init = function () {
 
@@ -68,14 +76,14 @@ slctTbl.setup = (function () {
         t = t + v;
     }
     t1 = t*2;
-    document.getElementById("totalRoles").value = t1;
+    document.querySelector("table input[data-id='ATPanaerobic']").value = t1;
 
     // Calculated aerobic respiration.
     s = t * 30;
 
     // Calculate the total or hours in roles + hours sleeping.
-    document.getElementById("total").value = t1 + s;
-    document.getElementById("CO2").value = t * 6;
+    document.querySelector("table input[data-id='ATPaerobic']").value = t1 + s;
+    document.querySelector("table input[data-id='CO2']").value = t * 6;
   };
 
   var _reset = function () {
@@ -96,10 +104,13 @@ slctTbl.setup = (function () {
       var row = document.createElement('tr');
       // Create header.
       var cell;
-      for(var i=0; i<data.headers.length; i++) {
+      for(var i=0; i<data.rows[0].length; i++) {
+          if(data.rows[0][i] instanceof Object) {
+              continue;
+          }
         cell = document.createElement('th');
         cell.setAttribute('class', 'c' + i + ' table-th');
-        cell.appendChild(document.createTextNode(data.headers[i]));
+        cell.appendChild(document.createTextNode(data.rows[0][i]));
 
         row.appendChild(cell);
       }
@@ -107,76 +118,54 @@ slctTbl.setup = (function () {
       header.appendChild(row);
       table.appendChild(header);
 
-      // Create content rows.
-      var c, r; //column, row, integer
+      // Create input rows.
+      var c, r, v, p; // column, row, value, params
       var body = document.createElement('tbody');
       var inputParams = createDefaultInputParams();
-      for(r=0; r<data.text.length; r++) {
+      var colspan = data.rows[0].length-2;
+      for(r=1; r<data.rows.length; r++) {
+          p = {isHeader: false, id: null, class: ''};
           row = document.createElement('tr');
-          for(c=0; c<data.text[0].length; c++) {
+          p.isHeader = false;
+          p.id = null;
+          for(c=0; c<data.rows[r].length; c++) {
+              v = data.rows[r][c];
+              if(v instanceof Object) {
+                  for(item in v) {
+                      p[item] = v[item];
+                  }
+                  if(v.hasOwnProperty("type") && v.type === "header") {
+                      p.isHeader = true;
+                  }
+                  continue;
+              }
               cell = document.createElement('td');
-              cell.setAttribute('class', 'table-cell r' + r + ' c' + c);
-              cell.appendChild(document.createTextNode(data.text[r][c]));
+              cell.setAttribute('class', 'table-cell header r' + r + ' c' + c);
+              cell.appendChild(document.createTextNode(data.rows[r][c]));
               row.appendChild(cell);
           }
 
-          // Add hours input.
+          // Add number input.
           c = 1;
           cell = document.createElement('td');
-          cell.setAttribute('class', 'table-cell cell-text r' + r + ' c' + c);
-          inputParams.attributes.id = 'input' + r;
-          cell.appendChild(createElement(inputParams));
+          cell.setAttribute('class', 'table-cell cell-text ' + p.class + ' r' + r + ' c' + c);
+          if(!p.isHeader) {
+              inputParams.attributes.id = 'input' + r;
+              if (p.class) {
+                  inputParams.attributes.class += ' ' + p.class;
+              }
+              if (p.hasOwnProperty("readonly")) {
+                  inputParams.attributes.readonly = p.readonly;
+              }
+              if (p.id) {
+                  inputParams.attributes['data-id'] = p.id;
+              }
+              cell.appendChild(createElement(inputParams));
+          }
           row.appendChild(cell);
 
           body.appendChild(row);
       }
-
-      // Create output elements
-
-      // Append totalRoles.
-      r = data.text.length + 1;
-      var rowParams = {type: 'tr', attributes: {'class':  'r' + r + ' total'}, children: [
-          // Text column
-          {type: 'td', attributes: {'class':  'table-cell r' + r + ' c0 total', 'colspan': data.text[0].length},
-              children: [{type: 'label',attributes: {'for': 'totalRoles', 'value': data.lang.totalRoles}}
-          ]},
-          // Result column.
-          {type: 'td', attributes: {'class':  'table-cell cell-text r' + r + ' c1'}, children: [
-              createDefaultInputParams({id: 'totalRoles', readonly: 'readonly', class: 'total'})
-          ]}]};
-      row = createElements(rowParams);
-
-      body.appendChild(row);
-
-      // Append overall total.
-      r = r + 1;
-      var rowParams = {type: 'tr', attributes: {'class':  ' r' + r + ' total bold'}, children: [
-          // Text column
-          {type: 'td', attributes: {'class':  'table-cell r' + r + ' c0 total', 'colspan': data.text[0].length},
-              children: [{type: 'label',attributes: {'for': 'total', 'value': data.lang.total}}]},
-          // Result column.
-          {type: 'td', attributes: {'class':  'table-cell cell-text r' + r + ' c1'}, children: [
-              createDefaultInputParams({id: 'total', readonly: 'readonly', class: 'total'})
-          ]}
-      ]};
-      row = createElements(rowParams);
-
-      body.appendChild(row);
-
-        // Append overall total.
-        r = r + 1;
-        var rowParams = {type: 'tr', attributes: {'class':  ' r' + r + ' output'}, children: [
-                // Text column
-                {type: 'td', attributes: {'class':  'table-cell r' + r + ' c0 output', 'colspan': data.text[0].length},
-                    children: [{type: 'label',attributes: {'for': 'CO2', 'value': data.lang.co2}}]},
-                // Result column.
-                {type: 'td', attributes: {'class':  'table-cell cell-text r' + r + ' c1'}, children: [
-                        createDefaultInputParams({id: 'CO2', readonly: 'readonly', class: 'output'})
-                    ]}
-            ]};
-        row = createElements(rowParams);
-
-        body.appendChild(row);
 
       table.appendChild(body);
 
